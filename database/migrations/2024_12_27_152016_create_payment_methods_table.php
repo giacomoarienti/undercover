@@ -15,10 +15,11 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->string("type");
-            $table->string("number")->nullable();
+            $table->string("number", 16)->nullable();
             $table->date("expiration_date")->nullable();
-            $table->string("cvv")->nullable();
+            $table->string("cvv", 3)->nullable();
             $table->string("email")->nullable();
+            $table->foreignId("user_id")->nullable()->constrained()->cascadeOnDelete();
         });
     }
 
