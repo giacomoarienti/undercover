@@ -62,7 +62,7 @@ class User extends Authenticatable
         return $this->hasMany(Notification::class);
     }
 
-    public function reception_method(): HasMany
+    public function receptionMethod(): HasMany
     {
         return $this->hasMany(ReceptionMethod::class);
     }
