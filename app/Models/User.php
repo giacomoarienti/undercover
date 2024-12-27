@@ -66,4 +66,18 @@ class User extends Authenticatable
     {
         return $this->hasMany(PaymentMethod::class);
     }
+
+    public function receptionMethod(): HasMany
+    {
+        return $this->hasMany(ReceptionMethod::class);
+    }
+
+    /**
+     * Returns reviews written by the User
+     * @return HasMany
+     */
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(Review::class);
+    }
 }
