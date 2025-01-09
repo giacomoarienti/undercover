@@ -24,7 +24,7 @@ class Coupon extends Model
     /**
      * Get if the Coupon is active
      */
-    protected function getIsActive(): Attribute
+    protected function getIsActiveAttribute(): Attribute
     {
         // if expires_at is < now and starts_at is > now
         return Attribute::make(
@@ -36,7 +36,7 @@ class Coupon extends Model
     /**
      * Get the discount percentage. (ex. 50%)
      */
-    protected function getPercentageDiscount(): Attribute
+    protected function percentageDiscount(): Attribute
     {
         return Attribute::make(
             get: fn() => ((string) ($this->attributes['discount'] * 100)) . '%'
