@@ -95,4 +95,13 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Phone::class, 'phone_user');
     }
+
+    /**
+     * Returns the Products sold by the vendor User.
+     * @return HasMany
+     */
+    public function products(): HasMany
+    {
+        return $this->hasMany(Product::class);
+    }
 }
