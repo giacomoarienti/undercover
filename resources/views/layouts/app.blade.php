@@ -22,6 +22,18 @@
         @yield('content')
     </main>
 
+    @if(session()->has('message'))
+        <div class="alert alert-info" role="alert">
+            {{ session('message') }}
+        </div>
+    @endif
+
+    @if(session()->has('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
+
     @include('layouts.partials.footer')
 </body>
 </html>

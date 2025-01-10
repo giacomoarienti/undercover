@@ -20,14 +20,16 @@ class AuthController extends Controller
             'password' => 'required|min:6',
         ]);
 
-        // Attempt to log the user in
+        // Attempt to log the client in
         $user = User::where('email', $request->get('email'))->first();
 
         if ($user && Hash::check($request->get('password'), $user->password)) {
-            // Log the user in
+            // Log the client in
             Auth::login($user);
 
-            return redirect()->intended('user.home')->with('success', 'Logged in.');
+            if($user->is_seller)
+                return redirect()->route('seller.index')->with('message', 'Logged in.');
+            return redirect()->route('client.index')->with('message', 'Logged in.');
         }
 
         // If authentication fails, redirect back with an error message
@@ -53,9 +55,9 @@ class AuthController extends Controller
             'country' => 'required|string|max:255',
         ]);
 
-        if($request->has('is_vendor')) {
+        if($request->has('is_seller')) {
             $request->validate([
-                'is_vendor' => 'required|boolean',
+                'is_seller' => 'required|boolean',
                 'company_name' => 'required|string|max:255',
                 'vat' => 'required|string|max:255',
             ]);
@@ -77,15 +79,21 @@ class AuthController extends Controller
             'state' => $request->state,
             'zip_code' => $request->zip_code,
             'country' => $request->country,
-            'is_vendor' => $request->is_vendor ?? false,
+            'is_seller' => $request->is_seller ?? false,
             'company_name' => $request->company_name ?? null,
             'vat' => $request->vat ?? null,
         ]);
 
         Auth::login($user);
 
-        return redirect()->route('dashboard')->with('success', 'Registered successfully.');
+        if($user->is_seller)
+            return redirect()->route('seller.index')->with('message', 'Registered successfully.');
+        return redirect()->route('client.index')->with('message', 'Registered successfully.');
     }
 
-
+    public function signout()
+    {
+        Auth::logout();
+        return redirect()->route('auth.signin')->with('message', 'Logged out.');
+    }
 }

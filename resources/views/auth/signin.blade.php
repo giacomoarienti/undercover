@@ -3,7 +3,7 @@
 @section('content')
     <h1>Sign In</h1>
 
-    <form method="POST" action="{{ route('signin') }}">
+    <form method="POST" action="{{ route('auth.signin') }}">
         @csrf
         <div class="form-group has-validation">
             <label for="email">Email</label>
@@ -17,6 +17,8 @@
             @error('password')<div class="invalid-feedback">{{ $message }}</div>@enderror
         </div>
 
-        <button type="submit" class="btn btn-primary">Sign In</button>
+        <div class="mt-3">
+            <button type="submit" class="btn btn-primary">Sign In</button>
+        </div>
     </form>
 @endsection
