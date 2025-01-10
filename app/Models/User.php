@@ -115,4 +115,35 @@ class User extends Authenticatable
     {
         return $this->hasMany(Order::class);
     }
+
+    public function cart(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            SpecificProduct::class,
+            'specific_products_in_carts'
+        )->withPivot('quantity');
+    }
+
+    /**
+     * Add a SpecificProduct to the user's cart.
+     *
+     * @param SpecificProduct $product
+     * @param int $quantity
+     * @return void
+     */
+    public function addToCart(SpecificProduct $product, int $quantity = 1): void
+    {
+        // Check if the product is already in the cart
+        $cartItem = $this->cart()->where('specific_product_id', $product->id)->first();
+
+        if ($cartItem) {
+            // If the product is already in the cart, increment the quantity
+            $this->cart()->updateExistingPivot($product->id, [
+                'quantity' => $cartItem->pivot->quantity + $quantity,
+            ]);
+        } else {
+            // If the product is not in the cart, attach it with the specified quantity
+            $this->cart()->attach($product->id, ['quantity' => $quantity]);
+        }
+    }
 }
