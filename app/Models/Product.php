@@ -41,7 +41,7 @@ class Product extends Model
     }
 
     /**
-     * Return the vendor User who sells the Product.
+     * Return the seller User who sells the Product.
      * @return BelongsTo
      */
     public function user(): BelongsTo

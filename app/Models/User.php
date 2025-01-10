@@ -103,7 +103,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Returns the Products sold by the vendor User.
+     * Returns the Products sold by the seller User.
      * @return HasMany
      */
     public function products(): HasMany
