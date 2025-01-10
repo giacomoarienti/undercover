@@ -109,4 +109,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Product::class);
     }
+
+    //TODO: controllo consistenza tipo utente
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
+    }
 }
