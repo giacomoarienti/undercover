@@ -36,7 +36,7 @@ class UserFactory extends Factory
             'state' => fake()->state(),
             'zip_code' => fake()->postcode(),
             'country' => fake()->country(),
-            'is_vendor' => fake()->boolean(),
+            'is_seller' => fake()->boolean(),
             'company_name' => fake()->optional()->company(),
             'vat' => fake()->optional()->regexify('[A-Z0-9]{8,12}'),
         ];

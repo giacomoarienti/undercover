@@ -32,7 +32,7 @@ class User extends Authenticatable
         'state',
         'zip_code',
         'country',
-        'is_vendor',
+        'is_seller',
         'company_name',
         'vat'
     ];
@@ -56,7 +56,7 @@ class User extends Authenticatable
     {
         return [
             'password' => 'hashed',
-            'is_vendor' => 'boolean'
+            'is_seller' => 'boolean'
         ];
     }
 
@@ -125,7 +125,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Add a SpecificProduct to the user's cart.
+     * Add a SpecificProduct to the client's cart.
      *
      * @param SpecificProduct $product
      * @param int $quantity

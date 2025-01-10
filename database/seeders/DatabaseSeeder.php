@@ -23,7 +23,7 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'Test Vendor',
             'email' => 'testvendor@example.com',
-            'is_vendor' => true,
+            'is_seller' => true,
             'password' => 'password'
         ]);
 
