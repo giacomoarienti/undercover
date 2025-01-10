@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('state');
             $table->string('zip_code');
             $table->string('country');
-            $table->boolean('is_vendor');
+            $table->boolean('is_vendor')->default(false);
             $table->string('company_name')->nullable();
             $table->string('vat')->nullable();
             $table->rememberToken();

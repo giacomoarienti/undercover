@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('payments', function (Blueprint $table) {
+        Schema::create('shippings', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->string("transaction_id")->unique();
-            $table->foreignId("status_id")->constrained("payment_statuses")->noActionOnDelete();
+            $table->string("tracking_number");
+            $table->string("shipping_company");
+            $table->foreignId("shipping_status_id")->constrained("shipping_statuses")->noActionOnDelete();
         });
     }
 
@@ -24,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('payments');
+        Schema::dropIfExists('shippings');
     }
 };

@@ -3,8 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -12,7 +12,7 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
+    /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
     /**
@@ -34,7 +34,7 @@ class User extends Authenticatable
         'country',
         'is_vendor',
         'company_name',
-        'vat',
+        'vat'
     ];
 
     /**
@@ -56,6 +56,7 @@ class User extends Authenticatable
     {
         return [
             'password' => 'hashed',
+            'is_vendor' => 'boolean'
         ];
     }
 
@@ -110,7 +111,6 @@ class User extends Authenticatable
         return $this->hasMany(Product::class);
     }
 
-    //TODO: controllo consistenza tipo utente
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class);
