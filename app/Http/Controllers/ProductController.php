@@ -8,17 +8,12 @@ use Illuminate\View\View;
 
 class ProductController extends Controller
 {
-
-    private function view(String $view_name) : View {
-        return view((request()->user() && request()->user()->is_seller ? 'seller.' : 'client.') . $view_name);
-    }
-
     /**
      * Display a listing of the resource.
      */
     public function index() : View
     {
-        return $this->view('products.index');
+        return $this->resolveView('products.index');
     }
 
     /**

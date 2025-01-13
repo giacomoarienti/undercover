@@ -13,7 +13,7 @@ class UserController extends Controller
 {
     public function settings(): \Illuminate\View\View
     {
-        return $this->view('settings');
+        return $this->resolveView('settings');
     }
 
     public function edit(Request $request)
