@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
-    public function signin(Request $request)
+    public function signin(Request $request): RedirectResponse
     {
         Log::info('signin');
         // Validate the input
@@ -26,20 +26,17 @@ class AuthController extends Controller
         if ($user && Hash::check($request->get('password'), $user->password)) {
             // Log the client in
             Auth::login($user);
-
-            if($user->is_seller)
-                return redirect()->route('seller.index')->with('message', 'Logged in.');
-            return redirect()->route('client.index')->with('message', 'Logged in.');
+            return to_route('index')->with('message', 'Logged in successfully.');
         }
 
         // If authentication fails, redirect back with an error message
-        return back()->withErrors([
+        return to_route('auth.signin')->withErrors([
             'email' => 'Invalid email or password',
             'password' => 'Invalid email or password'
         ]);
     }
 
-    public function signup(Request $request)
+    public function signup(Request $request): RedirectResponse
     {
         $request->validate([
             'name' => 'required|string|max:255',
@@ -55,7 +52,7 @@ class AuthController extends Controller
             'country' => 'required|string|max:255',
         ]);
 
-        if($request->has('is_seller')) {
+        if($request->has('is_seller') && $request->get('is_seller', false)) {
             $request->validate([
                 'is_seller' => 'required|boolean',
                 'company_name' => 'required|string|max:255',
@@ -63,37 +60,34 @@ class AuthController extends Controller
             ]);
         }
 
-        if(User::where('email', $request->email)->exists()) {
-            return back()->withErrors(['email' => 'Email already exists']);
+        if(User::where('email', $request->get('email'))->exists()) {
+            return to_route('auth.signup')->withErrors(['email' => 'Email already exists']);
         }
 
         $user = User::create([
-            'name' => $request->name,
-            'surname' => $request->surname,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'birthday' => $request->birthday,
-            'street_name' => $request->street_name,
-            'street_number' => $request->street_number,
-            'city' => $request->city,
-            'state' => $request->state,
-            'zip_code' => $request->zip_code,
-            'country' => $request->country,
-            'is_seller' => $request->is_seller ?? false,
-            'company_name' => $request->company_name ?? null,
-            'vat' => $request->vat ?? null,
+            'name' => $request->get('name'),
+            'surname' => $request->get('surname'),
+            'email' => $request->get('email'),
+            'password' => Hash::make($request->get('password')),
+            'birthday' => $request->get('birthday'),
+            'street_name' => $request->get('street_name'),
+            'street_number' => $request->get('street_number'),
+            'city' => $request->get('city'),
+            'state' => $request->get('state'),
+            'zip_code' => $request->get('zip_code'),
+            'country' => $request->get('country'),
+            'is_seller' => $request->get('is_seller', false),
+            'company_name' => $request->get('company_name'),
+            'vat' => $request->get('vat'),
         ]);
 
         Auth::login($user);
-
-        if($user->is_seller)
-            return redirect()->route('seller.index')->with('message', 'Registered successfully.');
-        return redirect()->route('client.index')->with('message', 'Registered successfully.');
+        return to_route('index')->with('message', 'Registered successfully.');
     }
 
-    public function signout()
+    public function signout(): RedirectResponse
     {
         Auth::logout();
-        return redirect()->route('auth.signin')->with('message', 'Logged out.');
+        return to_route('auth.signin')->with('message', 'Logged out.');
     }
 }
