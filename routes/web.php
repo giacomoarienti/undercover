@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ProductController;
 use App\Http\Middleware\Auth;
 use App\Http\Middleware\UnAuth;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::name('auth.')->group(function () {
@@ -27,3 +29,5 @@ Route::name('client.')->middleware(Auth::class)->group(function () {
 Route::name('seller.')->middleware(Auth::class)->group(function () {
     Route::view('/', 'seller.index')->name('index');
 });
+
+Route::resource('products', ProductController::class);
