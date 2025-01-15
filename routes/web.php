@@ -19,7 +19,7 @@ Route::name('auth.')->group(function () {
         Route::view('/signin', 'auth.signin')->name('signin');
         Route::post('/signin', [AuthController::class, 'signin'])->name('signin');
 
-        Route::get('/signup', 'auth.signup')->name('signup');
+        Route::view('/signup', 'auth.signup')->name('signup');
         Route::post('/signup', [AuthController::class, 'signup'])->name('signup');
     });
 
@@ -28,6 +28,9 @@ Route::name('auth.')->group(function () {
     });
 });
 
+/**
+ * Routes only accessible by authenticated users.
+ */
 Route::middleware(AuthMiddleware::class)->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('index');
 
@@ -39,11 +42,19 @@ Route::middleware(AuthMiddleware::class)->group(function () {
     Route::post('/settings', [UserController::class, 'edit'])->name('settings');
 });
 
+/**
+ * Routes only accessible by sellers.
+ */
 Route::middleware(SellerMiddleware::class)->group(function () {
     Route::get('/coupons', [CouponController::class, 'index'])->name('coupons');
     Route::get('/coupons/{id}', [CouponController::class, 'show'])->name('coupons');
     Route::post('/coupons', [CouponController::class, 'store'])->name('coupons');
     Route::delete('/coupons/{id}', [CouponController::class, 'destroy'])->name('coupons');
+
+    Route::resource('products', ProductController::class)->only(['create', 'store', 'edit', 'update', 'destroy']);
 });
 
-Route::resource('products', ProductController::class);
+/**
+ * Routes accessible both by guests and authenticated users.
+ */
+Route::resource('products', ProductController::class)->only(['index', 'show']);

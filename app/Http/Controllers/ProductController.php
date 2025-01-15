@@ -4,14 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
+use Illuminate\Support\Facades\Gate;
 
 class ProductController extends Controller
 {
+    //TODO: authorization
+
     /**
      * Display a listing of the resource.
      */
-    public function index() : View
+    public function index()
     {
         return $this->resolveView('products.index');
     }
@@ -21,7 +23,11 @@ class ProductController extends Controller
      */
     public function create()
     {
-        //
+        /**
+         * Throws AuthorizationException, automatically converted into a 403 HTTP response by Laravel
+         */
+        Gate::authorize('create', Product::class);
+        return $this->resolveView('products.create');
     }
 
     /**
@@ -29,7 +35,8 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        Gate::authorize('create', Product::class);
+        //TODO
     }
 
     /**
@@ -37,7 +44,8 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        //
+        Gate::authorize('view', $product);
+        return $this->resolveView('products.show')->with('product', $product);
     }
 
     /**
@@ -45,7 +53,8 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
-        //
+        Gate::authorize('update', $product);
+        return $this->resolveView('products.edit')->with('product', $product);
     }
 
     /**
@@ -53,14 +62,18 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-        //
+        Gate::authorize('update', $product);
+        //TODO
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified resource from storage. (Soft-delete)
      */
     public function destroy(Product $product)
     {
-        //
+        //TODO observer per notifiche
+        Gate::authorize('delete', $product);
+        $product->delete();
+        return redirect()->route('products.index');
     }
 }
