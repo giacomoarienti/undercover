@@ -63,4 +63,9 @@ class SpecificProductPolicy
     {
         return false;
     }
+
+    public function review(User $user, SpecificProduct $specificProduct): bool
+    {
+        return false;
+    }
 }

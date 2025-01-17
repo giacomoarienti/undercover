@@ -8,14 +8,13 @@ use Illuminate\Support\Facades\Gate;
 
 class ProductController extends Controller
 {
-    //TODO: authorization
-
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return $this->resolveView('products.index');
+        Gate::authorize('viewAny', Product::class);
+        return view('products.index');
     }
 
     /**
@@ -27,7 +26,7 @@ class ProductController extends Controller
          * Throws AuthorizationException, automatically converted into a 403 HTTP response by Laravel
          */
         Gate::authorize('create', Product::class);
-        return $this->resolveView('products.create');
+        return view('products.create');
     }
 
     /**
@@ -36,7 +35,24 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         Gate::authorize('create', Product::class);
-        //TODO
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:100',
+            'description' => 'required|string|max:255',
+            'price' => 'required|numeric|min:0',
+            'material_id' => 'required|integer|exists:materials,id',
+            'phone_id' => 'required|integer|exists:phones,id',
+            'colors' => 'required|array|min:1',
+            'colors.*.id' => 'required|integer|exists:colors,id',
+            'colors.*.quantity' => 'required|integer|min:0',
+        ]);
+
+        $validated["user_id"] = $request->user->id;
+
+        $product = Product::create($validated);
+        $product->updateColors($validated['colors']);
+
+        return redirect()->route('products.show')->with('product', $product);
     }
 
     /**
@@ -45,7 +61,7 @@ class ProductController extends Controller
     public function show(Product $product)
     {
         Gate::authorize('view', $product);
-        return $this->resolveView('products.show')->with('product', $product);
+        return view('products.show')->with('product', $product);
     }
 
     /**
@@ -54,7 +70,7 @@ class ProductController extends Controller
     public function edit(Product $product)
     {
         Gate::authorize('update', $product);
-        return $this->resolveView('products.edit')->with('product', $product);
+        return view('products.edit')->with('product', $product);
     }
 
     /**
@@ -63,7 +79,23 @@ class ProductController extends Controller
     public function update(Request $request, Product $product)
     {
         Gate::authorize('update', $product);
-        //TODO
+        $validated = $request->validate([
+            'name' => 'required|string|max:100',
+            'description' => 'required|string|max:255',
+            'price' => 'required|numeric|min:0',
+            'material_id' => 'required|integer|exists:materials,id',
+            'phone_id' => 'required|integer|exists:phones,id',
+            'colors' => 'required|array|min:1',
+            'colors.*.id' => 'required|integer|exists:colors,id',
+            'colors.*.quantity' => 'required|integer|min:0',
+        ]);
+
+        $validated["user_id"] = $request->user->id;
+
+        $product->update($validated);
+        $product->updateColors($validated['colors']);
+
+        return redirect()->route('products.show')->with('product', $product->first());
     }
 
     /**
@@ -73,6 +105,7 @@ class ProductController extends Controller
     {
         //TODO observer per notifiche
         Gate::authorize('delete', $product);
+        $product->updateColors([]);
         $product->delete();
         return redirect()->route('products.index');
     }

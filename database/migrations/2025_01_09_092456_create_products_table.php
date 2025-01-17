@@ -21,6 +21,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users');
             $table->softDeletes();
             $table->timestamps();
+            $table->unique(['name', 'phone_id', 'user_id'], 'products_name_phone_user_unique');
         });
     }
 

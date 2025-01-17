@@ -7,6 +7,40 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Enums\OrderStatus;
+/**
+ * 
+ *
+ * @property int $id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property int|null $discount
+ * @property int $user_id
+ * @property int|null $coupon_id
+ * @property int|null $payment_id
+ * @property int|null $shipping_id
+ * @property-read mixed $completed
+ * @property-read \App\Models\Coupon|null $coupon
+ * @property-read \App\Models\Payment|null $payment
+ * @property-read \App\Models\Shipping|null $shipping
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SpecificProduct> $specificProducts
+ * @property-read int|null $specific_products_count
+ * @property-read mixed $status
+ * @property-read mixed $total
+ * @property-read mixed $total_before_discount
+ * @property-read \App\Models\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereCouponId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereDiscount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order wherePaymentId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereShippingId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereUserId($value)
+ * @mixin \Eloquent
+ */
 class Order extends Model
 {
 

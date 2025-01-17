@@ -16,6 +16,7 @@ return new class extends Migration
             $table->timestamps();
             $table->foreignId("order_id")->constrained("orders")->noActionOnDelete();
             $table->foreignId("specific_product_id")->constrained("specific_products")->noActionOnDelete();
+            $table->softDeletes();
             $table->integer("quantity");
         });
     }

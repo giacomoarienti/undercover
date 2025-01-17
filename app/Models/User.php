@@ -10,6 +10,69 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+/**
+ * 
+ *
+ * @property int $id
+ * @property string $name
+ * @property string $surname
+ * @property string $email
+ * @property string $password
+ * @property string $birthday
+ * @property string $street_name
+ * @property string $street_number
+ * @property string $city
+ * @property string $state
+ * @property string $zip_code
+ * @property string $country
+ * @property bool $is_seller
+ * @property string|null $company_name
+ * @property string|null $vat
+ * @property string|null $remember_token
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SpecificProduct> $cart
+ * @property-read int|null $cart_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Coupon> $coupons
+ * @property-read int|null $coupons_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Notification> $notifications
+ * @property-read int|null $notifications_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Order> $orders
+ * @property-read int|null $orders_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PaymentMethod> $paymentMethods
+ * @property-read int|null $payment_methods_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Phone> $phones
+ * @property-read int|null $phones_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Product> $products
+ * @property-read int|null $products_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ReceptionMethod> $receptionMethod
+ * @property-read int|null $reception_method_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Review> $reviews
+ * @property-read int|null $reviews_count
+ * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereBirthday($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereCity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereCompanyName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereCountry($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereIsSeller($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User wherePassword($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereRememberToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereState($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereStreetName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereStreetNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereSurname($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereVat($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereZipCode($value)
+ * @mixin \Eloquent
+ */
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */

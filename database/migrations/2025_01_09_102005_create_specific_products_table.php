@@ -14,10 +14,11 @@ return new class extends Migration
         Schema::create('specific_products', function (Blueprint $table) {
             $table->id();
             $table->integer('quantity');
-            $table->foreignId('product_id')->constrained('products');
-            $table->foreignId('color_id')->constrained('colors');
+            $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
+            $table->foreignId('color_id')->constrained('colors')->onDelete('no action');
             $table->softDeletes();
             $table->timestamps();
+            $table->unique(['product_id', 'color_id']);
         });
     }
 
