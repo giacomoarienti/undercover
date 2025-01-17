@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -25,7 +25,7 @@ use Illuminate\Database\Eloquent\Model;
 class PaymentStatus extends Model
 {
     protected $fillable = [
-        "payment_id",
-        "status"
+        "name",
+        "description"
     ];
 }
