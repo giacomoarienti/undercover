@@ -45,7 +45,7 @@ use Illuminate\Notifications\Notifiable;
  * @property-read int|null $phones_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Product> $products
  * @property-read int|null $products_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ReceptionMethod> $receptionMethod
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ReceptionMethod> $receptionMethods
  * @property-read int|null $reception_method_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Review> $reviews
  * @property-read int|null $reviews_count
