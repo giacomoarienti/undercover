@@ -92,16 +92,19 @@ class Order extends Model
         );
     }
 
-    //TODO: coupon solo su prodotti dello stesso venditore
     public function total() : Attribute {
         return Attribute::make(
-            get: fn() => $this->coupon == null ? $this->totalBeforeDiscount() : $this->totalBeforeDiscount * (1 - $this->coupon->discount)
+            get: fn() => $this->total_before_discount - $this->discount
         );
     }
 
     public function discount() : Attribute {
         return Attribute::make(
-            get: fn() => $this->coupon == null ? 0 : $this->totalBeforeDiscount * $this->coupon->discount
+            get: fn() => $this->coupon == null ? 0 : $this->specificProducts->sum(
+                fn($specificProduct) =>
+                    $specificProduct->user_id == $this->coupon->user_id ?
+                        $specificProduct->pivot->quantity * $specificProduct->price * $this->coupon->discount : 0
+            )
         );
     }
 
