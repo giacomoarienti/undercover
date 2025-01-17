@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <h1 class="mb-4">Cart</h1>
+    <h1 class="mb-4 text-primary">Cart</h1>
 
     <div id="cart-contents">
         <div class="text-center py-5">

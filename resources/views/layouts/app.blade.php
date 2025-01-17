@@ -20,7 +20,7 @@
 <body>
     @include('layouts.partials.header')
 
-    <main class="container">
+    <main class="container my-4">
         @yield('content')
     </main>
 
