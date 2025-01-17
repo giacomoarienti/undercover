@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Models\Product;
 use App\Models\SpecificProduct;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
@@ -13,7 +14,7 @@ class SpecificProductPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,7 +22,7 @@ class SpecificProductPolicy
      */
     public function view(User $user, SpecificProduct $specificProduct): bool
     {
-        return false;
+        return $user->can('view', $specificProduct->product);
     }
 
     /**
@@ -29,7 +30,7 @@ class SpecificProductPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->can('create', Product::class);
     }
 
     /**
@@ -37,7 +38,7 @@ class SpecificProductPolicy
      */
     public function update(User $user, SpecificProduct $specificProduct): bool
     {
-        return false;
+        return $user->can('update', $specificProduct->product);
     }
 
     /**
@@ -45,7 +46,7 @@ class SpecificProductPolicy
      */
     public function delete(User $user, SpecificProduct $specificProduct): bool
     {
-        return false;
+        return $user->can('delete', $specificProduct->product);
     }
 
     /**
@@ -53,15 +54,7 @@ class SpecificProductPolicy
      */
     public function restore(User $user, SpecificProduct $specificProduct): bool
     {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, SpecificProduct $specificProduct): bool
-    {
-        return false;
+        return $user->can('restore', $specificProduct->product);
     }
 
     public function review(User $user, SpecificProduct $specificProduct): bool

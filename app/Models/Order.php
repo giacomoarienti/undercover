@@ -75,6 +75,7 @@ class Order extends Model
             'payment_id' => $payment->id,
         ]);
         foreach($user->cart as $item) {
+            SpecificProduct::find($item->id)->buy($item->pivot->quantity);
             OrderSpecificProduct::create([
                 'order_id' => $order->id,
                 'product_id' => $item->id,
