@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class SellerMiddleware
+class ClientMiddleware
 {
     /**
      * Handle an incoming request.
@@ -19,7 +19,7 @@ class SellerMiddleware
     {
         /** @var User $user */
         $user = Auth::user();
-        if ($user && $user->is_seller) {
+        if ($user && !$user->is_seller) {
             return $next($request);
         }
 

@@ -5,6 +5,7 @@ use App\Http\Controllers\CouponController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\AuthMiddleware;
+use App\Http\Middleware\ClientMiddleware;
 use App\Http\Middleware\SellerMiddleware;
 use App\Http\Middleware\UnAuthMiddleware;
 use App\Http\Controllers\ProductController;
@@ -48,6 +49,15 @@ Route::middleware(SellerMiddleware::class)->group(function () {
     Route::delete('/coupons/{id}', [CouponController::class, 'destroy'])->name('coupons');
 
     Route::resource('products', ProductController::class)->only(['create', 'store', 'edit', 'update', 'destroy']);
+});
+
+/**
+ * Route only accessible by clients.
+ */
+Route::middleware(ClientMiddleware::class)->group(function () {
+    Route::get('/cart', [ProductController::class, 'index'])->name('cart');
+    Route::post('/cart', [ProductController::class, 'add'])->name('cart');
+    Route::delete('/cart', [ProductController::class, 'remove'])->name('cart');
 });
 
 /**
