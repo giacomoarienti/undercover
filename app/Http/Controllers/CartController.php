@@ -41,7 +41,7 @@ class CartController extends Controller
             if($request->ajax()) {
                 return response()->json(["message" => "Product not found."], 400);
             }
-            return redirect()->back()->with('error', 'Product not found.');
+            return to_route('user.cart')->with('error', 'Product not found.');
         }
 
         /** @var User $user */
@@ -53,16 +53,21 @@ class CartController extends Controller
             if($request->ajax()) {
                 return response()->json(["message" => "Product removed from cart."]);
             }
-            return redirect()->back()->with('message', 'Product removed from cart.');
+            return to_route('user.cart')->with('message', 'Product removed from cart.');
         }
 
-        $user->addToCart($product, $quantity);
+        if(!$user->addToCart($product, $quantity)) {
+            if($request->ajax()) {
+                return response()->json(["message" => "The specified quantity is not available."], 400);
+            }
+            return to_route('user.cart')->with('error', 'The specified quantity is not available.');
+        }
 
         if($request->ajax()) {
             return response()->json(["message" => "Product added to cart."]);
         }
 
-        return redirect()->back()->with('message', 'Product added to cart.');
+        return to_route('user.cart')->with('message', 'Product added to cart.');
     }
 
     public function remove(Request $request)
@@ -77,7 +82,7 @@ class CartController extends Controller
             if($request->ajax()) {
                 return response()->json(["message" => "Product not found."], 400);
             }
-            return redirect()->back()->with('error', 'Product not found.');
+            return to_route('user.cart')->with('error', 'Product not found.');
         }
 
         /** @var User $user */
@@ -87,6 +92,6 @@ class CartController extends Controller
         if($request->ajax()) {
             return response()->json(["message" => "Product removed from cart."]);
         }
-        return redirect()->back()->with('message', 'Product removed from cart.');
+        return to_route('user.cart')->with('message', 'Product removed from cart.');
     }
 }
