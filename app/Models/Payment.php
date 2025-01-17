@@ -30,11 +30,29 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
  */
 class Payment extends Model
 {
-    //TODO manage transaction ids
+    private static function getRandomHex($num_bytes=4) : string {
+        return bin2hex(openssl_random_pseudo_bytes($num_bytes));
+    }
+
+    private static function generateTransactionId() : string {
+        do {
+            $transaction_id = Payment::getRandomHex();
+        } while(Payment::where("transaction_id", $transaction_id)->exists());
+        return $transaction_id;
+    }
 
     protected $fillable = [
-        "transaction_id",
+        "payment_method_id"
     ];
+
+    public static function booted(): void
+    {
+        static::creating(function ($payment) {
+            $payment->transaction_id = Payment::generateTransactionId();
+            //TODO: inizializza con status giusto
+            $payment->payment_status_id = 0;
+        });
+    }
 
     public function status() : HasOne
     {
@@ -45,12 +63,11 @@ class Payment extends Model
         return $this->hasOne(Order::class);
     }
 
+    //TODO
     public function total() : Attribute
     {
         return Attribute::make(
             get: fn() => null
         );
     }
-
-    //todo: collegamento con ordine e totale
 }

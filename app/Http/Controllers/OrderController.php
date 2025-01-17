@@ -19,8 +19,7 @@ class OrderController extends Controller
     {
         Gate::authorize('viewAny', Order::class);
         return view('orders.index')
-                ->with('user', $request->user)
-                ->with('orders', $request->user->orders);
+                ->with('user', $request->user);
     }
 
     /**
@@ -29,7 +28,6 @@ class OrderController extends Controller
     public function create(Request $request)
     {
         Gate::authorize('create', Order::class);
-
         return view('orders.create')
                 ->with('user', $request->user);
     }
@@ -47,13 +45,13 @@ class OrderController extends Controller
 
         $paymentMethod = PaymentMethod::firstWhere('id', $validated['payment_method_id']);
         Gate::authorize('use', $paymentMethod);
-        Payment::create([
-
+        $payment = Payment::create([
+            'payment_method_id' => $paymentMethod->id,
         ]);
 
         $coupon = $validated['coupon_id'] ? Coupon::firstWhere('id', $validated['coupon_id']) : null;
 
-        Order::forUser($request->user, $coupon);
+        Order::place($request->user, $payment, $coupon);
         return redirect()->route('orders.index');
     }
 
@@ -63,29 +61,7 @@ class OrderController extends Controller
     public function show(Order $order)
     {
         Gate::authorize('view', $order);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Order $order)
-    {
-        Gate::authorize('update', $order);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Order $order)
-    {
-        Gate::authorize('update', $order);
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Order $order)
-    {
-        Gate::authorize('delete', $order);
+        return view('orders.show')
+                ->with('order', $order);
     }
 }
