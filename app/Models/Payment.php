@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -30,6 +30,8 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
  */
 class Payment extends Model
 {
+    //TODO manage transaction ids
+
     protected $fillable = [
         "transaction_id",
     ];

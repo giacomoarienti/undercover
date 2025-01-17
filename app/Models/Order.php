@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Enums\OrderStatus;
 /**
- * 
+ *
  *
  * @property int $id
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -44,7 +44,12 @@ use App\Enums\OrderStatus;
 class Order extends Model
 {
 
-    protected $fillable = ["discount"];
+    protected $fillable = [
+        'user_id',
+        'coupon_id',
+        'payment_id',
+        'shipping_id',
+    ];
 
     public function status() : Attribute {
         return Attribute::make(
@@ -62,11 +67,31 @@ class Order extends Model
         );
     }
 
+    public static function forUser(User $user, Payment $payment, ?Coupon $coupon) : Order
+    {
+        $order = Order::create([
+            'user_id' => $user->id,
+            'coupon_id' => $coupon?->id,
+            'payment_id' => $payment->id,
+        ]);
+        foreach($user->cart as $item) {
+            OrderSpecificProduct::create([
+                'order_id' => $order->id,
+                'product_id' => $item->id,
+                'quantity' => $item->pivot->quantity,
+            ]);
+        }
+        //TODO: empty user cart
+        return $order;
+    }
+
     public function completed() : Attribute {
         return Attribute::make(
             get: fn() => $this->status() == OrderStatus::DELIVERED
         );
     }
+
+    //TODO: coupon solo su prodotti dello stesso venditore
 
     public function total() : Attribute {
         return Attribute::make(
@@ -76,7 +101,7 @@ class Order extends Model
 
     public function discount() : Attribute {
         return Attribute::make(
-            get: fn() => $this->coupon == null ? 0 : $this->totalBeforeDiscount() * $this->coupon->discount
+            get: fn() => $this->coupon == null ? 0 : $this->totalBeforeDiscount * $this->coupon->discount
         );
     }
 

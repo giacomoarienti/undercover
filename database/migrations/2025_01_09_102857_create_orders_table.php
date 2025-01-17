@@ -15,10 +15,9 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->integer("discount")->nullable();
             $table->foreignId("user_id")->constrained("users")->noActionOnDelete();
             $table->foreignId("coupon_id")->nullable()->constrained("coupons")->noActionOnDelete();
-            $table->foreignId("payment_id")->nullable()->constrained("payments")->noActionOnDelete();
+            $table->foreignId("payment_id")->constrained("payments")->noActionOnDelete();
             $table->foreignId("shipping_id")->nullable()->constrained("shippings")->noActionOnDelete();
         });
     }
