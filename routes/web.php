@@ -3,8 +3,11 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\PaymentMethodController;
+use App\Http\Controllers\ReceptionMethodController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\AuthMiddleware;
+use App\Http\Middleware\ClientMiddleware;
 use App\Http\Middleware\SellerMiddleware;
 use App\Http\Middleware\UnAuthMiddleware;
 use App\Http\Controllers\ProductController;
@@ -34,8 +37,12 @@ Route::middleware(AuthMiddleware::class)->group(function () {
     Route::patch('/notifications', [NotificationController::class, 'edit'])->name('notifications');
     Route::delete('/notifications', [NotificationController::class, 'destroy'])->name('notifications');
 
-    Route::view('/settings', 'user.settings')->name('settings');
+    Route::get('/settings', [UserController::class, 'settings'])->name('settings');
     Route::post('/settings', [UserController::class, 'edit'])->name('settings');
+
+    Route::post('/settings/payment-methods', [PaymentMethodController::class, 'store'])->name('payment-methods');
+    Route::delete('/settings/payment-methods', [PaymentMethodController::class, 'delete'])->name('payment-methods');
+    Route::patch('/settings/payment-methods', [PaymentMethodController::class, 'edit'])->name('payment-methods');
 });
 
 /**
@@ -48,6 +55,19 @@ Route::middleware(SellerMiddleware::class)->group(function () {
     Route::delete('/coupons/{id}', [CouponController::class, 'destroy'])->name('coupons');
 
     Route::resource('products', ProductController::class)->only(['create', 'store', 'edit', 'update', 'destroy']);
+
+    Route::post('/settings/reception-methods', [ReceptionMethodController::class, 'store'])->name('reception-methods');
+    Route::delete('/settings/reception-methods', [ReceptionMethodController::class, 'destroy'])->name('reception-methods');
+    Route::patch('/settings/reception-methods', [ReceptionMethodController::class, 'edit'])->name('reception-methods');
+});
+
+/**
+ * Route only accessible by clients.
+ */
+Route::middleware(ClientMiddleware::class)->group(function () {
+    Route::get('/cart', [ProductController::class, 'index'])->name('cart');
+    Route::post('/cart', [ProductController::class, 'add'])->name('cart');
+    Route::delete('/cart', [ProductController::class, 'remove'])->name('cart');
 });
 
 /**

@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -11,7 +12,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property string $name
@@ -45,7 +46,7 @@ use Illuminate\Notifications\Notifiable;
  * @property-read int|null $phones_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Product> $products
  * @property-read int|null $products_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ReceptionMethod> $receptionMethod
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ReceptionMethod> $receptionMethods
  * @property-read int|null $reception_method_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Review> $reviews
  * @property-read int|null $reviews_count
@@ -123,17 +124,27 @@ class User extends Authenticatable
         ];
     }
 
-    public function notifications() : HasMany
+    /**
+     * Accessor to get the full address of the user.
+     *
+     * @return Attribute<string, never>
+     */
+    protected function fullAddress(): Attribute
+    {
+        return Attribute::get(fn() => "{$this->street_name}, {$this->street_number}, {$this->city}, {$this->state}, {$this->zip_code}, {$this->country}");
+    }
+
+    public function notifications(): HasMany
     {
         return $this->hasMany(Notification::class);
     }
 
-    public function paymentMethods() : HasMany
+    public function paymentMethods(): HasMany
     {
         return $this->hasMany(PaymentMethod::class);
     }
 
-    public function receptionMethod(): HasMany
+    public function receptionMethods(): HasMany
     {
         return $this->hasMany(ReceptionMethod::class);
     }
@@ -208,5 +219,37 @@ class User extends Authenticatable
             // If the product is not in the cart, attach it with the specified quantity
             $this->cart()->attach($product->id, ['quantity' => $quantity]);
         }
+    }
+
+    /**
+     * Remove a SpecificProduct from the client's cart.
+     *
+     * @param SpecificProduct $product
+     * @return void
+     */
+    public function removeFromCart(SpecificProduct $product): void
+    {
+        $this->cart()->detach($product->id);
+    }
+
+    /**
+     * Empty the client's cart.
+     *
+     * @return void
+     */
+    public function emptyCart(): void
+    {
+        $this->cart()->detach();
+    }
+
+    /**
+     * Return true if the client's purchased the given Product.
+     *
+     * @param Product $product
+     * @return bool
+     */
+    public function hasBoughtProduct(Product $product): bool
+    {
+        return $this->orders()->where('product_id', $product->id)->exists();
     }
 }

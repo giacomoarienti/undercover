@@ -11,6 +11,21 @@ use Illuminate\Testing\Fluent\Concerns\Has;
 
 class UserController extends Controller
 {
+    public function settings()
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        $data = ["user" => $user];
+        if($user->is_seller) {
+            $data["reception_methods"] = $user->receptionMethods;
+        } else {
+            $data["payment_methods"] = $user->paymentMethods;
+        }
+
+        return view('user.settings', $data);
+    }
+
     public function edit(Request $request)
     {
         $request->validate([
