@@ -2,16 +2,12 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CouponController;
-use App\Http\Controllers\HomeController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\AuthMiddleware;
 use App\Http\Middleware\SellerMiddleware;
 use App\Http\Middleware\UnAuthMiddleware;
 use App\Http\Controllers\ProductController;
-use App\Http\Middleware\Auth;
-use App\Http\Middleware\UnAuth;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::name('auth.')->group(function () {
@@ -32,13 +28,13 @@ Route::name('auth.')->group(function () {
  * Routes only accessible by authenticated users.
  */
 Route::middleware(AuthMiddleware::class)->group(function () {
-    Route::get('/', [HomeController::class, 'index'])->name('index');
+    Route::view('/', 'index')->name('index');
 
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications');
     Route::patch('/notifications', [NotificationController::class, 'edit'])->name('notifications');
     Route::delete('/notifications', [NotificationController::class, 'destroy'])->name('notifications');
 
-    Route::get('/settings', [UserController::class, 'settings'])->name('settings');
+    Route::view('/settings', 'user.settings')->name('settings');
     Route::post('/settings', [UserController::class, 'edit'])->name('settings');
 });
 
