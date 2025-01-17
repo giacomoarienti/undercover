@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 
 /**
  * Post
@@ -38,6 +39,13 @@ class Phone extends Model
 {
     /** @use HasFactory<PhoneFactory> */
     use HasFactory;
+
+
+    protected static function booted() : void {
+        static::creating(function ($phone) {
+            $phone->slug = Str::slug($phone->brand . ' ' . $phone->name);
+        });
+    }
 
     protected $fillable = [
         "name",

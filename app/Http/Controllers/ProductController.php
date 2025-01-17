@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Brand;
 use App\Models\Color;
 use App\Models\Material;
 use App\Models\Phone;
@@ -27,8 +28,25 @@ class ProductController extends Controller
             'models.*' => 'string|exists:models,slug',
             'colors' => 'nullable|array',
             'colors.*' => 'string|exists:colors,slug',
+            'page' => 'required|integer|min:1',
         ]);
-        return view('products.index', $validated);
+
+        $materials = collect($validated['materials'])->map(fn ($material_slug) => Material::firstWhere('slug', $material_slug)->id);
+        $brands = collect($validated['brands'])->map(fn ($brand_slug) => Brand::firstWhere('slug', $brand_slug)->id);
+        $models = collect($validated['models'])->map(fn ($model_slug) => Phone::firstWhere('slug', $model_slug)->id);
+        $colors = collect($validated['colors'])->map(fn ($color_slug) => Color::firstWhere('slug', $color_slug)->id);
+
+        $products = ($request->user?->is_vendor ? Product::where('user_id', $request->user->id) : Product::query())
+            ->whereLike('name', '%'.$validated['search'].'%') //case-insensitive by default;
+            ->whereIn('material_id', $materials)
+            ->whereIn('brand_id', $brands)
+            ->whereIn('phone_id', $models)
+            ->whereIn('color_id', $colors)
+            ->paginate(10);
+
+        return view('products.index', $validated)
+            ->with('products', $products)
+            ->with('user', $request->user());
     }
 
     /**
@@ -40,16 +58,11 @@ class ProductController extends Controller
          * Throws AuthorizationException, automatically converted into a 403 HTTP response by Laravel
          */
         Gate::authorize('create', Product::class);
-        return view('products.create');
+        return view('products.edit')->with('product', null);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    private function carryOut(Request $request)
     {
-        Gate::authorize('create', Product::class);
-
         $validated = $request->validate([
             'name' => 'required|string|max:100',
             'description' => 'required|string|max:255',
@@ -67,7 +80,11 @@ class ProductController extends Controller
 
         $validated["user_id"] = $request->user->id;
 
-        $product = Product::create($validated);
+        $product = Product::firstOrCreate([
+            'user_id' => $validated['user_id'],
+            'name' => $validated['name'],
+            'phone_id' => $validated['phone_id'],
+            ], $validated);
         $product->updateColors(collect($validated['colors'])->map(
             function ($color) {
                 return [
@@ -81,6 +98,16 @@ class ProductController extends Controller
             $product->addMedia($image)->toMediaCollection();
         }
 
+        return $product;
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        Gate::authorize('create', Product::class);
+        $product = $this->carryOut($request);
         return redirect()->route('products.show')->with('product', $product);
     }
 
@@ -108,39 +135,8 @@ class ProductController extends Controller
     public function update(Request $request, Product $product)
     {
         Gate::authorize('update', $product);
-        $validated = $request->validate([
-            'name' => 'required|string|max:100',
-            'description' => 'required|string|max:255',
-            'price' => 'required|numeric|min:0',
-            'material_slug' => 'required|string|exists:materials,slug',
-            'phone_slug' => 'required|string|exists:phones,slug',
-            'colors' => 'required|array|min:1',
-            'colors.*.slug' => 'required|string|exists:colors,slug',
-            'colors.*.quantity' => 'required|integer|min:0',
-            'images' => 'required|array|min:1',
-            'images.*' => 'image|mimes:jpg,jpeg,png,gif|max:2048', //max 2048 kilobytes
-        ]);
-
-        $validated["user_id"] = $request->user->id;
-        $validated["material_id"] = Material::firstWhere('slug', $validated['material_slug'])->id;
-        $validated["phone_id"] = Phone::firstWhere('slug', $validated['phone_slug'])->id;
-
-        $product->update($validated);
-        $product->updateColors(collect($validated['colors'])->map(
-            function ($color) {
-                return [
-                    'color_id' => Color::where(['slug' => $color['slug']])->first()->id,
-                    'quantity' => $color['quantity']
-                ];
-            }
-        )->all());
-
-        $product->clearMediaCollection();
-        foreach ($validated['images'] as $image) {
-            $product->addMedia($image)->toMediaCollection();
-        }
-
-        return redirect()->route('products.show')->with('product', $product->first());
+        $product = $this->carryOut($request);
+        return redirect()->route('products.show')->with('product', $product);
     }
 
     /**

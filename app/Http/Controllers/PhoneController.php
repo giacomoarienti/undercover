@@ -11,6 +11,7 @@ use Illuminate\Support\Str;
 
 class PhoneController extends Controller
 {
+
     /**
      * Store a newly created resource in storage.
      */
@@ -25,8 +26,9 @@ class PhoneController extends Controller
         $brand = Brand::firstWhere(['name' => $validated['brand']]);
         if(!$brand) {
             Gate::authorize('create', Brand::class);
-            $brand = Brand::create(['name' => $validated['brand'], 'slug' => Str::slug($validated['brand'])]);
+            $brand = Brand::create(['name' => $validated['brand']]);
         }
+        $brand->addPhone($validated['name']);
 
         return PhoneController::index();
     }

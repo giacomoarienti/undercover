@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 
 /**
  * Brand
@@ -34,6 +35,12 @@ class Brand extends Model
         "slug",
     ];
 
+    protected static function booted() : void {
+        static::creating(function ($brand) {
+            $brand->slug = Str::slug($brand->name);
+        });
+    }
+
     public function phones() : HasMany {
         return $this->hasMany(Phone::class);
     }
@@ -43,7 +50,7 @@ class Brand extends Model
         if(!$phone) {
             $phone = Phone::create([
                 "name" => $name,
-                "slug" => $name,
+                "slug" => Str::slug($name),
                 "brand_id" => $this->id
             ]);
         }
