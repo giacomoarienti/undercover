@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PaymentMethodController;
@@ -65,9 +66,9 @@ Route::middleware(SellerMiddleware::class)->group(function () {
  * Route only accessible by clients.
  */
 Route::middleware(ClientMiddleware::class)->group(function () {
-    Route::get('/cart', [ProductController::class, 'index'])->name('cart');
-    Route::post('/cart', [ProductController::class, 'add'])->name('cart');
-    Route::delete('/cart', [ProductController::class, 'remove'])->name('cart');
+    Route::get('/cart', [CartController::class, 'index'])->name('cart');
+    Route::post('/cart', [CartController::class, 'add'])->name('cart');
+    Route::delete('/cart', [CartController::class, 'remove'])->name('cart');
 });
 
 /**

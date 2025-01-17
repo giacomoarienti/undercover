@@ -14,11 +14,13 @@
 
     <!-- Styles / Scripts -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
+
+    @stack('scripts')
 </head>
 <body>
     @include('layouts.partials.header')
 
-    <main class="container">
+    <main class="container my-4">
         @yield('content')
     </main>
 

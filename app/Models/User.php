@@ -202,25 +202,37 @@ class User extends Authenticatable
 
     /**
      * Add a SpecificProduct to the client's cart.
+     * Returns true if the SpecificProduct's quantity is enough.
      *
      * @param SpecificProduct $product
      * @param int $quantity
-     * @return void
+     * @return bool
      */
-    public function addToCart(SpecificProduct $product, int $quantity = 1): void
+    public function addToCart(SpecificProduct $product, int $quantity = 1): bool
     {
         // Check if the product is already in the cart
         $cartItem = $this->cart()->where('specific_product_id', $product->id)->first();
 
         if ($cartItem) {
             // If the product is already in the cart, increment the quantity
+            $newQuantity = $cartItem->pivot->quantity + $quantity;
+            if($product->quantity < $newQuantity) {
+                return false;
+            }
+
             $this->cart()->updateExistingPivot($product->id, [
-                'quantity' => $cartItem->pivot->quantity + $quantity,
+                'quantity' => $newQuantity,
             ]);
         } else {
+            if ($product->quantity < $quantity) {
+                return false;
+            }
+
             // If the product is not in the cart, attach it with the specified quantity
             $this->cart()->attach($product->id, ['quantity' => $quantity]);
         }
+
+        return true;
     }
 
     /**
