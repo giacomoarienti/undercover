@@ -43,6 +43,11 @@ class OrderController extends Controller
             'coupon_id' => 'nullable|integer|exists:coupons,id',
         ]);
 
+        if(!$request->user->checkCartAvailability()){
+            //TODO->segnalare problema
+            return redirect()->route("cart.index");
+        }
+
         $paymentMethod = PaymentMethod::firstWhere('id', $validated['payment_method_id']);
         Gate::authorize('use', $paymentMethod);
         $payment = Payment::create([

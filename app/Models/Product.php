@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Testing\Fluent\Concerns\Interaction;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
 /**
  *
@@ -46,9 +49,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product withoutTrashed()
  * @mixin \Eloquent
  */
-class Product extends Model
+class Product extends Model implements HasMedia
 {
     use SoftDeletes;
+    use InteractsWithMedia;
 
     protected $fillable = [
         "name",
@@ -114,7 +118,7 @@ class Product extends Model
     public function updateColors(array $colors) : void
     {
         foreach ($this->specificProducts as $specificProduct) {
-            if(!array_key_exists($specificProduct->color->id, $colors)) {
+            if(!collect($colors)->contains("color_id", $specificProduct->color_id)) {
                 $specificProduct->delete();
             }
         }

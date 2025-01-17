@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Color;
+use App\Models\Material;
+use App\Models\Phone;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -14,7 +17,18 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         Gate::authorize('viewAny', Product::class);
-        return view('products.index');
+        $validated = $request->validate([
+            'search' => 'nullable|string',
+            'materials' => 'nullable|array',
+            'materials.*' => 'string|exists:materials,slug',
+            'brands' => 'nullable|array',
+            'brands.*' => 'string|exists:brands,slug',
+            'models' => 'nullable|array',
+            'models.*' => 'string|exists:models,slug',
+            'colors' => 'nullable|array',
+            'colors.*' => 'string|exists:colors,slug',
+        ]);
+        return view('products.index', $validated);
     }
 
     /**
@@ -40,17 +54,32 @@ class ProductController extends Controller
             'name' => 'required|string|max:100',
             'description' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
-            'material_id' => 'required|integer|exists:materials,id',
-            'phone_id' => 'required|integer|exists:phones,id',
+            'material_slug' => 'required|string|exists:materials,slug',
+            'phone_slug' => 'required|string|exists:phones,slug',
             'colors' => 'required|array|min:1',
-            'colors.*.id' => 'required|integer|exists:colors,id',
+            'colors.*.slug' => 'required|string|exists:colors,slug',
             'colors.*.quantity' => 'required|integer|min:0',
         ]);
 
         $validated["user_id"] = $request->user->id;
+        $validated["material_id"] = Material::firstWhere('slug', $validated['material_slug'])->id;
+        $validated["phone_id"] = Phone::firstWhere('slug', $validated['phone_slug'])->id;
+
+        $validated["user_id"] = $request->user->id;
 
         $product = Product::create($validated);
-        $product->updateColors($validated['colors']);
+        $product->updateColors(collect($validated['colors'])->map(
+            function ($color) {
+                return [
+                    'color_id' => Color::where(['slug' => $color['slug']])->first()->id,
+                    'quantity' => $color['quantity']
+                ];
+            }
+        )->all());
+
+        foreach ($validated['images'] as $image) {
+            $product->addMedia($image)->toMediaCollection();
+        }
 
         return redirect()->route('products.show')->with('product', $product);
     }
@@ -83,17 +112,33 @@ class ProductController extends Controller
             'name' => 'required|string|max:100',
             'description' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
-            'material_id' => 'required|integer|exists:materials,id',
-            'phone_id' => 'required|integer|exists:phones,id',
+            'material_slug' => 'required|string|exists:materials,slug',
+            'phone_slug' => 'required|string|exists:phones,slug',
             'colors' => 'required|array|min:1',
-            'colors.*.id' => 'required|integer|exists:colors,id',
+            'colors.*.slug' => 'required|string|exists:colors,slug',
             'colors.*.quantity' => 'required|integer|min:0',
+            'images' => 'required|array|min:1',
+            'images.*' => 'image|mimes:jpg,jpeg,png,gif|max:2048', //max 2048 kilobytes
         ]);
 
         $validated["user_id"] = $request->user->id;
+        $validated["material_id"] = Material::firstWhere('slug', $validated['material_slug'])->id;
+        $validated["phone_id"] = Phone::firstWhere('slug', $validated['phone_slug'])->id;
 
         $product->update($validated);
-        $product->updateColors($validated['colors']);
+        $product->updateColors(collect($validated['colors'])->map(
+            function ($color) {
+                return [
+                    'color_id' => Color::where(['slug' => $color['slug']])->first()->id,
+                    'quantity' => $color['quantity']
+                ];
+            }
+        )->all());
+
+        $product->clearMediaCollection();
+        foreach ($validated['images'] as $image) {
+            $product->addMedia($image)->toMediaCollection();
+        }
 
         return redirect()->route('products.show')->with('product', $product->first());
     }

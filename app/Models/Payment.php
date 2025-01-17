@@ -49,8 +49,7 @@ class Payment extends Model
     {
         static::creating(function ($payment) {
             $payment->transaction_id = Payment::generateTransactionId();
-            //TODO: inizializza con status giusto
-            $payment->payment_status_id = 0;
+            $payment->payment_status_id = PaymentStatus::where(['name' => 'Pending'])->first()->id;
         });
     }
 
@@ -63,11 +62,10 @@ class Payment extends Model
         return $this->hasOne(Order::class);
     }
 
-    //TODO
     public function total() : Attribute
     {
         return Attribute::make(
-            get: fn() => null
+            get: fn() => $this->order->total
         );
     }
 }

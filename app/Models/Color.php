@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property string $name
@@ -30,6 +30,7 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
  */
 class Color extends Model
 {
+    //TODO: aggiungere slug
     protected $fillable = [
         "name",
         "rgb"

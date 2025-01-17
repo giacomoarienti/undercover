@@ -72,6 +72,8 @@ use Illuminate\Notifications\Notifiable;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereVat($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereZipCode($value)
+ * @property-read mixed $full_address
+ * @property-read int|null $reception_methods_count
  * @mixin \Eloquent
  */
 class User extends Authenticatable
@@ -251,5 +253,14 @@ class User extends Authenticatable
     public function hasBoughtProduct(Product $product): bool
     {
         return $this->orders()->where('product_id', $product->id)->exists();
+    }
+
+    /**
+     * Check whether every item in cart is available.
+     *
+     * @return bool
+     */
+    public function checkCartAvailability() : bool {
+        return $this->cart->every(fn($item) => $item->pivot->quantity <= $item->quantity);
     }
 }

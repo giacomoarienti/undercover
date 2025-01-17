@@ -12,7 +12,8 @@
         "php": "^8.2",
         "ext-openssl": "*",
         "laravel/framework": "^11.31",
-        "laravel/tinker": "^2.9"
+        "laravel/tinker": "^2.9",
+        "spatie/laravel-medialibrary": "^11.12"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^3.5",

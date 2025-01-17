@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Exceptions\UnavailableProductException;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -43,7 +44,6 @@ use App\Enums\OrderStatus;
  */
 class Order extends Model
 {
-
     protected $fillable = [
         'user_id',
         'coupon_id',
