@@ -59,6 +59,6 @@ class SpecificProductPolicy
 
     public function review(User $user, SpecificProduct $specificProduct): bool
     {
-        return false;
+        return $user->hasBoughtProduct($specificProduct->product);
     }
 }

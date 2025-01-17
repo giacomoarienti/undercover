@@ -82,7 +82,7 @@ class Order extends Model
                 'quantity' => $item->pivot->quantity,
             ]);
         }
-        //TODO: empty user cart
+        $user->emptyCart();
         return $order;
     }
 
