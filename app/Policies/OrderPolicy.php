@@ -13,7 +13,10 @@ class OrderPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        /**
+         * $user is already non-null at this point
+         */
+        return true;
     }
 
     /**
@@ -21,7 +24,13 @@ class OrderPolicy
      */
     public function view(User $user, Order $order): bool
     {
-        return false;
+        return $order->user_id === $user->id //l'ordine è dell'utente
+            or (
+                //uno dei prodotti nell'ordine appartiene all'utente
+                $order->specificProducts->contains(function ($specificProduct) use ($user) {
+                    $specificProduct->product->user_id === $user->id;
+                })
+            );
     }
 
     /**
@@ -29,38 +38,6 @@ class OrderPolicy
      */
     public function create(User $user): bool
     {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can update the model.
-     */
-    public function update(User $user, Order $order): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can delete the model.
-     */
-    public function delete(User $user, Order $order): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Order $order): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Order $order): bool
-    {
-        return false;
+        return !$user->is_seller and $user->cart_count > 0;
     }
 }

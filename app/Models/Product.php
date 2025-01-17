@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property string $name
@@ -58,6 +58,13 @@ class Product extends Model
         "phone_id",
         "user_id"
     ];
+
+    protected static function booted()
+    {
+        static::deleting(function ($product) {
+            $product->specificProducts()->delete();
+        });
+    }
 
     /**
      * Return the Material of the Product.

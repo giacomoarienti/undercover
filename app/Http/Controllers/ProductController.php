@@ -103,9 +103,7 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        //TODO observer per notifiche
         Gate::authorize('delete', $product);
-        $product->updateColors([]);
         $product->delete();
         return redirect()->route('products.index');
     }

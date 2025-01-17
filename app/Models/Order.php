@@ -67,7 +67,7 @@ class Order extends Model
         );
     }
 
-    public static function forUser(User $user, Payment $payment, ?Coupon $coupon) : Order
+    public static function place(User $user, Payment $payment, ?Coupon $coupon) : Order
     {
         $order = Order::create([
             'user_id' => $user->id,
@@ -75,13 +75,14 @@ class Order extends Model
             'payment_id' => $payment->id,
         ]);
         foreach($user->cart as $item) {
+            SpecificProduct::find($item->id)->buy($item->pivot->quantity);
             OrderSpecificProduct::create([
                 'order_id' => $order->id,
                 'product_id' => $item->id,
                 'quantity' => $item->pivot->quantity,
             ]);
         }
-        //TODO: empty user cart
+        $user->emptyCart();
         return $order;
     }
 
@@ -92,7 +93,6 @@ class Order extends Model
     }
 
     //TODO: coupon solo su prodotti dello stesso venditore
-
     public function total() : Attribute {
         return Attribute::make(
             get: fn() => $this->coupon == null ? $this->totalBeforeDiscount() : $this->totalBeforeDiscount * (1 - $this->coupon->discount)

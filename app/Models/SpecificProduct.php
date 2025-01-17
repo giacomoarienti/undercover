@@ -6,9 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use function Illuminate\Events\queueable;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property int $quantity
@@ -46,6 +47,12 @@ class SpecificProduct extends Model
         "color_id"
     ];
 
+    protected static function booted() : void {
+        static::deleted(queueable(function (SpecificProduct $specificProduct) {
+            //TODO: notifica utenti e venditori
+        }));
+    }
+
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
@@ -59,5 +66,15 @@ class SpecificProduct extends Model
     public function reviews(): HasMany
     {
         return $this->hasMany(Review::class);
+    }
+
+    public function buy(int $amount = 1)
+    {
+        $this->quantity--;
+        if($this->quantity == 0) {
+            $this->delete();
+        } else {
+            $this->save();
+        }
     }
 }
