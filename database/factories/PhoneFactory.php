@@ -17,9 +17,11 @@ class PhoneFactory extends Factory
         "Samsung" => "Galaxy",
         "Nokia" => "Nokia",
         "Huawei" => "P",
+        "Xiaomi" => "Mi",
+        "Oppo" => "R",
     ];
 
-    private array $descriptiveWords = ['Lite', 'Pro', 'Max', 'Ultra'];
+    private array $descriptiveWords = ['Lite', 'Pro', 'Max', 'Ultra', 'Mini', 'Nano'];
 
     /**
      * Define the model's default state.
@@ -34,7 +36,7 @@ class PhoneFactory extends Factory
         $phone = array_key_exists($brand->name, $this->phoneNames) ?
             $this->phoneNames[$brand->name] : "Phone";
         $description = fake()->randomElement($this->descriptiveWords);
-        $number = fake()->numberBetween(1, 15);
+        $number = fake()->numberBetween(1, 100);
 
         // Construct the phone name
         $name = "{$phone} {$number} {$description}";
@@ -43,7 +45,7 @@ class PhoneFactory extends Factory
         // Ensure the name is unique in the database
         while (Phone::where('slug', $slug)->exists()) {
             $description = fake()->randomElement($this->descriptiveWords);
-            $number = fake()->numberBetween(1, 15);
+            $number = fake()->numberBetween(1, 20);
 
             $name = "{$phone} {$number} {$description}";
             $slug = Str::slug($name);

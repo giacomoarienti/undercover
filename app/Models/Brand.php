@@ -2,9 +2,7 @@
 
 namespace App\Models;
 
-use Database\Factories\BrandFactory;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -19,7 +17,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Phone> $phones
  * @property-read int|null $phones_count
- * @method static \Database\Factories\BrandFactory factory($count = null, $state = [])
  * @method static Builder<static>|Brand newModelQuery()
  * @method static Builder<static>|Brand newQuery()
  * @method static Builder<static>|Brand query()
@@ -32,9 +29,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class Brand extends Model
 {
-    /** @use HasFactory<BrandFactory> */
-    use HasFactory;
-
     protected $fillable = [
         "name",
         "slug",
