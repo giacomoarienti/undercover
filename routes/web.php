@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\ReceptionMethodController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\AuthMiddleware;
 use App\Http\Middleware\ClientMiddleware;
@@ -49,6 +50,10 @@ Route::middleware(SellerMiddleware::class)->group(function () {
     Route::delete('/coupons/{id}', [CouponController::class, 'destroy'])->name('coupons');
 
     Route::resource('products', ProductController::class)->only(['create', 'store', 'edit', 'update', 'destroy']);
+
+    Route::post('/settings/reception-methods', [ReceptionMethodController::class, 'store'])->name('reception-methods');
+    Route::delete('/settings/reception-methods', [ReceptionMethodController::class, 'destroy'])->name('reception-methods');
+    Route::patch('/settings/reception-methods', [ReceptionMethodController::class, 'edit'])->name('reception-methods');
 });
 
 /**
