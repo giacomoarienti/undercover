@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property string $code
- * @property string $discount
+ * @property float $discount
  * @property \Illuminate\Support\Carbon $starts_at
  * @property \Illuminate\Support\Carbon $expires_at
  * @property int $user_id
@@ -45,7 +45,8 @@ class Coupon extends Model
 
     protected $casts = [
         'starts_at' => 'datetime',
-        'expires_at' => 'datetime'
+        'expires_at' => 'datetime',
+        'discount' => 'float'
     ];
 
     /**

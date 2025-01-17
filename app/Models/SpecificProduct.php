@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- *
+ * 
  *
  * @property int $id
  * @property int $quantity
@@ -31,6 +31,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SpecificProduct whereProductId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SpecificProduct whereQuantity($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SpecificProduct whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SpecificProduct onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SpecificProduct withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SpecificProduct withoutTrashed()
  * @mixin \Eloquent
  */
 class SpecificProduct extends Model
