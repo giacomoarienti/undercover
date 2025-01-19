@@ -17,7 +17,7 @@
 
     @stack('scripts')
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
     @include('layouts.partials.header')
 
     <main class="container my-4">
@@ -25,17 +25,21 @@
     </main>
 
     @if(session()->has('message'))
-        <div class="alert alert-info" role="alert">
+        <div class="alert alert-info alert-dismissible container fade show position-absolute bottom-0 start-0 end-0 z-1" role="alert">
             {{ session('message') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endif
 
     @if(session()->has('error'))
-        <div class="alert alert-danger">
+        <div class="alert  alert-danger alert-dismissible container fade show position-absolute bottom-0 start-0 end-0" role="alert">
             {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endif
 
-    @include('layouts.partials.footer')
+    <div class="container mt-auto">
+        @include('layouts.partials.footer')
+    </div>
 </body>
 </html>
