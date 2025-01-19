@@ -42,11 +42,7 @@ Route::middleware(AuthMiddleware::class)->group(function () {
     Route::delete('/notifications', [NotificationController::class, 'destroy'])->name('notifications');
 
     Route::get('/settings', [UserController::class, 'settings'])->name('settings');
-    Route::post('/settings', [UserController::class, 'edit'])->name('settings');
-
-    Route::post('/settings/payment-methods', [PaymentMethodController::class, 'store'])->name('payment-methods');
-    Route::delete('/settings/payment-methods', [PaymentMethodController::class, 'delete'])->name('payment-methods');
-    Route::patch('/settings/payment-methods', [PaymentMethodController::class, 'edit'])->name('payment-methods');
+    Route::patch('/settings', [UserController::class, 'edit'])->name('settings');
 });
 
 /**
@@ -69,6 +65,10 @@ Route::middleware(ClientMiddleware::class)->group(function () {
     Route::get('/cart', [CartController::class, 'index'])->name('cart');
     Route::post('/cart', [CartController::class, 'add'])->name('cart');
     Route::delete('/cart', [CartController::class, 'remove'])->name('cart');
+
+    Route::post('/settings/payment-methods', [PaymentMethodController::class, 'store'])->name('payment-methods');
+    Route::delete('/settings/payment-methods', [PaymentMethodController::class, 'delete'])->name('payment-methods');
+    Route::patch('/settings/payment-methods', [PaymentMethodController::class, 'edit'])->name('payment-methods');
 });
 
 Route::resource('products', ProductController::class);

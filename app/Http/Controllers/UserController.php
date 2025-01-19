@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Testing\Fluent\Concerns\Has;
 
 class UserController extends Controller
 {
@@ -52,12 +50,16 @@ class UserController extends Controller
             ]);
         }
 
-        $user = $user->fill($request->data());
         if($request->has('password')) {
             $user->password = Hash::make($request->get('password'));
+            $user->save();
+
+            return to_route('settings')->with('message', 'Password updated');
         }
+
+        $user = $user->fill($request->all());
         $user->save();
 
-        return to_route('settings');
+        return to_route('settings')->with('message', 'Profile updated');
     }
 }
