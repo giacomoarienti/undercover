@@ -276,4 +276,18 @@ class User extends Authenticatable
     public function checkCartAvailability() : bool {
         return $this->cart->every(fn($item) => $item->pivot->quantity <= $item->quantity);
     }
+
+    /**
+     * Send a Notification to the User.
+     * @param string $title
+     * @param string $body
+     * @return void
+     */
+    public function sendNotification(string $title, string $body) : void {
+        $notification = $this->notifications()->create([
+            'title' => $title,
+            'body' => $body
+        ]);
+        // TODO: send email
+    }
 }
