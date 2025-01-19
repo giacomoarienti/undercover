@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <h1>Setting</h1>
+    <h1>Settings</h1>
 
     <div class="d-flex flex-column gap-4">
         <div class="card">
