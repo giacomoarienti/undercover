@@ -98,6 +98,21 @@ class Order extends Model
         );
     }
 
+    public function vendorTotalBeforeDiscount(User $vendor) {
+        return $this->specificProducts->sum(fn($specificProduct) =>
+            $specificProduct->user_id == $vendor->id ?
+                $specificProduct->pivot->quantity * $specificProduct->price : 0);
+    }
+
+    public function vendorDiscount(User $vendor) {
+        return $this->coupon->user_id == $vendor->id ?
+            $this->vendorTotalBeforeDiscount($vendor) * $this->coupon->discount : 0;
+    }
+
+    public function vendorTotal(User $vendor) {
+        return $this->vendorTotalBeforeDiscount($vendor) - $this->vendorDiscount($vendor);
+    }
+
     public function discount() : Attribute {
         return Attribute::make(
             get: fn() => $this->coupon == null ? 0 : $this->specificProducts->sum(

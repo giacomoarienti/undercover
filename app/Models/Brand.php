@@ -35,6 +35,7 @@ class Brand extends Model
         "slug",
     ];
 
+    //TODO: modificare factory per usare funzionalità di auto-slugging
     protected static function booted() : void {
         static::creating(function ($brand) {
             $brand->slug = Str::slug($brand->name);

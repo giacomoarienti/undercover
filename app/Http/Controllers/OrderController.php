@@ -18,8 +18,16 @@ class OrderController extends Controller
     public function index(Request $request)
     {
         Gate::authorize('viewAny', Order::class);
+
+        $orders = $request->user->is_vendor ?
+            $request->user->orders :
+            Order::whereHas('specificProducts.product', function ($query) use ($request) {
+                $query->where('user_id', $request->user->id);
+            })->get();
+
         return view('orders.index')
-                ->with('user', $request->user);
+                ->with('user', $request->user)
+                ->with('orders', $orders);
     }
 
     /**
