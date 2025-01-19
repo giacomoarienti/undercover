@@ -64,7 +64,7 @@ class Product extends Model implements HasMedia
         "user_id"
     ];
 
-    // Specifica di utilizzare lo slug come chiave di routing
+    // Specify use of slug column for routes
     public function getRouteKeyName()
     {
         return 'slug';

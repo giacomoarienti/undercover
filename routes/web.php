@@ -4,8 +4,11 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentMethodController;
+use App\Http\Controllers\PhoneController;
 use App\Http\Controllers\ReceptionMethodController;
+use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\AuthMiddleware;
 use App\Http\Middleware\ClientMiddleware;
@@ -54,9 +57,6 @@ Route::middleware(SellerMiddleware::class)->group(function () {
     Route::get('/coupons/{id}', [CouponController::class, 'show'])->name('coupons');
     Route::post('/coupons', [CouponController::class, 'store'])->name('coupons');
     Route::delete('/coupons/{id}', [CouponController::class, 'destroy'])->name('coupons');
-
-    Route::resource('products', ProductController::class)->only(['create', 'store', 'edit', 'update', 'destroy']);
-
     Route::post('/settings/reception-methods', [ReceptionMethodController::class, 'store'])->name('reception-methods');
     Route::delete('/settings/reception-methods', [ReceptionMethodController::class, 'destroy'])->name('reception-methods');
     Route::patch('/settings/reception-methods', [ReceptionMethodController::class, 'edit'])->name('reception-methods');
@@ -71,7 +71,7 @@ Route::middleware(ClientMiddleware::class)->group(function () {
     Route::delete('/cart', [CartController::class, 'remove'])->name('cart');
 });
 
-/**
- * Routes accessible both by guests and authenticated users.
- */
-Route::resource('products', ProductController::class)->only(['index', 'show']);
+Route::resource('products', ProductController::class);
+Route::resource('reviews', ReviewController::class)->only(['store', 'update', 'destroy']);
+Route::resource('orders', OrderController::class)->only(['index', 'create', 'store', 'show']);
+Route::resource('phones', PhoneController::class)->only(['index', 'store']);
