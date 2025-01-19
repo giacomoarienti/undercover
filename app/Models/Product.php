@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 use Illuminate\Testing\Fluent\Concerns\Interaction;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -63,8 +64,18 @@ class Product extends Model implements HasMedia
         "user_id"
     ];
 
+    // Specifica di utilizzare lo slug come chiave di routing
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
+
     protected static function booted()
     {
+        static::creating(function ($product) {
+           $product->slug = Str::slug($product->brand . " " . $product->name);
+        });
+
         static::deleting(function ($product) {
             $product->specificProducts()->delete();
         });
@@ -123,6 +134,9 @@ class Product extends Model implements HasMedia
             }
         }
         foreach ($colors as $color) {
+            //restore the model if it was previously available
+            SpecificProduct::onlyTrashed()->where(['product_id' => $this->id, 'color_id' => $color["color"]])->restore();
+
             $specificProduct = SpecificProduct::firstOrNew(['product_id' => $this->id, 'color_id' => $color["color"]]);
             $specificProduct->quantity = $color["quantity"];
             $specificProduct->save();

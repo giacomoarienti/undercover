@@ -16,6 +16,7 @@ return new class extends Migration
             $table->integer('quantity');
             $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
             $table->foreignId('color_id')->constrained('colors')->onDelete('no action');
+            $table->string('slug')->unique();
             $table->softDeletes();
             $table->timestamps();
             $table->unique(['product_id', 'color_id']);

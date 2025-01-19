@@ -72,19 +72,20 @@ class ProductController extends Controller
             'colors' => 'required|array|min:1',
             'colors.*.slug' => 'required|string|exists:colors,slug',
             'colors.*.quantity' => 'required|integer|min:0',
+            'images' => 'required|array|min:1',
+            'images.*' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         $validated["user_id"] = $request->user->id;
         $validated["material_id"] = Material::firstWhere('slug', $validated['material_slug'])->id;
         $validated["phone_id"] = Phone::firstWhere('slug', $validated['phone_slug'])->id;
 
-        $validated["user_id"] = $request->user->id;
-
         $product = Product::firstOrCreate([
             'user_id' => $validated['user_id'],
             'name' => $validated['name'],
             'phone_id' => $validated['phone_id'],
             ], $validated);
+
         $product->updateColors(collect($validated['colors'])->map(
             function ($color) {
                 return [
