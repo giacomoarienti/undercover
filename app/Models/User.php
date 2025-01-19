@@ -19,7 +19,7 @@ use Illuminate\Notifications\Notifiable;
  * @property string $surname
  * @property string $email
  * @property string $password
- * @property string $birthday
+ * @property \Illuminate\Support\Carbon $birthday
  * @property string $street_name
  * @property string $street_number
  * @property string $city
@@ -122,7 +122,8 @@ class User extends Authenticatable
     {
         return [
             'password' => 'hashed',
-            'is_seller' => 'boolean'
+            'is_seller' => 'boolean',
+            'birthday' => 'date',
         ];
     }
 
