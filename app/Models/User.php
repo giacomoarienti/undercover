@@ -12,7 +12,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property string $name
@@ -140,6 +140,11 @@ class User extends Authenticatable
     public function notifications(): HasMany
     {
         return $this->hasMany(Notification::class);
+    }
+
+    public function unreadNotifications(): HasMany
+    {
+        return $this->hasMany(Notification::class)->where('read', false);
     }
 
     public function paymentMethods(): HasMany

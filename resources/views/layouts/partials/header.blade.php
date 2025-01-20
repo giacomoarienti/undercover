@@ -43,9 +43,9 @@
                         <li class="nav-item">
                             <a class="nav-link" href="/notifications">
                                 <i class="fa-regular fa-bell fa-xl ms-3">
-                                    @if ($user->notifications()->count() > 0)
+                                    @if ($user->unreadNotifications()->count() > 0)
                                         <span class="badge">
-                                {{ $user->notifications()->count() }}
+                                {{ $user->unreadNotifications()->count() }}
                             </span>
                                     @endif
                                 </i>
