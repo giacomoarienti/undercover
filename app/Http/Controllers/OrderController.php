@@ -8,6 +8,7 @@ use App\Models\Payment;
 use App\Models\PaymentMethod;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 
 class OrderController extends Controller
@@ -19,14 +20,16 @@ class OrderController extends Controller
     {
         Gate::authorize('viewAny', Order::class);
 
-        $orders = $request->user->is_vendor ?
-            $request->user->orders :
-            Order::whereHas('specificProducts.product', function ($query) use ($request) {
-                $query->where('user_id', $request->user->id);
+        $user = Auth::user();
+
+        $orders = $user->is_vendor ?
+            $user->orders :
+            Order::whereHas('specificProducts.product', function ($query) use ($user) {
+                $query->where('user_id', $user->id);
             })->get();
 
         return view('orders.index')
-                ->with('user', $request->user)
+                ->with('user', $user)
                 ->with('orders', $orders);
     }
 
