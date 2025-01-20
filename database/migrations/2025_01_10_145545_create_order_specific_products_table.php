@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('order_specific_product', function (Blueprint $table) {
+        Schema::create('order_specific_products', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
             $table->foreignId("order_id")->constrained("orders")->noActionOnDelete();
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('order_specific_product');
+        Schema::dropIfExists('order_specific_products');
     }
 };
