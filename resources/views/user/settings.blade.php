@@ -18,8 +18,8 @@
                     <fieldset>
                         <legend class="h5 mb-3">Personal Information</legend>
 
-                        <div class="row mb-3">
-                            <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
                                 <label for="name" class="form-label">First Name</label>
                                 <input type="text"
                                        class="form-control @error('name') is-invalid @enderror"
@@ -33,7 +33,7 @@
                                 @enderror
                             </div>
 
-                            <div class="col-md-6">
+                            <div class="col-md-6 mb-3">
                                 <label for="surname" class="form-label">Last Name</label>
                                 <input type="text"
                                        class="form-control @error('surname') is-invalid @enderror"
@@ -65,8 +65,8 @@
                     <fieldset class="mt-4">
                         <legend class="h5 mb-3">Address</legend>
 
-                        <div class="row mb-3">
-                            <div class="col-md-8">
+                        <div class="row">
+                            <div class="col-md-8 mb-3">
                                 <label for="street_name" class="form-label">Street Name</label>
                                 <input type="text"
                                        class="form-control @error('street_name') is-invalid @enderror"
@@ -79,7 +79,7 @@
                                 @enderror
                             </div>
 
-                            <div class="col-md-4">
+                            <div class="col-md-4 mb-3">
                                 <label for="street_number" class="form-label">Street Number</label>
                                 <input type="text"
                                        class="form-control @error('street_number') is-invalid @enderror"
@@ -93,8 +93,8 @@
                             </div>
                         </div>
 
-                        <div class="row mb-3">
-                            <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
                                 <label for="city" class="form-label">City</label>
                                 <input type="text"
                                        class="form-control @error('city') is-invalid @enderror"
@@ -107,7 +107,7 @@
                                 @enderror
                             </div>
 
-                            <div class="col-md-6">
+                            <div class="col-md-6 mb-3">
                                 <label for="state" class="form-label">State/Province</label>
                                 <input type="text"
                                        class="form-control @error('state') is-invalid @enderror"
@@ -121,8 +121,8 @@
                             </div>
                         </div>
 
-                        <div class="row mb-3">
-                            <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
                                 <label for="zip_code" class="form-label">ZIP Code</label>
                                 <input type="text"
                                        class="form-control @error('zip_code') is-invalid @enderror"
@@ -135,7 +135,7 @@
                                 @enderror
                             </div>
 
-                            <div class="col-md-8">
+                            <div class="col-md-8 mb-3">
                                 <label for="country" class="form-label">Country</label>
                                 <input type="text"
                                        class="form-control @error('country') is-invalid @enderror"
@@ -259,5 +259,15 @@
                 </div>
             </div>
         @endif
+
+        <div class="card">
+            <div class="card-header">
+                <h2 class="h4 mb-0">Session</h2>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-4">Exit from the current session.</p>
+                <a href="{{ route('auth.signout') }}" type="submit" class="btn btn-danger">Sign Out</a>
+            </div>
+        </div>
     </div>
 @endsection
