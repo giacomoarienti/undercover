@@ -18,6 +18,7 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         Gate::authorize('viewAny', Product::class);
+
         $validated = $request->validate([
             'search' => 'nullable|string',
             'materials' => 'nullable|array',
@@ -28,26 +29,55 @@ class ProductController extends Controller
             'models.*' => 'string|exists:models,slug',
             'colors' => 'nullable|array',
             'colors.*' => 'string|exists:colors,slug',
-            'page' => 'required|integer|min:1',
+            'page' => 'nullable|integer|min:1',
         ]);
 
-        $materials = collect($validated['materials'])->map(fn ($material_slug) => Material::firstWhere('slug', $material_slug)->id);
-        $brands = collect($validated['brands'])->map(fn ($brand_slug) => Brand::firstWhere('slug', $brand_slug)->id);
-        $models = collect($validated['models'])->map(fn ($model_slug) => Phone::firstWhere('slug', $model_slug)->id);
-        $colors = collect($validated['colors'])->map(fn ($color_slug) => Color::firstWhere('slug', $color_slug)->id);
+        //we translate from slugs to ids
+        $materials = isset($validated['materials'])
+            ? collect($validated['materials'])->map(fn ($material_slug) => Material::firstWhere('slug', $material_slug)->id)
+            : [];
 
-        $products = ($request->user?->is_vendor ? Product::where('user_id', $request->user->id) : Product::query())
-            ->whereLike('name', '%'.$validated['search'].'%') //case-insensitive by default;
-            ->whereIn('material_id', $materials)
-            ->whereIn('brand_id', $brands)
-            ->whereIn('phone_id', $models)
-            ->whereIn('color_id', $colors)
-            ->paginate(10);
+        $brands = isset($validated['brands'])
+            ? collect($validated['brands'])->map(fn ($brand_slug) => Brand::firstWhere('slug', $brand_slug)->id)
+            : [];
 
-        return view('products.index', $validated)
+        $models = isset($validated['models'])
+            ? collect($validated['models'])->map(fn ($model_slug) => Phone::firstWhere('slug', $model_slug)->id)
+            : [];
+
+        $colors = isset($validated['colors'])
+            ? collect($validated['colors'])->map(fn ($color_slug) => Color::firstWhere('slug', $color_slug)->id)
+            : [];
+
+        $products = $request->user?->is_vendor ? Product::where('user_id', $request->user->id) : Product::query();
+
+        if (!empty($validated['search'])) {
+            $products = $products->where('name', 'like', '%' . $validated['search'] . '%');
+        }
+
+        if (!empty($materials)) {
+            $products = $products->whereIn('material_id', $materials);
+        }
+
+        if (!empty($brands)) {
+            $products = $products->whereIn('brand_id', $brands);
+        }
+
+        if (!empty($models)) {
+            $products = $products->whereIn('phone_id', $models);
+        }
+
+        if (!empty($colors)) {
+            $products = $products->whereIn('color_id', $colors);
+        }
+
+        $products = $products->paginate(10, $page=$validated['page'] ?? 1);
+
+        return view('products.index')
             ->with('products', $products)
             ->with('user', $request->user());
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -65,7 +95,7 @@ class ProductController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:100',
-            'description' => 'required|string|max:255',
+            'description' => 'required|string|max:511',
             'price' => 'required|numeric|min:0',
             'material_slug' => 'required|string|exists:materials,slug',
             'phone_slug' => 'required|string|exists:phones,slug',

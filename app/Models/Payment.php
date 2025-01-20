@@ -26,6 +26,8 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment wherePaymentStatusId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment whereTransactionId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment whereUpdatedAt($value)
+ * @property int $payment_method_id
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment wherePaymentMethodId($value)
  * @mixin \Eloquent
  */
 class Payment extends Model

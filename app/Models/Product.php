@@ -13,7 +13,7 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property string $name
@@ -75,7 +75,7 @@ class Product extends Model implements HasMedia
     protected static function booted()
     {
         static::creating(function ($product) {
-           $product->slug = Str::slug($product->brand . " " . $product->name);
+           $product->slug = Str::slug($product->user->id . " " . $product->name);
         });
 
         static::deleting(function ($product) {

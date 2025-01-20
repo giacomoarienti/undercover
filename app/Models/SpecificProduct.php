@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use function Illuminate\Events\queueable;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property int $quantity
@@ -35,6 +35,8 @@ use function Illuminate\Events\queueable;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SpecificProduct onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SpecificProduct withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SpecificProduct withoutTrashed()
+ * @property string $slug
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SpecificProduct whereSlug($value)
  * @mixin \Eloquent
  */
 class SpecificProduct extends Model
@@ -48,6 +50,10 @@ class SpecificProduct extends Model
     ];
 
     protected static function booted() : void {
+        static::creating(function (SpecificProduct $specificProduct) {
+           $specificProduct->slug = $specificProduct->product->slug . '-' . $specificProduct->color->slug;
+        });
+
         static::deleted(queueable(function (SpecificProduct $specificProduct) {
             //TODO: notifica utenti e venditori
         }));

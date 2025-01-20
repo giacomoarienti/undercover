@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreignId('material_id')->constrained('materials');
             $table->foreignId('phone_id')->constrained('phones');
             $table->foreignId('user_id')->constrained('users');
+            $table->string('slug')->unique();
             $table->softDeletes();
             $table->timestamps();
             $table->unique(['name', 'phone_id', 'user_id'], 'products_name_phone_user_unique');

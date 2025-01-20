@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Support\Str;
 
 /**
  * 
@@ -26,11 +27,19 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Color whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Color whereRgb($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Color whereUpdatedAt($value)
+ * @property string $slug
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Color whereSlug($value)
  * @mixin \Eloquent
  */
 class Color extends Model
 {
-    //TODO: aggiungere slug
+
+    protected static function booted() : void {
+        static::creating(function($color) {
+            $color->slug = Str::slug($color->name);
+        });
+    }
+
     protected $fillable = [
         "name",
         "rgb"
