@@ -12,14 +12,14 @@
                 </a>
             </div>
             <div class="col-8 col-md-6 h-100">
-                <div class="d-flex flex-column justify-content-center align-items-center">
-                    <a class="navbar-brand d-flex align-items-center m-1 mt-0" href="/">
+                <div class="d-flex flex-column justify-content-center align-items-center h-100">
+                    <a class="navbar-brand d-flex align-items-center m-1 mt-0 ms-3 ms-md-0" href="/">
                         <img src="{{ Storage::url('public/text.svg') }}" alt="undercover" class="w-100 h-100">
                     </a>
                     <form class="d-none d-md-flex justify-content-center align-items-center col-8" action="{{ route('products.index') }}" method="GET" role="search">
                         <div class="input-group rounded-pill">
                             <span class="input-group-text"><i class="fa-solid fa-magnifying-glass"></i></span>
-                            <input type="text" name="search" class="form-control" placeholder="Find your new identity">
+                            <input type="text" name="search" class="form-control" placeholder="Find your new identity" value="{{(isset($filters) and isset($filters['search'])) ? $filters['search'] : ''}}">
                         </div>
                     </form>
                 </div>
@@ -33,8 +33,8 @@
                                     <i class="fa-regular fa-cart-shopping fa-xl ms-3">
                                         @if ($user->cart()->count() > 0)
                                             <span class="badge">
-                                    {{ $user->cart()->count() }}
-                                </span>
+                                                {{ $user->cart()->count() }}
+                                            </span>
                                         @endif
                                     </i>
                                 </a>

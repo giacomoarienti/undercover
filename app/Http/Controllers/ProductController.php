@@ -21,40 +21,41 @@ class ProductController extends Controller
     {
         Gate::authorize('viewAny', Product::class);
 
-        $validated = $request->validate([
+        $filters = $request->validate([
             'search' => 'nullable|string',
             'materials' => 'nullable|array',
             'materials.*' => 'string|exists:materials,slug',
             'brands' => 'nullable|array',
             'brands.*' => 'string|exists:brands,slug',
-            'models' => 'nullable|array',
-            'models.*' => 'string|exists:models,slug',
+            'phone' => 'nullable|string',
             'colors' => 'nullable|array',
             'colors.*' => 'string|exists:colors,slug',
             'page' => 'nullable|integer|min:1',
         ]);
 
+        $user = Auth::user();
+
         //we translate from slugs to ids
-        $materials = isset($validated['materials'])
-            ? collect($validated['materials'])->map(fn ($material_slug) => Material::firstWhere('slug', $material_slug)->id)
+        $materials = isset($filters['materials'])
+            ? collect($filters['materials'])->map(fn ($material_slug) => Material::firstWhere('slug', $material_slug)->id)
             : [];
 
-        $brands = isset($validated['brands'])
-            ? collect($validated['brands'])->map(fn ($brand_slug) => Brand::firstWhere('slug', $brand_slug)->id)
+        $brands = isset($filters['brands'])
+            ? collect($filters['brands'])->map(fn ($brand_slug) => Brand::firstWhere('slug', $brand_slug)->id)
             : [];
 
-        $models = isset($validated['models'])
-            ? collect($validated['models'])->map(fn ($model_slug) => Phone::firstWhere('slug', $model_slug)->id)
+        $phones = isset($filters['phone'])
+            ? Phone::whereLike('name', '%'.$filters['phone'].'%')->get('id')->all()
             : [];
 
-        $colors = isset($validated['colors'])
-            ? collect($validated['colors'])->map(fn ($color_slug) => Color::firstWhere('slug', $color_slug)->id)
+        $colors = isset($filters['colors'])
+            ? collect($filters['colors'])->map(fn ($color_slug) => Color::firstWhere('slug', $color_slug)->id)
             : [];
 
-        $products = $request->user?->is_vendor ? Product::where('user_id', $request->user->id) : Product::query();
+        $products = $user?->is_vendor ? Product::where('user_id', $user->id) : Product::query();
 
-        if (!empty($validated['search'])) {
-            $products = $products->where('name', 'like', '%' . $validated['search'] . '%');
+        if (!empty($filters['search'])) {
+            $products = $products->where('name', 'like', '%' . $filters['search'] . '%');
         }
 
         if (!empty($materials)) {
@@ -62,22 +63,24 @@ class ProductController extends Controller
         }
 
         if (!empty($brands)) {
-            $products = $products->whereIn('brand_id', $brands);
+            $products = $products->whereHas('phone', function ($query) use ($brands) {
+                $query->whereIn('brand_id', $brands);
+            });
         }
 
-        if (!empty($models)) {
-            $products = $products->whereIn('phone_id', $models);
+        if (!empty($phones)) {
+            $products = $products->whereIn('phone_id', $phones);
         }
 
         if (!empty($colors)) {
-            $products = $products->whereIn('color_id', $colors);
+            $products = $products->whereHas('specificProducts', function ($query) use ($colors) {
+                $query->whereIn('color_id', $colors);
+            });
         }
 
-        $products = $products->paginate(10, $page=$validated['page'] ?? 1);
+        $products = $products->paginate(12, page : $filters['page'] ?? 1)->withQueryString();
 
-        return view('products.index')
-            ->with('products', $products)
-            ->with('user', $request->user());
+        return view('products.index', compact('filters', 'products', 'user'));
     }
 
 
@@ -129,7 +132,7 @@ class ProductController extends Controller
             Gate::authorize('create', Brand::class);
             $brand = Brand::create(['name' => $validated['brand']]);
         }
-        $phone = $brand->addPhone($validated['name']);
+        $phone = $brand->addPhone($validated['phone']);
 
         $product = Product::firstOrCreate([
             'user_id' => $user->id,

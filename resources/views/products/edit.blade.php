@@ -2,8 +2,11 @@
 
 @section('content')
     <h1>New product</h1>
-    <form action="{{ $product ? route('products.update') : route('products.store') }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ $product ? route('products.update', ['product', $product->slug]) : route('products.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
+        @if ($product)
+            @method("PATCH")
+        @endif
         <div class="row">
             <div class="col">
                 <div class="input-group p-1">
@@ -33,23 +36,23 @@
             <div class="col-md-8">
                 <div class="input-group h-100 p-1">
                     <span class="input-group-text">Description</span>
-                    <textarea class="form-control" name="description"></textarea>
+                    <textarea class="form-control" name="description">{{ old('description', $product?->description) }}</textarea>
                 </div>
             </div>
         </div>
         <div class="input-group p-1 mt-2">
             <label for="brand" class="input-group-text">Brand</label>
-            <input type="text" id="brand" name="brand" class="form-control" required>
+            <input type="text" id="brand" name="brand" value="{{ old('brand', $product?->phone?->brand?->name) }}" class="form-control" required/>
 
             <label for="phone" class="input-group-text">Model</label>
-            <input type="text" id="phone" name="phone" class="form-control" required>
+            <input type="text" id="phone" name="phone" value="{{ old('phone', $product?->phone?->name) }}" class="form-control" required/>
         </div>
         <div class="input-group p-1 mt-2">
             <label for="material_id" class="input-group-text">Material</label>
             <select class="form-select" id="material_id" name="material_id">
-                <option selected value=""></option>
+                <option {{ $product ? "" : "selected" }} value=""></option>
                 @foreach(\App\Models\Material::all() as $material)
-                    <option value="{{$material->id}}">{{$material->name}}</option>
+                    <option value="{{$material->id}}" {{ $product?->material_id == $material->id ? 'selected' : '' }}>{{$material->name}}</option>
                 @endforeach
             </select>
         </div>
@@ -99,6 +102,7 @@
                                 id="quantity_{{ $color->id }}"
                                 name="colors[{{ $color->id }}][quantity]"
                                 placeholder="Number of pieces available"
+                                value="{{ old('colors.' . $color->id . '.quantity', $product?->hasColor($color) ? $product->specificProducts->where('color_id', $color->id)->first()->quantity : '') }}"
                                 {{$product?->hasColor($color) ? '' : 'disabled'}}>
                         </div>
                     @endforeach
