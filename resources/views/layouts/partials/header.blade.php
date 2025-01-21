@@ -3,8 +3,8 @@
     $user = Illuminate\Support\Facades\Auth::user();
 @endphp
 
-<div class="container sticky-top border-bottom text-center">
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+<div class="sticky-top border-bottom text-center">
+    <nav class="container navbar navbar-expand-lg navbar-light bg-light">
         <div class="row h-100 w-100 justify-content-between align-items-center">
             <div class="d-none col-md-3 d-md-inline-flex justify-content-start ps-3">
                 <a class="navbar-brand d-none d-md-inline-flex" href="/">
@@ -43,9 +43,9 @@
                         <li class="nav-item">
                             <a class="nav-link" href="/notifications">
                                 <i class="fa-regular fa-bell fa-xl ms-3">
-                                    @if ($user->notifications()->count() > 0)
+                                    @if ($user->unreadNotifications()->count() > 0)
                                         <span class="badge">
-                                {{ $user->notifications()->count() }}
+                                {{ $user->unreadNotifications()->count() }}
                             </span>
                                     @endif
                                 </i>
