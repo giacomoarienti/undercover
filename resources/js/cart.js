@@ -94,6 +94,13 @@ function createCartItemElement(item) {
     return element;
 }
 
+async function removeCartItem(itemId, cartItem) {
+    if (confirm('Are you sure you want to remove this item from the cart?')) {
+        await removeFromCart(itemId);
+        cartItem.remove();
+    }
+}
+
 function initializeEventListeners() {
     // Quantity adjustment buttons
     document.querySelectorAll('.increase-qty, .decrease-qty').forEach(button => {
@@ -114,8 +121,7 @@ function initializeEventListeners() {
             }
 
             if (newValue <= 0) {
-                await removeFromCart(itemId);
-                cartItem.remove();
+                await removeCartItem(itemId, cartItem);
             } else {
                 await updateItem(itemId, newValue);
                 input.value = newValue;
@@ -130,9 +136,8 @@ function initializeEventListeners() {
         button.addEventListener('click', async function () {
             const cartItem = this.closest('.cart-item');
             const itemId = cartItem.dataset.itemId;
-            await removeFromCart(itemId);
 
-            cartItem.remove();
+            await removeCartItem(itemId, cartItem);
             updateCartTotal();
         });
     });
