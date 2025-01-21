@@ -1,22 +1,28 @@
-import { showAlert } from './alert';
+import {showAlert} from './alert';
 
-document.addEventListener('DOMContentLoaded', function () {
-    loadCart();
+document.addEventListener('DOMContentLoaded', async function () {
+    await loadCart();
 });
 
-function loadCart() {
-    fetch('/cart', {
-        headers: {
-            'Accept': 'application/json',
-            'X-Requested-With': 'XMLHttpRequest'
-        }
-    })
-        .then(response => response.json())
-        .then(data => renderCart(data.cart))
-        .catch(error => {
-            console.error('Error loading cart:', error);
-            showAlert('Error loading cart contents. Please refresh the page.', 'danger');
+async function loadCart() {
+    try {
+        const response = await fetch('/cart', {
+            headers: {
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
         });
+
+        const data = await response.json();
+        if (!response.ok) {
+            showAlert(data.message, 'danger');
+        }
+
+        renderCart(data.cart);
+    } catch (error) {
+        console.error('Error loading cart:', error);
+        showAlert('Error loading cart contents. Please refresh the page.', 'danger');
+    }
 }
 
 function renderCart(cart) {
@@ -33,46 +39,57 @@ function renderCart(cart) {
     cartContents.appendChild(cartTemplate.content.cloneNode(true));
 
     const cartItemsContainer = document.getElementById('cart-items');
-    let total = 0;
 
     cart.forEach(item => {
         const itemElement = createCartItemElement(item);
         cartItemsContainer.appendChild(itemElement);
-        total += item.product.price * item.quantity;
+    });
+
+    updateCartTotal();
+
+    initializeEventListeners();
+}
+
+function updateCartTotal() {
+    let total = 0;
+
+    document.getElementById('cart-items').querySelectorAll('.cart-item').forEach(item => {
+        let price = item.querySelector('.item-price').dataset.price;
+        let quantity = item.querySelector('.item-quantity').value;
+        total += price * quantity;
     });
 
     document.getElementById('cart-total').textContent = formatPrice(total);
-    initializeEventListeners();
 }
 
 function createCartItemElement(item) {
     const template = document.getElementById('cart-item-template');
     const element = template.content.cloneNode(true);
-    const row = element.querySelector('tr');
+    const cartItem = element.querySelector('.cart-item');
 
-    row.dataset.itemId = item.id;
+    cartItem.dataset.itemId = item.id;
 
     // Set product image and details
     const img = element.querySelector('img');
-    img.src = item.product.image || '/placeholder-image.jpg';
+    img.src = item.product.media_url;
     img.alt = `Product image of ${item.product.name}`;
 
     element.querySelector('h3').textContent = item.product.name;
-    element.querySelector('p').textContent = `SKU: ${item.product.id}`;
 
-    // Set color
+    // color
     const colorSwatch = element.querySelector('.color-swatch');
-    colorSwatch.style.backgroundColor = item.color.hex_value;
+    colorSwatch.style.backgroundColor = item.color.rgb;
     element.querySelector('.color-name').textContent = item.color.name;
 
-    // Set price and quantity
-    element.querySelector('.item-price').textContent = formatPrice(item.product.price);
-    const quantityInput = element.querySelector('.item-quantity');
-    quantityInput.value = item.quantity;
-    quantityInput.max = item.quantity;
+    // price
+    const itemPrice = element.querySelector('.item-price');
+    itemPrice.textContent = formatPrice(item.product.price);
+    itemPrice.dataset.price = item.product.price;
 
-    element.querySelector('.item-subtotal').textContent =
-        formatPrice(item.product.price * item.quantity);
+    // quantity
+    const quantityInput = element.querySelector('.item-quantity');
+    quantityInput.value = item.pivot.quantity;
+    quantityInput.max = item.quantity;
 
     return element;
 }
@@ -80,10 +97,10 @@ function createCartItemElement(item) {
 function initializeEventListeners() {
     // Quantity adjustment buttons
     document.querySelectorAll('.increase-qty, .decrease-qty').forEach(button => {
-        button.addEventListener('click', function () {
-            const row = this.closest('tr');
-            const itemId = row.dataset.itemId;
-            const input = row.querySelector('.item-quantity');
+        button.addEventListener('click', async function () {
+            const cartItem = this.closest('.cart-item');
+            const itemId = cartItem.dataset.itemId;
+            const input = cartItem.querySelector('.item-quantity');
             const currentValue = parseInt(input.value);
             const maxQuantity = parseInt(input.max);
 
@@ -96,28 +113,40 @@ function initializeEventListeners() {
                 return;
             }
 
-            updateCart(itemId, newValue);
+            if (newValue <= 0) {
+                await removeFromCart(itemId);
+                cartItem.remove();
+            } else {
+                await updateItem(itemId, newValue);
+                input.value = newValue;
+            }
+
+            updateCartTotal();
         });
     });
 
     // Remove buttons
     document.querySelectorAll('.remove-item').forEach(button => {
-        button.addEventListener('click', function () {
-            const row = this.closest('tr');
-            const itemId = row.dataset.itemId;
-            removeFromCart(itemId);
+        button.addEventListener('click', async function () {
+            const cartItem = this.closest('.cart-item');
+            const itemId = cartItem.dataset.itemId;
+            await removeFromCart(itemId);
+
+            cartItem.remove();
+            updateCartTotal();
         });
     });
 
     // Quantity input direct changes
     document.querySelectorAll('.item-quantity').forEach(input => {
-        input.addEventListener('change', function () {
-            const row = this.closest('tr');
-            const itemId = row.dataset.itemId;
+        input.addEventListener('change', async function () {
+            const cartItem = this.closest('.cart-item');
+            const itemId = cartItem.dataset.itemId;
             const newValue = parseInt(this.value);
 
             if (newValue >= 0 && newValue <= parseInt(this.max)) {
-                updateCart(itemId, newValue);
+                await updateItem(itemId, newValue);
+                updateCartTotal();
             } else {
                 this.value = this.defaultValue;
             }
@@ -125,55 +154,60 @@ function initializeEventListeners() {
     });
 }
 
-function updateCart(itemId, quantity) {
-    fetch('/cart/add', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-            'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-            specific_product_id: itemId,
-            quantity: quantity
+async function updateItem(itemId, quantity) {
+    console.log(itemId, quantity)
+    try {
+        const response = await fetch('/cart', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                specific_product_id: itemId,
+                quantity: quantity
+            })
         })
-    })
-        .then(response => response.json())
-        .then(data => {
-            showAlert(data.message, response.ok ? 'success' : 'danger');
-            loadCart(); // Reload cart contents
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            showAlert('An error occurred while updating the cart.', 'danger');
-        });
+
+        if (!response.ok) {
+            const data = await response.json();
+            showAlert(data.message, 'danger');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        showAlert('An error occurred while updating the cart.', 'danger');
+    }
 }
 
-function removeFromCart(itemId) {
-    fetch('/cart/remove', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-            'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-            specific_product_id: itemId
-        })
-    })
-        .then(response => response.json())
-        .then(data => {
-            showAlert(data.message, 'success');
-            loadCart(); // Reload cart contents
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            showAlert('An error occurred while removing the item.', 'danger');
+async function removeFromCart(itemId) {
+    try {
+        const response = await fetch('/cart', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                specific_product_id: itemId
+            })
         });
+
+        if (!response.ok) {
+            const data = await response.json();
+            showAlert(data.message, 'danger');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        showAlert('An error occurred while removing the item.', 'danger');
+    }
 }
 
 function formatPrice(price) {
-    return new Intl.NumberFormat('de-DE', {
+    return new Intl.NumberFormat('it-IT', {
         style: 'currency',
         currency: 'EUR'
     }).format(price);

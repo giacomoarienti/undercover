@@ -21,38 +21,33 @@
     </template>
 
     <template id="cart-template">
-        <div class="table-responsive">
-            <table class="table table-hover" aria-label="Shopping cart items">
-                <thead>
-                <tr>
-                    <th scope="col">Product</th>
-                    <th scope="col">Color</th>
-                    <th scope="col">Price</th>
-                    <th scope="col">Quantity</th>
-                    <th scope="col">Subtotal</th>
-                    <th scope="col"><span class="visually-hidden">Actions</span></th>
-                </tr>
-                </thead>
-                <tbody id="cart-items">
-                </tbody>
-                <tfoot>
-                <tr class="table-light">
-                    <td colspan="4" class="text-end"><strong>Total:</strong></td>
-                    <td><strong id="cart-total">0.00 €</strong></td>
-                    <td></td>
-                </tr>
-                </tfoot>
-            </table>
+        <div class="cart-items" role="region" aria-label="Shopping cart items">
+            <div class="row fw-bold d-none d-md-flex py-2 border-bottom">
+                <div class="col-md-6">Product</div>
+                <div class="col-md-2">Color</div>
+                <div class="col-md-1">Price</div>
+                <div class="col-md-2">Quantity</div>
+                <div class="col-md-1"></div>
+            </div>
+
+            <div id="cart-items" class="mx-3 mx-md-0"></div>
+
+            <div class="row mt-3 py-2 border-top">
+                <div class="col-12 d-flex justify-content-end align-items-center">
+                    <span class="fw-bold me-3">Total:</span>
+                    <span class="fw-bold" id="cart-total">0.00 €</span>
+                </div>
+            </div>
         </div>
 
         <div class="row mt-4">
-            <div class="col-md-6">
-                <a href="{{ route('products.index') }}" class="btn btn-outline-primary">
+            <div class="col-6">
+                <a href="{{ route('products.index') }}" class="btn btn-outline-primary mb-3">
                     <i class="bi bi-arrow-left" aria-hidden="true"></i>
                     Continue Shopping
                 </a>
             </div>
-            <div class="col-md-6 text-end">
+            <div class="col-6 text-end">
                 <a href="#" class="btn btn-success">
                     Proceed to Checkout
                     <i class="bi bi-arrow-right" aria-hidden="true"></i>
@@ -62,38 +57,48 @@
     </template>
 
     <template id="cart-item-template">
-        <tr data-item-id="">
-            <td>
-                <div class="d-flex align-items-center">
-                    <img src="" alt="" class="img-thumbnail me-3" width="80" height="80">
-                    <div>
-                        <h3 class="h6 mb-1"></h3>
-                        <p class="small text-muted mb-0"></p>
-                    </div>
+        <div class="row py-3 border-bottom cart-item" data-item-id="">
+            <!-- image and name -->
+            <div class="col-12 col-md-6 mb-3">
+                <div class="d-flex flex-column flex-md-row">
+                    <img src="" alt="" class="img-thumbnail mb-2 mb-md-0 me-md-3" width="150" height="150">
+                    <h3 class="h6 mb-0"></h3>
                 </div>
-            </td>
-            <td>
-            <span class="d-flex align-items-center">
-                <span class="color-swatch" aria-hidden="true"></span>
-                <span class="ms-2 color-name"></span>
-            </span>
-            </td>
-            <td class="item-price"></td>
-            <td>
+            </div>
+
+            <!-- color -->
+            <div class="col-12 col-md-2 mb-3">
+                <div class="d-md-none fw-bold mb-1">Color</div>
+                <div class="d-flex align-items-center">
+                    <span class="color-swatch" aria-hidden="true"></span>
+                    <span class="ms-2 color-name"></span>
+                </div>
+            </div>
+
+            <!-- price -->
+            <div class="col-12 col-md-1 mb-3">
+                <div class="d-md-none fw-bold mb-1">Price</div>
+                <span class="item-price" data-price="">0.00 €</span>
+            </div>
+
+            <!-- quantity -->
+            <div class="col-12 col-md-2 mb-3">
+                <div class="d-md-none fw-bold mb-1">Quantity</div>
                 <div class="input-group">
                     <button class="btn btn-outline-secondary decrease-qty" type="button">-</button>
-                    <input type="number" class="form-control text-center item-quantity" value="1" min="1">
+                    <input type="number" class="form-control text-center item-quantity" style="max-width: 80px" value="1" min="1">
                     <button class="btn btn-outline-secondary increase-qty" type="button">+</button>
                 </div>
-            </td>
-            <td class="item-subtotal"></td>
-            <td>
-                <button type="button" class="btn btn-link text-danger remove-item">
-                    <i class="bi bi-trash" aria-hidden="true"></i>
-                    <span class="visually-hidden">Remove item</span>
+            </div>
+
+            <!-- remove btn -->
+            <div class="col-12 col-md-1 mb-3">
+                <button class="btn btn-outline-danger remove-item" title="Remove from cart" type="button">
+                    <i class="fa fa-trash" aria-hidden="true">Trash bin</i>
                 </button>
-            </td>
-        </tr>
+                <span class="visually-hidden">Remove item from cart</span>
+            </div>
+        </div>
     </template>
 
     <style>
@@ -104,10 +109,26 @@
             border: 1px solid #dee2e6;
             display: inline-block;
         }
+
+        @media (max-width: 767.98px) {
+            .cart-item {
+                margin-bottom: 1rem;
+                padding: 1.5rem;
+                border: 1px solid #dee2e6;
+                border-radius: 0.375rem;
+            }
+
+            .remove-item {
+                margin-top: 0.5rem;
+            }
+
+            .input-group {
+                width: auto;
+            }
+        }
     </style>
 
     @push('scripts')
         @vite('resources/js/cart.js')
     @endpush
-
 @endsection

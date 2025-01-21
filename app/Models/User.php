@@ -219,21 +219,16 @@ class User extends Authenticatable
         // Check if the product is already in the cart
         $cartItem = $this->cart()->where('specific_product_id', $product->id)->first();
 
-        if ($cartItem) {
-            // If the product is already in the cart, increment the quantity
-            $newQuantity = $cartItem->pivot->quantity + $quantity;
-            if($product->quantity < $newQuantity) {
-                return false;
-            }
+        if($product->quantity < $quantity) {
+            return false;
+        }
 
+        if ($cartItem) {
+            // if the product is in the cart, update the quantity
             $this->cart()->updateExistingPivot($product->id, [
-                'quantity' => $newQuantity,
+                'quantity' => $quantity,
             ]);
         } else {
-            if ($product->quantity < $quantity) {
-                return false;
-            }
-
             // If the product is not in the cart, attach it with the specified quantity
             $this->cart()->attach($product->id, ['quantity' => $quantity]);
         }
