@@ -137,11 +137,16 @@ class Product extends Model implements HasMedia
         }
         foreach ($colors as $color) {
             //restore the model if it was previously available
-            SpecificProduct::onlyTrashed()->where(['product_id' => $this->id, 'color_id' => $color["color"]])->restore();
+            SpecificProduct::onlyTrashed()->where(['product_id' => $this->id, 'color_id' => $color["color_id"]])->restore();
 
-            $specificProduct = SpecificProduct::firstOrNew(['product_id' => $this->id, 'color_id' => $color["color"]]);
+            $specificProduct = SpecificProduct::firstOrNew(['product_id' => $this->id, 'color_id' => $color["color_id"]]);
             $specificProduct->quantity = $color["quantity"];
             $specificProduct->save();
         }
+    }
+
+    public function hasColor(Color $color) : bool
+    {
+        return $this->specificProducts->contains("color_id", $color->id);
     }
 }

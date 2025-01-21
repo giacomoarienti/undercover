@@ -8,7 +8,9 @@ use App\Models\Material;
 use App\Models\Phone;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
 {
@@ -97,35 +99,55 @@ class ProductController extends Controller
             'name' => 'required|string|max:100',
             'description' => 'required|string|max:511',
             'price' => 'required|numeric|min:0',
-            'material_slug' => 'required|string|exists:materials,slug',
-            'phone_slug' => 'required|string|exists:phones,slug',
-            'colors' => 'required|array|min:1',
-            'colors.*.slug' => 'required|string|exists:colors,slug',
-            'colors.*.quantity' => 'required|integer|min:0',
+            'material_id' => 'required|integer|exists:materials,id',
+            'phone' => 'required|string',
+            'brand' => 'required|string',
+            'colors' => 'required|array',
+            'colors.*.checkbox' => 'nullable|boolean',
+            'colors.*.quantity' => [
+                'nullable',
+                'integer',
+                'min:0',
+                function ($attribute, $value, $fail) {
+                    $key = str_replace(['colors.', '.quantity'], '', $attribute);
+                    $checkbox = request()->input("colors.$key.checkbox");
+                    if ($checkbox && is_null($value)) {
+                        $fail('The quantity field is required when the checkbox is selected.');
+                    }
+                }
+            ],
             'images' => 'required|array|min:1',
             'images.*' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        $validated["user_id"] = $request->user->id;
-        $validated["material_id"] = Material::firstWhere('slug', $validated['material_slug'])->id;
-        $validated["phone_id"] = Phone::firstWhere('slug', $validated['phone_slug'])->id;
+        error_log("C");
+
+        $user = Auth::user();
+
+        $brand = Brand::firstWhere(['name' => $validated['brand']]);
+        if(!$brand) {
+            Gate::authorize('create', Brand::class);
+            $brand = Brand::create(['name' => $validated['brand']]);
+        }
+        $phone = $brand->addPhone($validated['name']);
 
         $product = Product::firstOrCreate([
-            'user_id' => $validated['user_id'],
+            'user_id' => $user->id,
             'name' => $validated['name'],
-            'phone_id' => $validated['phone_id'],
+            'phone_id' => $phone->id,
             ], $validated);
 
-        $product->updateColors(collect($validated['colors'])->map(
-            function ($color) {
+        $product->updateColors(collect(array_keys($validated['colors']))->map(
+            function ($color) use ($validated) {
                 return [
-                    'color_id' => Color::where(['slug' => $color['slug']])->first()->id,
-                    'quantity' => $color['quantity']
+                    'color_id' => $color,
+                    'quantity' => $validated['colors'][$color]['quantity'],
                 ];
             }
         )->all());
 
         foreach ($validated['images'] as $image) {
+            error_log("Immagine");
             $product->addMedia($image)->toMediaCollection();
         }
 
@@ -138,8 +160,12 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         Gate::authorize('create', Product::class);
+
+        error_log(json_encode($request->all()));
+
         $product = $this->carryOut($request);
-        return redirect()->route('products.show')->with('product', $product);
+
+        return redirect()->route('products.show', ['product' => $product->slug]);
     }
 
     /**
@@ -167,7 +193,7 @@ class ProductController extends Controller
     {
         Gate::authorize('update', $product);
         $product = $this->carryOut($request);
-        return redirect()->route('products.show')->with('product', $product);
+        return redirect()->route('products.show', ['product' => $product->slug]);
     }
 
     /**

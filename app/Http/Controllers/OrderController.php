@@ -23,14 +23,14 @@ class OrderController extends Controller
         $user = Auth::user();
 
         $orders = $user->is_vendor ?
-            $user->orders :
+            $user->orders():
             Order::whereHas('specificProducts.product', function ($query) use ($user) {
                 $query->where('user_id', $user->id);
-            })->get();
+            });
 
         return view('orders.index')
                 ->with('user', $user)
-                ->with('orders', $orders);
+                ->with('orders', $orders->paginate(10));
     }
 
     /**
