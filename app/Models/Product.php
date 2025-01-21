@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -66,6 +67,10 @@ class Product extends Model implements HasMedia
         "user_id"
     ];
 
+    protected $with = ['material', 'phone'];
+
+    protected $appends = ['media_url'];
+
     // Specify use of slug column for routes
     public function getRouteKeyName()
     {
@@ -81,6 +86,13 @@ class Product extends Model implements HasMedia
         static::deleting(function ($product) {
             $product->specificProducts()->delete();
         });
+    }
+
+    protected function mediaUrl(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->getFirstMediaUrl()
+        );
     }
 
     /**

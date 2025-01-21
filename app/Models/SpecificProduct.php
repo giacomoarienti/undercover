@@ -49,6 +49,8 @@ class SpecificProduct extends Model
         "color_id"
     ];
 
+    protected $with = ['product', 'color'];
+
     protected static function booted() : void {
         static::creating(function (SpecificProduct $specificProduct) {
            $specificProduct->slug = $specificProduct->product->slug . '-' . $specificProduct->color->slug;
