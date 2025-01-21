@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\ValidCardExpirationDate;
 use Illuminate\Foundation\Http\FormRequest;
 
 class PaymentMethodRequest extends FormRequest
@@ -28,13 +29,13 @@ class PaymentMethodRequest extends FormRequest
         // Add type-specific validation rules
         if ($this->input('type') === 'card') {
             $rules = array_merge($rules, [
-                'number' => ['required', 'string', 'size:16', 'regex:/^[0-9]+$/'],
-                'expiration_date' => ['required', 'date', 'after:today'],
-                'cvv' => ['required', 'string', 'size:3', 'regex:/^[0-9]+$/'],
+                'card_number' => ['required', 'string', 'size:16', 'regex:/^[0-9]+$/'],
+                'card_expiration_date' => ['required', 'string', 'size:7', new ValidCardExpirationDate()],
+                'card_cvv' => ['required', 'string', 'regex:/^[0-9]{3,4}$/'],
             ]);
         } elseif ($this->input('type') === 'paypal') {
             $rules = array_merge($rules, [
-                'email' => ['required', 'email'],
+                'paypal_email' => ['required', 'email'],
             ]);
         }
 
@@ -49,9 +50,9 @@ class PaymentMethodRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'number.regex' => 'The card number must contain only digits.',
-            'cvv.regex' => 'The CVV must contain only digits.',
-            'expiration_date.after' => 'The card expiration date must be in the future.',
+            'card_number.regex' => 'The card number must contain only digits.',
+            'card_cvv.regex' => 'The CVV must contain only digits.',
+            'card_expiration_date.regex' => 'The expiration date must be in the format MM/YYYY.',
         ];
     }
 }

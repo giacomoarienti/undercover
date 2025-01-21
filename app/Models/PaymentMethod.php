@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -41,6 +42,12 @@ class PaymentMethod extends Model
         "card_cvv",
         "paypal_email"
     ];
+
+    protected function cardNumber(): Attribute {
+        return Attribute::make(
+            get: fn($value) => "**** **** **** ". substr($value, -4)
+        );
+    }
 
     public function user() : BelongsTo {
         return $this->belongsTo(User::class);

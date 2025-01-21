@@ -236,28 +236,7 @@
                 </div>
             </div>
         @else
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="h4 mb-0">Payment methods</h2>
-                </div>
-
-                <div class="card-body">
-                    <form method="POST" action="{{ route('payment-methods') }}">
-                        @csrf
-                        @method('PATCH')
-
-                        <fieldset>
-                            <legend class="h5 mb-3">Payment methods</legend>
-
-                        </fieldset>
-
-                        <div class="d-flex justify-content-end mt-4">
-                            <button type="reset" class="btn btn-outline-secondary me-2">Cancel</button>
-                            <button type="submit" class="btn btn-primary">Save</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+            @include('user.partials.payment_methods')
         @endif
 
         <div class="card">

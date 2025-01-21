@@ -16,11 +16,11 @@ class PaymentMethodController extends Controller
         /** @var User $user */
         $user = Auth::user();
 
-        $receptionMethod = new ReceptionMethod($request->validated());
-        $receptionMethod->user_id = $user->id;
-        $receptionMethod->save();
+        $paymentMethod = new PaymentMethod($request->validated());
+        $paymentMethod->user_id = $user->id;
+        $paymentMethod->save();
 
-        return to_route('user.settings')->with('message', 'Reception method created');
+        return to_route('settings')->with('message', 'Payment method created');
     }
 
     public function edit(PaymentMethodRequest $request)
@@ -34,12 +34,12 @@ class PaymentMethodController extends Controller
         $paymentMethod = $user->paymentMethods()->find($request->get('id'));
 
         if (!$paymentMethod) {
-            return to_route('user.settings')->withErrors(['id' => 'Payment method not found']);
+            return to_route('settings')->withErrors(['id' => 'Payment method not found']);
         }
 
         $paymentMethod->update($request->validated());
 
-        return to_route('user.settings')->with('message', 'Reception method created');
+        return to_route('settings')->with('message', 'Payment method created');
     }
 
 
@@ -54,10 +54,10 @@ class PaymentMethodController extends Controller
 
         $paymentMethod = $user->paymentMethods()->find($request->get('id'));
         if (!$paymentMethod) {
-            return to_route('user.settings')->withErrors(['id' => 'Payment method not found']);
+            return to_route('settings')->withErrors(['id' => 'Payment method not found']);
         }
         $paymentMethod->delete();
 
-        return to_route('user.settings')->with('success', 'Payment method deleted successfully');
+        return to_route('settings')->with('success', 'Payment method deleted successfully');
     }
 }
