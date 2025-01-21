@@ -31,25 +31,19 @@
             </div>
 
             <div id="cart-items" class="mx-3 mx-md-0"></div>
+        </div>
 
-            <div class="row mt-3 py-2 border-top">
-                <div class="col-12 d-flex justify-content-end align-items-center">
-                    <span class="fw-bold me-3">Total:</span>
-                    <span class="fw-bold" id="cart-total">0.00 €</span>
-                </div>
+        <div class="row mt-3 py-2">
+            <div class="col-12 d-flex justify-content-end align-items-center">
+                <span class="fw-bold me-3">Total:</span>
+                <span class="fw-bold" id="cart-total">0.00 €</span>
             </div>
         </div>
 
-        <div class="row mt-4">
-            <div class="col-6">
-                <a href="{{ route('products.index') }}" class="btn btn-outline-primary mb-3">
-                    <i class="bi bi-arrow-left" aria-hidden="true"></i>
-                    Continue Shopping
-                </a>
-            </div>
+        <div class="row justify-content-end">
             <div class="col-6 text-end">
-                <a href="#" class="btn btn-success">
-                    Proceed to Checkout
+                <a href="{{ route('orders.create') }}" class="btn btn-primary">
+                    Checkout
                     <i class="bi bi-arrow-right" aria-hidden="true"></i>
                 </a>
             </div>
