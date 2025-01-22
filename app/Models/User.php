@@ -15,7 +15,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Mail;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property string $name
@@ -239,14 +239,12 @@ class User extends Authenticatable
      */
     public function addToCart(SpecificProduct $product, int $quantity = 1): bool
     {
-        // Check if the product is already in the cart
-        $cartItem = $this->cart()->where('specific_product_id', $product->id)->first();
-
         if($product->quantity < $quantity) {
             return false;
         }
 
-        if ($cartItem) {
+        // Check if the product is already in the cart
+        if ($this->cart()->where('specific_product_id', $product->id)->exists()) {
             // if the product is in the cart, update the quantity
             $this->cart()->updateExistingPivot($product->id, [
                 'quantity' => $quantity,
