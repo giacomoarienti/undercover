@@ -213,28 +213,7 @@
         </div>
 
         @if($user->is_seller)
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="h4 mb-0">Reception method</h2>
-                </div>
-
-                <div class="card-body">
-                    <form method="POST" action="{{ route('reception-methods') }}">
-                        @csrf
-                        @method('PATCH')
-
-                        <fieldset>
-                            <legend class="h5 mb-3">Reception methods</legend>
-
-                        </fieldset>
-
-                        <div class="d-flex justify-content-end mt-4">
-                            <button type="reset" class="btn btn-outline-secondary me-2">Cancel</button>
-                            <button type="submit" class="btn btn-primary">Save</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+            @include('user.partials.reception_methods')
         @else
             @include('user.partials.payment_methods')
         @endif

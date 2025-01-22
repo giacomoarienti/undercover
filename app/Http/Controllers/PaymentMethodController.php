@@ -22,7 +22,7 @@ class PaymentMethodController extends Controller
         $paymentMethod->save();
 
         // if it's the first method
-        if ($user->paymentMethods()->count() == 0) {
+        if ($user->paymentMethods()->count() == 1) {
             $user->payment_method_id = $paymentMethod->id;
             $user->save();
         }

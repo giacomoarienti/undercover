@@ -56,7 +56,7 @@ Route::middleware(SellerMiddleware::class)->group(function () {
     Route::post('/coupons', [CouponController::class, 'store'])->name('coupons');
     Route::delete('/coupons/{id}', [CouponController::class, 'destroy'])->name('coupons');
     Route::post('/settings/reception-methods', [ReceptionMethodController::class, 'store'])->name('reception-methods');
-    Route::delete('/settings/reception-methods', [ReceptionMethodController::class, 'destroy'])->name('reception-methods');
+    Route::delete('/settings/reception-methods', [ReceptionMethodController::class, 'delete'])->name('reception-methods');
     Route::patch('/settings/reception-methods', [ReceptionMethodController::class, 'edit'])->name('reception-methods');
 });
 
