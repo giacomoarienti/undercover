@@ -16,9 +16,9 @@ class UserController extends Controller
 
         $data = ["user" => $user];
         if($user->is_seller) {
-            $data["reception_methods"] = $user->receptionMethods;
+            $data["receptionMethods"] = $user->receptionMethods;
         } else {
-            $data["payment_methods"] = $user->paymentMethods;
+            $data["paymentMethods"] = $user->paymentMethods;
         }
 
         return view('user.settings', $data);

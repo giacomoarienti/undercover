@@ -15,7 +15,7 @@ class CartController extends Controller
         $user = Auth::user();
         $cart = $user->cart;
 
-        if($request->ajax()) {
+        if($request->expectsJson()) {
             return response()->json(["cart" => $cart]);
         }
 
@@ -36,7 +36,7 @@ class CartController extends Controller
         $product = SpecificProduct::find($request->get('specific_product_id'));
         $quantity = $request->get('quantity');
         if (!$product) {
-            if($request->ajax()) {
+            if($request->expectsJson()) {
                 return response()->json(["message" => "Product not found."], 400);
             }
             return to_route('cart')->with('error', 'Product not found.');
@@ -48,20 +48,20 @@ class CartController extends Controller
         if($quantity <= 0) {
             $user->removeFromCart($product);
 
-            if($request->ajax()) {
+            if($request->expectsJson()) {
                 return response()->json(["message" => "Product removed from cart."]);
             }
             return to_route('cart')->with('message', 'Product removed from cart.');
         }
 
         if(!$user->addToCart($product, $quantity)) {
-            if($request->ajax()) {
+            if($request->expectsJson()) {
                 return response()->json(["message" => "The specified quantity is not available."], 400);
             }
             return to_route('cart')->with('error', 'The specified quantity is not available.');
         }
 
-        if($request->ajax()) {
+        if($request->expectsJson()) {
             return response()->json(["message" => "Product added to cart."]);
         }
 
@@ -77,7 +77,7 @@ class CartController extends Controller
         // check product_id valid
         $product = SpecificProduct::find($request->get('specific_product_id'));
         if(!$product) {
-            if($request->ajax()) {
+            if($request->expectsJson()) {
                 return response()->json(["message" => "Product not found."], 400);
             }
             return to_route('cart')->with('error', 'Product not found.');
@@ -87,7 +87,7 @@ class CartController extends Controller
         $user = Auth::user();
         $user->removeFromCart($product);
 
-        if($request->ajax()) {
+        if($request->expectsJson()) {
             return response()->json(["message" => "Product removed from cart."]);
         }
         return to_route('cart')->with('message', 'Product removed from cart.');

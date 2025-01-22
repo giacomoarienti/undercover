@@ -15,10 +15,10 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->string("type");
-            $table->string("number", 16)->nullable();
-            $table->date("expiration_date")->nullable();
-            $table->string("cvv", 3)->nullable();
-            $table->string("email")->nullable();
+            $table->string("card_number", 16)->nullable();
+            $table->string("card_expiration_date", 7)->nullable();
+            $table->string("card_cvv", 3)->nullable();
+            $table->string("paypal_email")->nullable();
             $table->foreignId("user_id")->nullable()->constrained()->cascadeOnDelete();
         });
     }
