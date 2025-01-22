@@ -64,14 +64,14 @@ class PaymentMethodController extends Controller
         ]);
 
         $paymentMethod = $user->paymentMethods()->find($request->get('id'));
+        if (!$paymentMethod) {
+            return to_route('settings')->withErrors(['id' => 'Payment method not found']);
+        }
+
         if($paymentMethod->default) {
             return to_route('settings')->withErrors(['id' => 'Cannot delete default payment method']);
         }
 
-        $paymentMethod = $user->paymentMethods()->find($request->get('id'));
-        if (!$paymentMethod) {
-            return to_route('settings')->withErrors(['id' => 'Payment method not found']);
-        }
         $paymentMethod->delete();
 
         return to_route('settings')->with('success', 'Payment method deleted successfully');
