@@ -18,19 +18,31 @@
                             <div class="d-flex align-items-center">
                                 @if($method->type === 'card')
                                     <div>
-                                        <div class="fw-bold">Credit Card</div>
+                                        <div class="@if($method->default) fw-bold @endif">Credit Card</div>
                                         <div class="text-muted">{{ $method->card_number }}</div>
                                         <div class="text-muted small">Expires: {{ $method->card_expiration_date }}</div>
                                     </div>
                                 @else
                                     <div>
-                                        <div class="fw-bold">PayPal</div>
+                                        <div class="@if($method->default) fw-bold @endif">PayPal</div>
                                         <div class="text-muted">{{ $method->paypal_email }}</div>
                                     </div>
                                 @endif
                             </div>
 
                             <div class="d-flex align-items-center gap-2">
+                                @if(!$method->default)
+                                    <form method="POST" action="{{ route('payment-methods') }}" class="d-inline">
+                                        @csrf
+                                        @method('PATCH')
+                                        <input type="hidden" name="id" value="{{ $method->id }}">
+                                        <input type="hidden" name="default" value="1">
+                                        <button type="submit" class="btn btn-outline-primary btn-sm">
+                                            Set Default
+                                        </button>
+                                    </form>
+                                @endif
+
                                 <form method="POST" action="{{ route('payment-methods') }}" class="d-inline">
                                     @csrf
                                     @method('DELETE')
@@ -149,8 +161,6 @@
 @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const modal = document.getElementById('paymentMethodModal');
-            const form = document.getElementById('paymentMethodForm');
             const typeRadios = document.querySelectorAll('input[name="type"]');
             const creditCardFields = document.getElementById('creditCardFields');
             const paypalFields = document.getElementById('paypalFields');

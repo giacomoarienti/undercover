@@ -7,6 +7,7 @@ use App\Mail\BasicMail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -78,6 +79,12 @@ use Illuminate\Support\Facades\Mail;
  * @property-read int|null $reception_methods_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Notification> $unreadNotifications
  * @property-read int|null $unread_notifications_count
+ * @property int|null $payment_method_id
+ * @property int|null $reception_method_id
+ * @property-read \App\Models\PaymentMethod|null $defaultPaymentMethod
+ * @property-read \App\Models\ReceptionMethod|null $defaultReceptionMethod
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User wherePaymentMethodId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereReceptionMethodId($value)
  * @mixin \Eloquent
  */
 class User extends Authenticatable
@@ -104,7 +111,9 @@ class User extends Authenticatable
         'country',
         'is_seller',
         'company_name',
-        'vat'
+        'vat',
+        'payment_method_id',
+        'reception_method_id'
     ];
 
     /**
@@ -208,6 +217,16 @@ class User extends Authenticatable
             SpecificProduct::class,
             'specific_products_in_carts'
         )->withPivot('quantity');
+    }
+
+    public function defaultPaymentMethod(): BelongsTo
+    {
+        return $this->belongsTo(PaymentMethod::class, 'payment_method_id');
+    }
+
+    public function defaultReceptionMethod(): BelongsTo
+    {
+        return $this->belongsTo(ReceptionMethod::class, 'reception_method_id');
     }
 
     /**
