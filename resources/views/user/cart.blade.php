@@ -123,6 +123,6 @@
     </style>
 
     @push('scripts')
-        @vite('resources/js/cart.js')
+        @vite('resources/js/views/cart.js')>
     @endpush
 @endsection
