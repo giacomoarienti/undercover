@@ -15,7 +15,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property string $name
@@ -61,11 +61,6 @@ class Product extends Model implements HasMedia
 {
     use SoftDeletes;
     use InteractsWithMedia;
-
-    public function getPathForMedia(): string
-    {
-        return "products/{$this->id}";
-    }
 
     public function registerMediaCollections(): void
     {
@@ -156,12 +151,12 @@ class Product extends Model implements HasMedia
     }
 
     /**
-     * Return the Reviews of the SpecificProducts linked to the Product.
-     * @return HasManyThrough
+     * Return the Reviews of the Product.
+     * @return HasMany
      */
-    public function reviews() : HasManyThrough
+    public function reviews() : HasMany
     {
-        return $this->hasManyThrough(Review::class, SpecificProduct::class);
+        return $this->hasMany(Review::class);
     }
 
     public function updateColors(array $colors) : void
@@ -184,5 +179,15 @@ class Product extends Model implements HasMedia
     public function hasColor(Color $color) : bool
     {
         return $this->specificProducts->contains("color_id", $color->id);
+    }
+
+    public function reviewsCount() : int
+    {
+        return $this->reviews->count();
+    }
+
+    public function reviewsAverage() : float
+    {
+        return $this->reviews->avg('stars') ?? 0;
     }
 }

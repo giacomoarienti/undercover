@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <h1>New product</h1>
+    <h1>{{$product ? 'Edit product' : 'New product'}}</h1>
     <form action="{{ $product ? route('products.update', ['product', $product->slug]) : route('products.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         @if ($product)

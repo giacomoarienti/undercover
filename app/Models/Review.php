@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -37,7 +37,7 @@ class Review extends Model
         "title",
         "body",
         "stars",
-        "specific_product_id",
+        "product_id",
     ];
 
     /**
@@ -50,11 +50,11 @@ class Review extends Model
     }
 
     /**
-     * Returns the SpecificProduct that the Review refers to.
+     * Returns the Product that the Review refers to.
      * @return BelongsTo
      */
-    public function specificProduct(): BelongsTo
+    public function product(): BelongsTo
     {
-        return $this->belongsTo(SpecificProduct::class);
+        return $this->belongsTo(Product::class);
     }
 }
