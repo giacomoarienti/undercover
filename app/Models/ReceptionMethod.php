@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -28,6 +29,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ReceptionMethod whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ReceptionMethod whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ReceptionMethod whereUserId($value)
+ * @property-read mixed $default
  * @mixin \Eloquent
  */
 class ReceptionMethod extends Model
@@ -39,6 +41,24 @@ class ReceptionMethod extends Model
         'iban_holder_name',
         'user_id'
     ];
+
+    protected function ibanNumber(): Attribute
+    {
+        return Attribute::make(
+            get: fn($value) => substr($value, 0, 6) . '************************' . substr($value, -4)
+        );
+    }
+
+    /**
+     * True if the User has set the ReceptionMethod as default
+     * @return Attribute
+     */
+    protected function default(): Attribute
+    {
+        return new Attribute(
+            get: fn() => $this->user->defaultReceptionMethod?->id === $this->id
+        );
+    }
 
 
     public function user(): BelongsTo

@@ -52,11 +52,12 @@ Route::middleware(AuthMiddleware::class)->group(function () {
  */
 Route::middleware(SellerMiddleware::class)->group(function () {
     Route::get('/coupons', [CouponController::class, 'index'])->name('coupons');
-    Route::get('/coupons/{id}', [CouponController::class, 'show'])->name('coupons');
+    Route::patch('/coupons', [CouponController::class, 'edit'])->name('coupons');
     Route::post('/coupons', [CouponController::class, 'store'])->name('coupons');
-    Route::delete('/coupons/{id}', [CouponController::class, 'destroy'])->name('coupons');
+    Route::delete('/coupons', [CouponController::class, 'destroy'])->name('coupons');
+
     Route::post('/settings/reception-methods', [ReceptionMethodController::class, 'store'])->name('reception-methods');
-    Route::delete('/settings/reception-methods', [ReceptionMethodController::class, 'destroy'])->name('reception-methods');
+    Route::delete('/settings/reception-methods', [ReceptionMethodController::class, 'delete'])->name('reception-methods');
     Route::patch('/settings/reception-methods', [ReceptionMethodController::class, 'edit'])->name('reception-methods');
 });
 

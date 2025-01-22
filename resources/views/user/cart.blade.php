@@ -104,7 +104,7 @@
             display: inline-block;
         }
 
-        @media (max-width: 767.98px) {
+        @media (max-width: 768px) {
             .cart-item {
                 margin-bottom: 1rem;
                 padding: 1.5rem;
