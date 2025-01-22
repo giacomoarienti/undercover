@@ -123,7 +123,7 @@ function initializeEventListeners() {
             if (newValue <= 0) {
                 await removeCartItem(itemId, cartItem);
             } else {
-                await updateItem(itemId, newValue);
+                await storeItem(itemId, newValue);
                 input.value = newValue;
             }
 
@@ -150,7 +150,7 @@ function initializeEventListeners() {
             const newValue = parseInt(this.value);
 
             if (newValue >= 0 && newValue <= parseInt(this.max)) {
-                await updateItem(itemId, newValue);
+                await storeItem(itemId, newValue);
                 updateCartTotal();
             } else {
                 this.value = this.defaultValue;
@@ -159,8 +159,7 @@ function initializeEventListeners() {
     });
 }
 
-async function updateItem(itemId, quantity) {
-    console.log(itemId, quantity)
+export async function storeItem(itemId, quantity) {
     try {
         const response = await fetch('/cart', {
             method: 'POST',
