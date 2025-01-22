@@ -14,7 +14,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Mail;
 
 /**
- *
+ * 
  *
  * @property int $id
  * @property string $name
@@ -76,6 +76,8 @@ use Illuminate\Support\Facades\Mail;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereZipCode($value)
  * @property-read mixed $full_address
  * @property-read int|null $reception_methods_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Notification> $unreadNotifications
+ * @property-read int|null $unread_notifications_count
  * @mixin \Eloquent
  */
 class User extends Authenticatable

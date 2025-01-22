@@ -12,9 +12,10 @@ use Illuminate\Support\Str;
 use Illuminate\Testing\Fluent\Concerns\Interaction;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 /**
- *
+ * 
  *
  * @property int $id
  * @property string $name
@@ -51,12 +52,35 @@ use Spatie\MediaLibrary\InteractsWithMedia;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product withoutTrashed()
  * @property-read \Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection<int, \Spatie\MediaLibrary\MediaCollections\Models\Media> $media
  * @property-read int|null $media_count
+ * @property string $slug
+ * @property-read mixed $media_url
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereSlug($value)
  * @mixin \Eloquent
  */
 class Product extends Model implements HasMedia
 {
     use SoftDeletes;
     use InteractsWithMedia;
+
+    public function getPathForMedia(): string
+    {
+        return "products/{$this->id}";
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('images')
+            ->useDisk('public')
+            ->withResponsiveImages();
+    }
+
+    public function registerMediaConversions(Media $media = null): void
+    {
+        $this->addMediaConversion('thumb')
+            ->width(200)
+            ->height(200)
+            ->sharpen(10);
+    }
 
     protected $fillable = [
         "name",

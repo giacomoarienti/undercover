@@ -39,12 +39,13 @@
     @endif
 
     @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
+        <div class="alerts-container fixed-bottom start-0 end-0 d-flex flex-column justify-content-end">
+            @foreach ($errors->all() as $error)
+                <div class="alert alert-danger alert-dismissible fade show mx-auto mb-2" role="alert" style="max-width: 500px;">
+                    {{ $error }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endforeach
         </div>
     @endif
 

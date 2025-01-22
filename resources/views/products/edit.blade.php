@@ -16,7 +16,6 @@
                            id="name"
                            name="name"
                            value="{{ old('name', $product?->name) }}"
-                           required
                            maxlength="100">
                 </div>
                 <div class="input-group p-1">
@@ -27,8 +26,7 @@
                            class="form-control @error('price') is-invalid @enderror"
                            id="price"
                            name="price"
-                           value="{{ old('price', $product?->price) }}"
-                           required>
+                           value="{{ old('price', $product?->price) }}">
                     <label for="price" class="input-group-text">€</label>
                 </div>
             </div>
@@ -36,30 +34,43 @@
             <div class="col-md-8">
                 <div class="input-group h-100 p-1">
                     <span class="input-group-text">Description</span>
-                    <textarea class="form-control" name="description">{{ old('description', $product?->description) }}</textarea>
+                    <textarea class="form-control @error('description') is-invalid @enderror" name="description">{{ old('description', $product?->description) }}</textarea>
                 </div>
             </div>
         </div>
-        <div class="input-group p-1 mt-2">
+        <div class="input-group p-1 mt-2 rounded">
             <label for="brand" class="input-group-text">Brand</label>
-            <input type="text" id="brand" name="brand" value="{{ old('brand', $product?->phone?->brand?->name) }}" class="form-control" required/>
-
+            <input type="text" id="brand" list="brand_list" name="brand" value="{{ old('brand', $product?->phone?->brand?->name) }}" class="form-control @error('brand') is-invalid @enderror"/>
+            <datalist id="brand_list">
+                @foreach(\App\Models\Brand::all() as $brand)
+                    <option value="{{$brand->name}}"></option>
+                @endforeach
+            </datalist>
+            <datalist id="phone_list">
+                @foreach(\App\Models\Phone::query()->select("name")->distinct()->get() as $phone)
+                    <option value="{{$phone['name']}}"></option>
+                @endforeach
+            </datalist>
             <label for="phone" class="input-group-text">Model</label>
-            <input type="text" id="phone" name="phone" value="{{ old('phone', $product?->phone?->name) }}" class="form-control" required/>
+            <input type="text" id="phone" list="phone_list" name="phone" value="{{ old('phone', $product?->phone?->name) }}" class="form-control @error('phone') is-invalid @enderror"/>
         </div>
         <div class="input-group p-1 mt-2">
             <label for="material_id" class="input-group-text">Material</label>
-            <select class="form-select" id="material_id" name="material_id">
-                <option {{ $product ? "" : "selected" }} value=""></option>
+            <select class="form-select @error('material_id') is-invalid @enderror" id="material_id" name="material_id">
+                {{$oldMaterialId = old('material_id', $product?->material?->id)}}
+                <option {{ $oldMaterialId ? "" : "selected" }} value=""></option>
                 @foreach(\App\Models\Material::all() as $material)
-                    <option value="{{$material->id}}" {{ $product?->material_id == $material->id ? 'selected' : '' }}>{{$material->name}}</option>
+                    <option value="{{$material->id}}" {{ $oldMaterialId == $material->id ? "selected" : "" }}>{{$material->name}}</option>
                 @endforeach
             </select>
         </div>
         <div class="form-group d-flex flex-column p-1 mt-2">
             <div class="card">
-                <div class="card-header">
+                <div class="card-header d-flex flex-row justify-content-between align-items-center @error('images') bg-danger-subtle @enderror">
                     Product images
+                    @error('images')
+                    <i class="fa-regular fa-circle-exclamation text-danger text-end"></i>
+                    @enderror
                 </div>
                 <div class="card-body">
                     <div id="image-preview-container" class="d-flex flex-row align-items-center justify-items-start overflow-x-scroll">
@@ -73,8 +84,11 @@
         </div>
         <div class="form-group d-flex flex-column p-1 mt-2">
             <div class="card">
-                <div class="card-header">
+                <div class="card-header d-flex flex-row justify-content-between align-items-center @error('colors') bg-danger-subtle @enderror">
                     Available colors
+                    @error('images')
+                    <i class="fa-regular fa-circle-exclamation text-danger text-end"></i>
+                    @enderror
                 </div>
                 <div class="card-body">
                     @foreach(\App\Models\Color::all() as $color)
@@ -89,7 +103,8 @@
                                     id="color_{{ $color->id }}"
                                     name="colors[{{ $color->id }}][selected]"
                                     type="checkbox"
-                                    {{$product?->hasColor($color) ? 'checked' : ''}}>
+                                    value="1"
+                                    {{ old('colors.' . $color->id . '.selected', $product?->hasColor($color)) ? 'checked' : ''}}>
                             </div>
                             <label for="quantity_{{ $color->id }}" class="input-group-text">
                                 x
@@ -98,13 +113,13 @@
                                 type="number"
                                 step="1"
                                 min="0"
-                                class="form-control color-quantity"
+                                class="form-control color-quantity @error('colors.' . $color->id . '.quantity') is-invalid @enderror"
                                 id="quantity_{{ $color->id }}"
                                 name="colors[{{ $color->id }}][quantity]"
                                 placeholder="Number of pieces available"
                                 value="{{ old('colors.' . $color->id . '.quantity', $product?->hasColor($color) ? $product->specificProducts->where('color_id', $color->id)->first()->quantity : '') }}"
-                                {{$product?->hasColor($color) ? '' : 'disabled'}}>
-                        </div>
+                                {{ old('colors.' . $color->id . '.quantity', $product?->hasColor($color) ? '' : 'disabled') }}>
+                            </div>
                     @endforeach
                 </div>
             </div>

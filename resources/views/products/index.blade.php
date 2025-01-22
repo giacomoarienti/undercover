@@ -113,7 +113,7 @@
 
 
     <div class="row">
-        <div class="col-4 p-0 d-none d-md-flex flex-column justify-content-start align-items-start">
+        <div class="col-3 p-0 d-none d-md-flex flex-column justify-content-start align-items-start">
             <form class="w-100" action="{{ route('products.index') }}" method="GET">
                 <input type="hidden" name="search" value="{{$filters['search'] ?? ''}}"/>
                 <div class="container d-flex flex-column justify-content-start align-items-start">
@@ -207,7 +207,7 @@
                                 <div class="card-body">
                                     <h1 class="card-title h5">{{$product->name}}</h1>
                                     <h2 class="card-subtitle mb-2 text-muted h6">{{$product->phone->brand->name . ' ' . $product->phone->name}}</h2>
-                                    <img class="img-thumbnail" src="{{$product->getFirstMedia()->getUrl()}}" alt=""/>
+                                    <img class="img-thumbnail" src="{{$product->getFirstMediaUrl('images', 'thumb')}}" alt=""/>
                                     <p class="card-text text-muted text-end m-2">{{$product->price . '€'}}</p>
                                     <div class="d-flex justify-content-center">
                                         @foreach ($product->specificProducts as $specificProduct)

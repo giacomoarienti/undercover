@@ -3,7 +3,7 @@
         <a href="/" class="d-flex align-items-center mb-3 link-body-emphasis text-decoration-none ">
             <h4>Undercover</h4>
         </a>
-        <p>via dell&apos;Universit&agrave; 50</p>
+        <p>Via dell&apos;Universit&agrave; 50</p>
         <p>47522 Cesena FC, IT</p>
         <p class="text-body-secondary">Undercover © {{ (new \Carbon\Carbon())->year }}</p>
     </div>

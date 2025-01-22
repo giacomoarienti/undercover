@@ -45,8 +45,8 @@ class ProductController extends Controller
             : [];
 
         $phones = isset($filters['phone'])
-            ? Phone::whereLike('name', '%'.$filters['phone'].'%')->get('id')->all()
-            : [];
+            ? Phone::whereLike('name', '%'.$filters['phone'].'%')->get('id')->map(fn ($phone) => $phone['id'])->all()
+            : null;
 
         $colors = isset($filters['colors'])
             ? collect($filters['colors'])->map(fn ($color_slug) => Color::firstWhere('slug', $color_slug)->id)
@@ -68,7 +68,7 @@ class ProductController extends Controller
             });
         }
 
-        if (!empty($phones)) {
+        if ($phones != null) {
             $products = $products->whereIn('phone_id', $phones);
         }
 
@@ -99,29 +99,36 @@ class ProductController extends Controller
     private function carryOut(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:100',
-            'description' => 'required|string|max:511',
-            'price' => 'required|numeric|min:0',
-            'material_id' => 'required|integer|exists:materials,id',
-            'phone' => 'required|string',
-            'brand' => 'required|string',
-            'colors' => 'required|array',
-            'colors.*.checkbox' => 'nullable|boolean',
-            'colors.*.quantity' => [
-                'nullable',
-                'integer',
-                'min:0',
-                function ($attribute, $value, $fail) {
-                    $key = str_replace(['colors.', '.quantity'], '', $attribute);
-                    $checkbox = request()->input("colors.$key.checkbox");
-                    if ($checkbox && is_null($value)) {
-                        $fail('The quantity field is required when the checkbox is selected.');
-                    }
-                }
+                'name' => 'required|string|max:100',
+                'description' => 'required|string|max:511',
+                'price' => 'required|numeric|min:0.01',
+                'material_id' => 'required|integer|exists:materials,id',
+                'phone' => 'required|string',
+                'brand' => 'required|string',
+                'colors' => 'required|array',
+                'colors.*.selected' => 'nullable',
+                'colors.*.quantity' => 'exclude_if:colors.*.selected,false|required|integer|min:1',
+                'images' => 'required|array|min:1',
+                'images.*' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             ],
-            'images' => 'required|array|min:1',
-            'images.*' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        ]);
+            [
+                'name.required' => 'The product name is required.',
+                'description.required' => 'A description is required.',
+                'price.required' => 'The price is required.',
+                'price.min' => 'The price must be greater than 0.',
+                'material_id.required' => 'Please select a material.',
+                'material_id.exists' => 'The selected material does not exist.',
+                'phone.required' => 'A phone model is required.',
+                'brand.required' => 'A brand name is required.',
+                'colors.required' => 'At least one color must be selected.',
+                'colors.*.quantity.required' => 'The quantity is required when a color is selected.',
+                'colors.*.quantity.min' => 'The quantity of any selected color must be at least 1.',
+                'images.required' => 'Please upload at least one image.',
+                'images.*.image' => 'Each file must be an image.',
+                'images.*.mimes' => 'Images must be in one of the following formats: jpeg, png, jpg, gif, svg.',
+                'images.*.max' => 'Each image must not exceed 2 MB.',
+            ]
+        );
 
         error_log("C");
 
@@ -151,7 +158,7 @@ class ProductController extends Controller
 
         foreach ($validated['images'] as $image) {
             error_log("Immagine");
-            $product->addMedia($image)->toMediaCollection();
+            $product->addMedia($image)->toMediaCollection('images');
         }
 
         return $product;

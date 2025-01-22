@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use function Illuminate\Events\queueable;
 
 /**
- *
+ * 
  *
  * @property int $id
  * @property int $quantity
