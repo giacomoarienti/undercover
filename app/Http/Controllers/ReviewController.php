@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Review;
 use App\Models\SpecificProduct;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 
 class ReviewController extends Controller
@@ -18,9 +19,10 @@ class ReviewController extends Controller
             'title' => 'required|string|max:60',
             'body' => 'required|text|max:500',
             'stars' => 'required|integer|min:0|max:10',
-            'specific_product_id' => 'required|integer',
+            'product_id' => 'required|integer|exists:products,id',
         ]);
         Gate::authorize('review', SpecificProduct::firstWhere('id', $validated['specific_product_id']));
+        $validated['user_id'] = Auth::user()->id;
         $review = Review::create($validated);
         return redirect()->route('products.show', $review->specificProduct->product);
     }

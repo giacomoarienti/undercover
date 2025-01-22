@@ -19,7 +19,7 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
-        Gate::authorize('viewAny', Product::class);
+        //even non-auth users can make this request
 
         $filters = $request->validate([
             'search' => 'nullable|string',
@@ -33,7 +33,7 @@ class ProductController extends Controller
             'page' => 'nullable|integer|min:1',
         ]);
 
-        $user = Auth::user();
+        $user = Auth::hasUser() ? Auth::user() : null;
 
         //we translate from slugs to ids
         $materials = isset($filters['materials'])
@@ -184,7 +184,12 @@ class ProductController extends Controller
     public function show(Product $product)
     {
         Gate::authorize('view', $product);
-        return view('products.show')->with('product', $product);
+
+        $reviews = $product->reviews()->paginate(5);
+        $user = Auth::user();
+        $userReview = $user ? $product->reviews()->where('user_id', $user->id)->first() : null;
+
+        return view('products.show', compact('product', 'reviews', 'userReview', 'user'));
     }
 
     /**
