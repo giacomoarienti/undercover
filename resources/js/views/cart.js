@@ -8,7 +8,6 @@ async function loadCart() {
         const response = await fetch('/cart', {
             headers: {
                 'Accept': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest'
             }
         });
 
@@ -67,6 +66,10 @@ function createCartItemElement(item) {
     const cartItem = element.querySelector('.cart-item');
 
     cartItem.dataset.itemId = item.id;
+
+    // Set product link
+    const productLink = cartItem.querySelector('.product-link');
+    productLink.href = item.product.url;
 
     // Set product image and details
     const img = element.querySelector('img');

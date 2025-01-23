@@ -83,12 +83,12 @@ class Product extends Model implements HasMedia
         "price",
         "material_id",
         "phone_id",
-        "user_id"
+        "user_id",
     ];
 
     protected $with = ['material', 'phone'];
 
-    protected $appends = ['media_url'];
+    protected $appends = ['media_url', "url"];
 
     // Specify use of slug column for routes
     public function getRouteKeyName()
@@ -107,6 +107,13 @@ class Product extends Model implements HasMedia
                 fn ($specificProduct) => $specificProduct->delete()
             );
         });
+    }
+
+    protected function url(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => route('products.show', $this->slug)
+        );
     }
 
     protected function mediaUrl(): Attribute

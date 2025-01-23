@@ -54,8 +54,10 @@
         <div class="row py-3 border-bottom cart-item" data-item-id="">
             <!-- image and name -->
             <div class="col-12 col-md-6 mb-3">
-                <div class="d-flex flex-column flex-md-row">
-                    <img src="" alt="" class="img-thumbnail mb-2 mb-md-0 me-md-3 responsive-image" width="80">
+                <div class=" d-flex flex-column flex-md-row" aria-label="Product image and name">
+                    <a href="#" class="product-link">
+                        <img src="" alt="" class="img-thumbnail mb-2 mb-md-0 me-md-3 responsive-image" width="80">
+                    </a>
                     <h3 class="h6 mb-0"></h3>
                 </div>
             </div>
