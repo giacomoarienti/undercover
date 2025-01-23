@@ -2,7 +2,7 @@
 
 @section('content')
     <h1>{{$product ? 'Edit product' : 'New product'}}</h1>
-    <form action="{{ $product ? route('products.update', ['product', $product->slug]) : route('products.store') }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ $product ? route('products.update', $product->slug) : route('products.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         @if ($product)
             @method("PATCH")
