@@ -74,7 +74,7 @@
                 </div>
                 <div class="card-body">
                     <div id="image-preview-container" class="d-flex flex-row align-items-center justify-items-start overflow-x-scroll">
-                        @foreach($product?->getMedia('images') as $image)
+                        @foreach($product?->getMedia('images') ?? [] as $image)
                             <div class="d-flex flex-column justify-content-between align-items-center m-2 col-2 flex-shrink-0" id="existing-image-{{$image->id}}">
                                 <img src="{{$image->getUrl()}}" alt="" class="img-thumbnail m-2 h-100">
                                 <button class="btn btn-danger m-2 mt-0" type="button" onclick="addDeleteImage({{$image->id}})">
