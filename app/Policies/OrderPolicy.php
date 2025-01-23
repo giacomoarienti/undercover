@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Models\Order;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
+use function Laravel\Prompts\error;
 
 class OrderPolicy
 {
@@ -27,9 +28,7 @@ class OrderPolicy
         return $order->user_id === $user->id //l'ordine è dell'utente
             or (
                 //uno dei prodotti nell'ordine appartiene all'utente
-                $order->specificProducts->contains(function ($specificProduct) use ($user) {
-                    $specificProduct->product->user_id === $user->id;
-                })
+                $order->specificProducts->hasAny(fn ($specificProduct) => $specificProduct->product->user_id === $user->id)
             );
     }
 
@@ -38,6 +37,6 @@ class OrderPolicy
      */
     public function create(User $user): bool
     {
-        return !$user->is_seller and $user->cart_count > 0;
+        return !$user->is_seller;
     }
 }

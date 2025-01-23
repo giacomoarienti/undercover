@@ -38,6 +38,7 @@ class Review extends Model
         "body",
         "stars",
         "product_id",
+        "user_id"
     ];
 
     /**

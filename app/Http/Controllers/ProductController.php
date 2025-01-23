@@ -185,8 +185,8 @@ class ProductController extends Controller
     {
         Gate::authorize('view', $product);
 
-        $reviews = $product->reviews()->paginate(5);
         $user = Auth::user();
+        $reviews = $product->reviews()/*->whereNot('user_id', $user->id)*/->paginate(5);
         $userReview = $user ? $product->reviews()->where('user_id', $user->id)->first() : null;
 
         return view('products.show', compact('product', 'reviews', 'userReview', 'user'));

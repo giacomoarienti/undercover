@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * 
+ *
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|OrderSpecificProduct newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|OrderSpecificProduct newQuery()
@@ -30,7 +30,7 @@ class OrderSpecificProduct extends Model
 {
     protected $fillable = [
         'order_id',
-        'product_id',
+        'specific_product_id',
         'quantity',
     ];
 }

@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\Product;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class ProductPolicy
 {
@@ -54,5 +53,10 @@ class ProductPolicy
     public function restore(User $user, Product $product): bool
     {
         return $product->user_id == $user->id;
+    }
+
+    public function review(User $user, Product $product): bool
+    {
+        return $user->hasBoughtProduct($product) and $product->reviews->where('user_id', $user->id)->isEmpty();
     }
 }

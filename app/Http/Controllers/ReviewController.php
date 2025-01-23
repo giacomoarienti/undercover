@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use App\Models\Review;
 use App\Models\SpecificProduct;
 use Illuminate\Http\Request;
@@ -17,14 +18,14 @@ class ReviewController extends Controller
     {
         $validated = $request->validate([
             'title' => 'required|string|max:60',
-            'body' => 'required|text|max:500',
+            'body' => 'required|string|max:500',
             'stars' => 'required|integer|min:0|max:10',
             'product_id' => 'required|integer|exists:products,id',
         ]);
-        Gate::authorize('review', SpecificProduct::firstWhere('id', $validated['specific_product_id']));
-        $validated['user_id'] = Auth::user()->id;
-        $review = Review::create($validated);
-        return redirect()->route('products.show', $review->specificProduct->product);
+        Gate::authorize('review', Product::firstWhere('id', $validated['product_id']));
+        $review = Review::create($validated + ['user_id' => Auth::id()]);
+
+        return redirect()->route('products.show', $review->product->slug);
     }
 
     /**
@@ -34,13 +35,13 @@ class ReviewController extends Controller
     {
         $validated = $request->validate([
             'title' => 'required|string|max:60',
-            'body' => 'required|text|max:500',
+            'body' => 'required|string|max:500',
             'stars' => 'required|integer|min:0|max:10',
-            'specific_product_id' => 'required|integer',
+            'product_id' => 'required|integer|exists:products,id',
         ]);
         Gate::authorize('update', $review);
         $review->update($validated);
-        return redirect()->route('products.show', $review->specificProduct->product);
+        return redirect()->route('products.show', $review->product->slug);
     }
 
     /**
@@ -50,6 +51,6 @@ class ReviewController extends Controller
     {
         Gate::authorize('delete', $review);
         $review->delete();
-        return redirect()->route('products.show', $review->specificProduct->product);
+        return redirect()->route('products.show', $review->product->slug);
     }
 }

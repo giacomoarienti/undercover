@@ -15,7 +15,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Mail;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property string $name
@@ -286,7 +286,11 @@ class User extends Authenticatable
      */
     public function hasBoughtProduct(Product $product): bool
     {
-        return $this->orders()->where('product_id', $product->id)->exists();
+        return $this->orders()
+                ->join('order_specific_products', 'orders.id', '=', 'order_specific_products.order_id')
+                ->join('specific_products', 'order_specific_products.specific_product_id', '=', 'specific_products.id')
+                ->where('specific_products.product_id', $product->id)
+                ->exists();
     }
 
     /**

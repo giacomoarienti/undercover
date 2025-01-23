@@ -125,8 +125,8 @@
             </div>
         </div>
         <div class="form-group d-flex flex-row p-1 mt-2">
-            <button type="submit" class="btn btn-success w-100 me-2">Save</button>
-            <button type="button" class="btn btn-danger w-100 ms-2" onclick="location.href='{{ url()->previous() }}'">Abort</button>
+            <button type="button" class="btn btn-danger w-100 me-2" onclick="location.href='{{ url()->previous() }}'">Abort</button>
+            <button type="submit" class="btn btn-primary w-100 ms-2">Save</button>
         </div>
     </form>
 @endsection

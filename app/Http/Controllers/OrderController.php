@@ -39,8 +39,9 @@ class OrderController extends Controller
     public function create(Request $request)
     {
         Gate::authorize('create', Order::class);
-        return view('orders.create')
-                ->with('user', $request->user);
+        $user = Auth::user();
+        $paymentMethod = $user->defaultPaymentMethod()->first();
+        return view('orders.create', compact('user', 'paymentMethod'));
     }
 
     /**
@@ -54,9 +55,10 @@ class OrderController extends Controller
             'coupon_id' => 'nullable|integer|exists:coupons,id',
         ]);
 
-        if(!$request->user->checkCartAvailability()){
-            //TODO->segnalare problema
-            return redirect()->route("cart.index");
+        $user = Auth::user();
+
+        if(!$user->checkCartAvailability()){
+            return redirect()->route("cart.index")->with('error', 'Some product in your cart is not available anymore.');
         }
 
         $paymentMethod = PaymentMethod::firstWhere('id', $validated['payment_method_id']);
@@ -67,7 +69,7 @@ class OrderController extends Controller
 
         $coupon = $validated['coupon_id'] ? Coupon::firstWhere('id', $validated['coupon_id']) : null;
 
-        Order::place($request->user, $payment, $coupon);
+        Order::place($user, $payment, $coupon);
         return redirect()->route('orders.index');
     }
 

@@ -18,55 +18,9 @@
         return $stars;
     }
 ?>
-<style>
-    .rate{
 
-        border-bottom-right-radius: 12px;
-        border-bottom-left-radius: 12px;
-
-    }
-
-    .rating {
-        display: flex;
-        flex-direction: row-reverse;
-        justify-content: center
-    }
-
-    .rating>input {
-        display: none
-    }
-
-    .rating>label {
-        position: relative;
-        width: 1em;
-        font-size: 30px;
-        font-weight: 300;
-        color: #FFD600;
-        cursor: pointer
-    }
-
-    .rating>label::before {
-        content: "\2605";
-        position: absolute;
-        opacity: 0
-    }
-
-    .rating>label:hover:before,
-    .rating>label:hover~label:before {
-        opacity: 1 !important
-    }
-
-    .rating>input:checked~label:before {
-        opacity: 1
-    }
-
-    .rating:hover>input:checked~label:before {
-        opacity: 0.4
-    }
-</style>
 
 @section('content')
-
     <div class="row border-bottom">
         <div class="col-md-6 p-3" style="max-height: 70vh">
             <div class="card h-100 p-0 bg-white p-0">
@@ -170,12 +124,19 @@
             @endif
         </div>
     </div>
-    @can('review', $product)
+    @if($userReview or $user->can('review', $product))
         <div class="row border-bottom">
             <div class="col-12 p-3">
                 <div class="card">
-                    <div class="card-header">
-                        {{ $userReview ? 'Edit your review' : 'Leave a review' }}
+                    <div class="card-header d-flex flex-row justify-content-between align-items-center">
+                        {{ $userReview ? 'Your review' : 'Leave a review' }}
+                        @if ($userReview)
+                            <form action="{{route('reviews.destroy', $userReview->id)}}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger"><i class="fa-solid fa-trash me-2"></i>Delete</button>
+                            </form>
+                        @endif
                     </div>
                     <div class="card-body">
                         <form action="{{ $userReview ? route('reviews.update', $userReview->id) : route('reviews.store') }}" method="POST">
@@ -187,21 +148,14 @@
                             <input type="hidden" name="product_id" value="{{$product->id}}"/>
                             <input type="hidden" name="user_id" value="{{$user->id}}"/>
 
-                            <div class="mb-3">
-                                <div class="rate">
-                                    <label for="rating" class="form-label">Rating</label>
-                                    <div class="d-flex flex-row justify-content-start align-items-center">
-                                        <div class="rating">
-                                            <input type="radio" name="stars" value="5" id="5"><label for="5">☆</label>
-                                            <input type="radio" name="stars" value="4" id="4"><label for="4">☆</label>
-                                            <input type="radio" name="stars" value="3" id="3"><label for="3">☆</label>
-                                            <input type="radio" name="stars" value="2" id="2"><label for="2">☆</label>
-                                            <input type="radio" name="stars" value="1" id="1"><label for="1">☆</label>
-                                        </div>
-                                        @error('stars') <i class="fa-regular fa-circle-exclamation text-danger ms-2"></i> @enderror
-                                    </div>
+                            <div class="d-flex flex-column align-items-start mb-3">
+                                <label for="rating" class="form-label">Rating</label>
+                                <div class="d-flex flex-column justify-content-start align-items-center">
+                                    <div class="flex-row justify-content-start align-items-center" id="rating-stars" style="margin-bottom: -17.5px;"></div>
+                                    <input type="range" min="0" max="10" class="opacity-0 w-100 @error('rating') is-invalid @enderror" id="rating" name="stars" value="{{ old('stars', $userReview->stars ?? '') }}">
                                 </div>
                             </div>
+
                             <div class="mb-3">
                                 <label for="title" class="form-label">Title</label>
                                 <input type="text" class="form-control @error('title') is-invalid @enderror" id="title" name="title" value="{{ old('title', $userReview->title ?? '') }}">
@@ -211,36 +165,40 @@
                                 <label for="body" class="form-label">Body</label>
                                 <textarea class="form-control @error('body') is-invalid @enderror" id="body" name="body" rows="3">{{ old('body', $userReview->body ?? '') }}</textarea>
                             </div>
-                            <div class="mb-3 d-flex flex-row">
-                                <button type="submit" class="btn btn-primary">{{ $userReview ? 'Edit' : 'Submit' }}</button>
-                            </div>
-                        </form>
+                            <button type="submit" class="btn btn-primary">@if($userReview)<i class="fa-solid fa-pencil me-2"></i>@endif{{ $userReview ? 'Edit' : 'Submit' }}</button>
+                            </form>
                     </div>
                 </div>
             </div>
         </div>
-    @endcan
+    @endif
 
     <div class="row">
         <div class="col-12 p-3">
-            <h2 class="h5">Reviews</h2>
-                <div class="row">
+            <h2 class="h5 mb-3">Reviews</h2>
+                <div class="d-flex flex-column">
                     @foreach($reviews as $review)
-                        <div class="col-12">
-                            <div class="card">
-                                <div class="card-body">
+                        <div class="card mb-3">
+                            <div class="card-body d-flex flex-column justify-content-start align-items-start">
+                                <div class="d-flex w-100 flex-row justify-content-between align-items-center mb-2">
+                                    <h1 class="card-title h5 mb-0">
+                                        {{$review->title}}
+                                    </h1>
                                     <div class="d-flex flex-row justify-content-start align-items-center">
                                         @foreach (generateRatingStars($review->stars) as $star)
-                                            <img class="review-star" style="width: 10px;" src="{{ Storage::url('public/' . $star . '.svg') }}" alt="">
+                                            <img class="review-star" style="width: 20px;" src="{{ Storage::url('public/' . $star . '.svg') }}" alt="">
                                         @endforeach
                                     </div>
-                                    <h1 class="card-title h5">{{$review->title}}</h1>
-                                    <p class="card-text">{{$review->body}}</p>
                                 </div>
+                                <p class="card-text">{{$review->body}}</p>
+                            </div>
+                            <div class="card-footer">
+                                <p class="card-text text-muted">{{$review->user->name}} - {{$review->created_at->diffForHumans()}}</p>
                             </div>
                         </div>
                     @endforeach
                 </div>
+            {{$reviews->links()}}
         </div>
     </div>
 
@@ -249,6 +207,25 @@
     @endpush
 
     <script>
+        function generateRatingStars(rating) {
+            const normalizedRating = rating / 2;
+            let starsHTML = '';
+            let remainingRating = normalizedRating;
+
+            for (let i = 0; i < 5; i++) {
+                if (remainingRating >= 1) {
+                    starsHTML += '<img class="review-star" style="width: 30px;" src="/storage/star-full.svg" alt="">';
+                    remainingRating -= 1;
+                } else if (remainingRating >= 0.5) {
+                    starsHTML += '<img class="review-star" style="width: 30px;" src="/storage/star-half.svg" alt="">';
+                    remainingRating -= 0.5;
+                } else {
+                    starsHTML += '<img class="review-star" style="width: 30px;" src="/storage/star-empty.svg" alt="">';
+                }
+            }
+
+            return starsHTML;
+        }
         document.addEventListener('DOMContentLoaded', function() {
             const quantityInput = document.getElementById('quantity');
             const totalElement = document.getElementById('total');
@@ -261,6 +238,15 @@
             }
             quantityInput.addEventListener('input', updateTotal);
             updateTotal();
+
+            const ratingInput = document.getElementById('rating');
+            const ratingStars = document.getElementById('rating-stars');
+            function updateRatingStars() {
+                const rating = parseFloat(ratingInput.value) || 0;
+                ratingStars.innerHTML = generateRatingStars(rating);
+            }
+            ratingInput.addEventListener('input', updateRatingStars);
+            updateRatingStars();
         });
     </script>
 

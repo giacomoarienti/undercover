@@ -43,8 +43,6 @@ Route::middleware(AuthMiddleware::class)->group(function () {
 
     Route::get('/settings', [UserController::class, 'settings'])->name('settings');
     Route::patch('/settings', [UserController::class, 'edit'])->name('settings');
-
-    Route::resource('orders', OrderController::class)->only(['index', 'show']);
 });
 
 /**
@@ -73,9 +71,10 @@ Route::middleware(ClientMiddleware::class)->group(function () {
     Route::delete('/settings/payment-methods', [PaymentMethodController::class, 'delete'])->name('payment-methods');
     Route::patch('/settings/payment-methods', [PaymentMethodController::class, 'edit'])->name('payment-methods');
 
-    Route::resource('orders', OrderController::class)->only(['store', 'create']);
+
 });
 
+Route::resource('orders', OrderController::class)->only(['index', 'show', 'store', 'create']);
 Route::resource('products', ProductController::class);
 Route::resource('reviews', ReviewController::class)->only(['store', 'update', 'destroy']);
 Route::resource('phones', PhoneController::class)->only(['index', 'store']);
