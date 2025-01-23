@@ -55,7 +55,7 @@
             <!-- image and name -->
             <div class="col-12 col-md-6 mb-3">
                 <div class="d-flex flex-column flex-md-row">
-                    <img src="" alt="" class="img-thumbnail mb-2 mb-md-0 me-md-3" width="150" height="150">
+                    <img src="" alt="" class="img-thumbnail mb-2 mb-md-0 me-md-3 responsive-image" width="80">
                     <h3 class="h6 mb-0"></h3>
                 </div>
             </div>
@@ -104,6 +104,12 @@
             display: inline-block;
         }
 
+        .responsive-image {
+            width: auto;
+            max-width: 80px;
+            height: auto;
+        }
+
         @media (max-width: 768px) {
             .cart-item {
                 margin-bottom: 1rem;
@@ -118,6 +124,12 @@
 
             .input-group {
                 width: auto;
+            }
+
+            .responsive-image {
+                width: 50%;
+                max-width: 100%;
+                height: auto;
             }
         }
     </style>
