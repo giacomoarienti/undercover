@@ -11,6 +11,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use function Laravel\Prompts\error;
 
 class ProductController extends Controller
 {
@@ -96,42 +98,8 @@ class ProductController extends Controller
         return view('products.edit')->with('product', null);
     }
 
-    private function carryOut(Request $request)
+    private function carryOut($validated)
     {
-        $validated = $request->validate([
-                'name' => 'required|string|max:100',
-                'description' => 'required|string|max:511',
-                'price' => 'required|numeric|min:0.01',
-                'material_id' => 'required|integer|exists:materials,id',
-                'phone' => 'required|string',
-                'brand' => 'required|string',
-                'colors' => 'required|array',
-                'colors.*.selected' => 'nullable',
-                'colors.*.quantity' => 'exclude_if:colors.*.selected,false|required|integer|min:1',
-                'images' => 'required|array|min:1',
-                'images.*' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            ],
-            [
-                'name.required' => 'The product name is required.',
-                'description.required' => 'A description is required.',
-                'price.required' => 'The price is required.',
-                'price.min' => 'The price must be greater than 0.',
-                'material_id.required' => 'Please select a material.',
-                'material_id.exists' => 'The selected material does not exist.',
-                'phone.required' => 'A phone model is required.',
-                'brand.required' => 'A brand name is required.',
-                'colors.required' => 'At least one color must be selected.',
-                'colors.*.quantity.required' => 'The quantity is required when a color is selected.',
-                'colors.*.quantity.min' => 'The quantity of any selected color must be at least 1.',
-                'images.required' => 'Please upload at least one image.',
-                'images.*.image' => 'Each file must be an image.',
-                'images.*.mimes' => 'Images must be in one of the following formats: jpeg, png, jpg, gif, svg.',
-                'images.*.max' => 'Each image must not exceed 2 MB.',
-            ]
-        );
-
-        error_log("C");
-
         $user = Auth::user();
 
         $brand = Brand::firstWhere(['name' => $validated['brand']]);
@@ -156,7 +124,11 @@ class ProductController extends Controller
             }
         )->all());
 
-        foreach ($validated['images'] as $image) {
+        foreach ($validated['delete_images'] ?? [] as $id) {
+            Media::find($id)->delete();
+        }
+
+        foreach ($validated['images'] ?? [] as $image) {
             error_log("Immagine");
             $product->addMedia($image)->toMediaCollection('images');
         }
@@ -171,11 +143,41 @@ class ProductController extends Controller
     {
         Gate::authorize('create', Product::class);
 
-        error_log(json_encode($request->all()));
+        $validated = $request->validate([
+            'name' => 'required|string|max:100',
+            'description' => 'required|string|max:511',
+            'price' => 'required|numeric|min:0.01',
+            'material_id' => 'required|integer|exists:materials,id',
+            'phone' => 'required|string',
+            'brand' => 'required|string',
+            'colors' => 'required|array',
+            'colors.*.selected' => 'nullable',
+            'colors.*.quantity' => 'exclude_if:colors.*.selected,false|required|integer|min:1',
+            'images' => 'required|array|min:1',
+            'images.*' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ],
+            [
+                'name.required' => 'The product name is required.',
+                'description.required' => 'A description is required.',
+                'price.required' => 'The price is required.',
+                'price.min' => 'The price must be greater than 0.',
+                'material_id.required' => 'Please select a material.',
+                'material_id.exists' => 'The selected material does not exist.',
+                'phone.required' => 'A phone model is required.',
+                'brand.required' => 'A brand name is required.',
+                'colors.required' => 'At least one color must be selected.',
+                'colors.*.quantity.required' => 'The quantity is required when a color is selected.',
+                'colors.*.quantity.min' => 'The quantity of any selected color must be at least 1.',
+                'images.required' => 'Please upload at least one image.',
+                'images.*.image' => 'Each file must be an image.',
+                'images.*.mimes' => 'Images must be in one of the following formats: jpeg, png, jpg, gif, svg.',
+                'images.*.max' => 'Each image must not exceed 2 MB.',
+            ]
+        );
 
-        $product = $this->carryOut($request);
+        $product = $this->carryOut($validated);
 
-        return redirect()->route('products.show', ['product' => $product->slug]);
+        return redirect()->route('products.show', $product->slug);
     }
 
     /**
@@ -198,7 +200,7 @@ class ProductController extends Controller
     public function edit(Product $product)
     {
         Gate::authorize('update', $product);
-        return view('products.edit')->with('product', $product);
+        return view('products.edit', ['product' => $product]);
     }
 
     /**
@@ -207,8 +209,49 @@ class ProductController extends Controller
     public function update(Request $request, Product $product)
     {
         Gate::authorize('update', $product);
-        $product = $this->carryOut($request);
-        return redirect()->route('products.show', ['product' => $product->slug]);
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:100',
+            'description' => 'required|string|max:511',
+            'price' => 'required|numeric|min:0.01',
+            'material_id' => 'required|integer|exists:materials,id',
+            'phone' => 'required|string',
+            'brand' => 'required|string',
+            'colors' => 'required|array',
+            'colors.*.selected' => 'nullable',
+            'colors.*.quantity' => 'exclude_if:colors.*.selected,false|required|integer|min:1',
+            'images' => 'nullable|array',
+            'images.*' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'delete_images' => 'nullable|array',
+            'delete_images.*' => 'nullable|integer|exists:media,id',
+        ],
+            [
+                'name.required' => 'The product name is required.',
+                'description.required' => 'A description is required.',
+                'price.required' => 'The price is required.',
+                'price.min' => 'The price must be greater than 0.',
+                'material_id.required' => 'Please select a material.',
+                'material_id.exists' => 'The selected material does not exist.',
+                'phone.required' => 'A phone model is required.',
+                'brand.required' => 'A brand name is required.',
+                'colors.required' => 'At least one color must be selected.',
+                'colors.*.quantity.required' => 'The quantity is required when a color is selected.',
+                'colors.*.quantity.min' => 'The quantity of any selected color must be at least 1.',
+                'images.*.image' => 'Each file must be an image.',
+                'images.*.mimes' => 'Images must be in one of the following formats: jpeg, png, jpg, gif, svg.',
+                'images.*.max' => 'Each image must not exceed 2 MB.',
+                'delete_images.*.exists' => 'The selected image does not exist.',
+            ]
+        );
+
+        $images = $product->getMedia('images')->count();
+        if($images + count($validated['images'] ?? []) <= count($validated['delete_images'] ?? [])) {
+            return redirect()->back()->withErrors(['delete_images' => 'You cannot delete all the images.']);
+        }
+
+        $product = $this->carryOut($validated);
+
+        return redirect()->route('products.show', $product->slug);
     }
 
     /**

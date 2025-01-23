@@ -19,7 +19,7 @@
                     <form class="d-none d-md-flex justify-content-center align-items-center col-8" action="{{ route('products.index') }}" method="GET" role="search">
                         <div class="input-group rounded-pill">
                             <span class="input-group-text"><i class="fa-solid fa-magnifying-glass"></i></span>
-                            <input type="text" name="search" class="form-control" placeholder="Find your new identity" value="{{(isset($filters) and isset($filters['search'])) ? $filters['search'] : ''}}">
+                            <input type="text" name="search" class="form-control" placeholder="find your new identity" value="{{(isset($filters) and isset($filters['search'])) ? $filters['search'] : ''}}">
                         </div>
                     </form>
                 </div>

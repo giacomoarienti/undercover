@@ -2,7 +2,7 @@
 
 @section('content')
     <h1>{{$product ? 'Edit product' : 'New product'}}</h1>
-    <form action="{{ $product ? route('products.update', ['product', $product->slug]) : route('products.store') }}" method="POST" enctype="multipart/form-data">
+    <form id="form" action="{{ $product ? route('products.update', $product->slug) : route('products.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         @if ($product)
             @method("PATCH")
@@ -74,6 +74,15 @@
                 </div>
                 <div class="card-body">
                     <div id="image-preview-container" class="d-flex flex-row align-items-center justify-items-start overflow-x-scroll">
+                        @foreach($product?->getMedia('images') as $image)
+                            <div class="d-flex flex-column justify-content-between align-items-center m-2 col-2 flex-shrink-0" id="existing-image-{{$image->id}}">
+                                <img src="{{$image->getUrl()}}" alt="" class="img-thumbnail m-2 h-100">
+                                <button class="btn btn-danger m-2 mt-0" type="button" onclick="addDeleteImage({{$image->id}})">
+                                    Delete
+                                    <i class="fa-solid fa-circle-minus"></i>
+                                </button>
+                            </div>
+                        @endforeach
                         <button id="image-add" type="button" class="btn btn-success m-2" onclick="addImage()">
                             Add
                             <i class="fa-solid fa-circle-plus"></i>
@@ -188,5 +197,14 @@
         }
         input.click();
         document.getElementById('image-add').before(newImage);
+    }
+    function addDeleteImage(id) {
+        document.getElementById(`existing-image-${id}`).remove();
+
+        let deleteCommand = document.createElement('input');
+        deleteCommand.type = 'hidden';
+        deleteCommand.name = 'delete_images[]';
+        deleteCommand.value = id;
+        document.getElementById(`form`).appendChild(deleteCommand);
     }
 </script>
