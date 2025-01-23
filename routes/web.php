@@ -35,7 +35,6 @@ Route::name('auth.')->group(function () {
  * Routes only accessible by authenticated users.
  */
 Route::middleware(AuthMiddleware::class)->group(function () {
-    Route::view('/', 'index')->name('index');
 
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications');
     Route::patch('/notifications', [NotificationController::class, 'edit'])->name('notifications');
@@ -45,6 +44,9 @@ Route::middleware(AuthMiddleware::class)->group(function () {
     Route::patch('/settings', [UserController::class, 'edit'])->name('settings');
 
     Route::get('/coupons/{code}', [CouponController::class, 'show'])->name('coupons');
+
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
 });
 
 /**
@@ -59,6 +61,12 @@ Route::middleware(SellerMiddleware::class)->group(function () {
     Route::post('/settings/reception-methods', [ReceptionMethodController::class, 'store'])->name('reception-methods');
     Route::delete('/settings/reception-methods', [ReceptionMethodController::class, 'delete'])->name('reception-methods');
     Route::patch('/settings/reception-methods', [ReceptionMethodController::class, 'edit'])->name('reception-methods');
+
+    Route::post('/products', [ProductController::class, 'store'])->name('products.store');
+    Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
+    Route::get('/products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
+    Route::patch('/products/{product}', [ProductController::class, 'update'])->name('products.update');
+    Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
 });
 
 /**
@@ -72,13 +80,17 @@ Route::middleware(ClientMiddleware::class)->group(function () {
     Route::post('/settings/payment-methods', [PaymentMethodController::class, 'store'])->name('payment-methods');
     Route::delete('/settings/payment-methods', [PaymentMethodController::class, 'delete'])->name('payment-methods');
     Route::patch('/settings/payment-methods', [PaymentMethodController::class, 'edit'])->name('payment-methods');
+
+    Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
+    Route::get('/orders/create', [OrderController::class, 'create'])->name('orders.create');
+
+    Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
+    Route::patch('/reviews/{review}', [ReviewController::class, 'update'])->name('reviews.update');
+    Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
 });
 
-Route::resource('orders', OrderController::class)->only(['index', 'show'])->middleware('auth');
 
-Route::resource('orders', OrderController::class)->only(['store', 'create'])->middleware('client');
+Route::view('/', 'index')->name('index');
 
-Route::resource('products', ProductController::class)->only(['index', 'show']);
-Route::resource('products', ProductController::class)->only(['store', 'create', 'edit', 'update', 'destroy'])->middleware('seller');
-
-Route::resource('reviews', ReviewController::class)->only(['store', 'update', 'destroy'])->middleware('client');
+Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
