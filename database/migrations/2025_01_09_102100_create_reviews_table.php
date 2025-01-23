@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('stars');
             $table->foreignId('user_id')->constrained('users', 'id');
             $table->foreignId('product_id')->constrained('products', 'id');
+            $table->unique(['user_id', 'product_id']);
         });
     }
 

@@ -44,8 +44,6 @@ Route::middleware(AuthMiddleware::class)->group(function () {
     Route::get('/settings', [UserController::class, 'settings'])->name('settings');
     Route::patch('/settings', [UserController::class, 'edit'])->name('settings');
 
-    Route::resource('orders', OrderController::class)->only(['index', 'show']);
-
     Route::get('/coupons/{code}', [CouponController::class, 'show'])->name('coupons');
 });
 
@@ -74,10 +72,9 @@ Route::middleware(ClientMiddleware::class)->group(function () {
     Route::post('/settings/payment-methods', [PaymentMethodController::class, 'store'])->name('payment-methods');
     Route::delete('/settings/payment-methods', [PaymentMethodController::class, 'delete'])->name('payment-methods');
     Route::patch('/settings/payment-methods', [PaymentMethodController::class, 'edit'])->name('payment-methods');
-
-    Route::resource('orders', OrderController::class)->only(['store', 'create']);
 });
 
+Route::resource('orders', OrderController::class)->only(['index', 'show', 'store', 'create']);
 Route::resource('products', ProductController::class);
 Route::resource('reviews', ReviewController::class)->only(['store', 'update', 'destroy']);
 Route::resource('phones', PhoneController::class)->only(['index', 'store']);

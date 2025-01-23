@@ -56,9 +56,4 @@ class SpecificProductPolicy
     {
         return $user->can('restore', $specificProduct->product);
     }
-
-    public function review(User $user, SpecificProduct $specificProduct): bool
-    {
-        return $user->hasBoughtProduct($specificProduct->product);
-    }
 }

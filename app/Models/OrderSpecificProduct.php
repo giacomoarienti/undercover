@@ -30,7 +30,7 @@ class OrderSpecificProduct extends Model
 {
     protected $fillable = [
         'order_id',
-        'product_id',
+        'specific_product_id',
         'quantity',
     ];
 }

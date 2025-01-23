@@ -78,7 +78,7 @@ class Order extends Model
             SpecificProduct::find($item->id)->buy($item->pivot->quantity);
             OrderSpecificProduct::create([
                 'order_id' => $order->id,
-                'product_id' => $item->id,
+                'specific_product_id' => $item->id,
                 'quantity' => $item->pivot->quantity,
             ]);
         }
