@@ -65,8 +65,6 @@
             {{ $notifications->links() }}
         </nav>
     @else
-        <div class="text-center p-4 bg-light rounded">
-            <p class="text-muted">No notifications.</p>
-        </div>
+        <h2 class="h4">No notifications</h2>
     @endif
 @endsection
