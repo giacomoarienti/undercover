@@ -75,6 +75,16 @@ class CouponController extends Controller
         return to_route('coupons')->with('message', 'Coupon updated');
     }
 
+    public function show(string $code)
+    {
+        $coupon = Coupon::where('code', $code)->first();
+        if(!$coupon) {
+            return response()->json(['message' => 'Coupon not found'], 404);
+        }
+
+        return response()->json(['coupon' => $coupon]);
+    }
+
     public function destroy(Request $request)
     {
         /** @var User $user */

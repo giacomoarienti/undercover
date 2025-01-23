@@ -45,6 +45,8 @@ Route::middleware(AuthMiddleware::class)->group(function () {
     Route::patch('/settings', [UserController::class, 'edit'])->name('settings');
 
     Route::resource('orders', OrderController::class)->only(['index', 'show']);
+
+    Route::get('/coupons/{code}', [CouponController::class, 'show'])->name('coupons');
 });
 
 /**
