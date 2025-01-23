@@ -15,7 +15,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property string $name
@@ -110,7 +110,7 @@ class Product extends Model implements HasMedia
     protected function mediaUrl(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->getFirstMediaUrl()
+            get: fn () => $this->getFirstMediaUrl('images', 'thumb')
         );
     }
 
