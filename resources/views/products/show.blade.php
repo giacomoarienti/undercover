@@ -1,8 +1,23 @@
 @extends('layouts.app')
-
-
-
-
+<?php
+    function generateRatingStars(float $rating): array
+    {
+        $stars = [];
+        $normalizedRating = $rating / 2; // Normalize the rating to a 0-5 scale
+        for ($i = 0; $i < 5; $i++) {
+            if ($normalizedRating >= 1) {
+                $stars[] = 'star-full';
+                $normalizedRating -= 1;
+            } elseif ($normalizedRating >= 0.5) {
+                $stars[] = 'star-half';
+                $normalizedRating -= 0.5;
+            } else {
+                $stars[] = 'star-empty';
+            }
+        }
+        return $stars;
+    }
+?>
 <style>
     .rate{
 
@@ -92,22 +107,10 @@
             <div class="border-bottom p-2">
                 <h1 class="mb-0">{{$product->name}}</h1>
                 <h2 class="text-muted h6">{{$product->phone->brand->name . ' ' . $product->phone->name}}</h2>
-                <div>
-                    <?php
-                    $score = $product->reviewsAverage();
-                    $stars = intdiv($score, 2);
-                    $halfStar = ($score - (int)$score) >= 0.5;
-                    $emptyStars = 5 - $stars - ($halfStar ? 1 : 0);
-                    ?>
-                    @for($i = 0; $i<$stars; $i++)
-                        <i class="fa-solid fa-star text-body-emphasis"></i>
-                    @endfor
-                    @if($halfStar)
-                        <i class="fa-solid fa-star-half-stroke text-body-emphasis"></i>
-                    @endif
-                    @for($i = 0; $i<$emptyStars; $i++)
-                        <i class="fa-solid fa-star text-muted"></i>
-                    @endfor
+                <div class="d-flex flex-row justify-content-start align-items-center">
+                    @foreach (generateRatingStars($product->reviewsAverage()) as $star)
+                        <img class="review-star" style="width: 20px;" src="{{ Storage::url('public/' . $star . '.svg') }}" alt="">
+                    @endforeach
                 </div>
             </div>
 
@@ -130,42 +133,40 @@
                     <a href="{{ route('products.edit', $product->slug) }}" class="btn btn-primary w-100"><i class="fa-solid fa-pencil me-2"></i>Edit</a>
                 </div>
             @else
-                <form>
-                    <div class="border-bottom p-2">
-                        <h2 class="h5">
-                            Color
-                        </h2>
-                            <?php $n = 0 ?>
-                        @foreach ($product->specificProducts as $specificProduct)
-                            <input type="radio" class="btn-check" name="color" id="option{{++$n}}" autocomplete="off"
-                                   value="{{$specificProduct->color->slug}}">
-                            <label class="btn btn-secondary rounded-pill me-1 mb-1" for="option{{$n}}"><i
-                                    class="fa-solid fa-circle me-1"
-                                    style="color: {{$specificProduct->color->rgb}};"></i>{{$specificProduct->color->name}}
-                            </label>
-                        @endforeach
-                    </div>
-                    <div class="border-bottom p-2">
-                        <h2 class="h5">
-                            <label for="quantity">Amount</label>
-                        </h2>
-                        <input type="number" step="1" min="0" class="form-control" id="quantity" name="quantity"
-                               value="{{old('quantity', 1)}}">
-                    </div>
-                    <div class="p-2">
-                        <div class="row">
-                            <div class="col-6">
-                                <h2 class="h5">
-                                    Total
-                                </h2>
-                                <p class="h2 mb-0 text-muted" id="total"></p>
-                            </div>
-                            <div class="col-6 d-flex flex-column justify-content-center align-items-end">
-                                <button type="submit" class="btn btn-primary w-100">Add to cart</button>
-                            </div>
+                <div class="border-bottom p-2">
+                    <h2 class="h5">
+                        Color
+                    </h2>
+                        <?php $n = 0 ?>
+                    @foreach ($product->specificProducts as $specificProduct)
+                        <input type="radio" class="btn-check" name="color" id="option{{++$n}}" autocomplete="off"
+                               value="{{$specificProduct->id}}">
+                        <label class="btn btn-secondary rounded-pill me-1 mb-1" for="option{{$n}}"><i
+                                class="fa-solid fa-circle me-1"
+                                style="color: {{$specificProduct->color->rgb}};"></i>{{$specificProduct->color->name}}
+                        </label>
+                    @endforeach
+                </div>
+                <div class="border-bottom p-2">
+                    <h2 class="h5">
+                        <label for="quantity">Amount</label>
+                    </h2>
+                    <input type="number" step="1" min="0" class="form-control" id="quantity" name="quantity"
+                           value="{{old('quantity', 1)}}">
+                </div>
+                <div class="p-2">
+                    <div class="row">
+                        <div class="col-6">
+                            <h2 class="h5">
+                                Total
+                            </h2>
+                            <p class="h2 mb-0 text-muted" id="total"></p>
+                        </div>
+                        <div class="col-6 d-flex flex-column justify-content-center align-items-end">
+                            <button id="add-to-cart" type="button" class="btn btn-primary w-100">Add to cart</button>
                         </div>
                     </div>
-                </form>
+                </div>
             @endif
         </div>
     </div>
@@ -223,28 +224,44 @@
     <div class="row">
         <div class="col-12 p-3">
             <h2 class="h5">Reviews</h2>
-            @foreach($reviews as $review)
-
-            @endforeach
+                <div class="row">
+                    @foreach($reviews as $review)
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="d-flex flex-row justify-content-start align-items-center">
+                                        @foreach (generateRatingStars($review->stars) as $star)
+                                            <img class="review-star" style="width: 10px;" src="{{ Storage::url('public/' . $star . '.svg') }}" alt="">
+                                        @endforeach
+                                    </div>
+                                    <h1 class="card-title h5">{{$review->title}}</h1>
+                                    <p class="card-text">{{$review->body}}</p>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
         </div>
     </div>
 
+    @push('scripts')
+        @vite('resources/js/views/products.show.js')
+    @endpush
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const quantityInput = document.getElementById('quantity');
+            const totalElement = document.getElementById('total');
+            const price = parseFloat("{{$product->price}}");
+
+            function updateTotal() {
+                const quantity = parseInt(quantityInput.value, 10) || 0;
+                const total = (price * quantity).toFixed(2);
+                totalElement.textContent = `${total}€`;
+            }
+            quantityInput.addEventListener('input', updateTotal);
+            updateTotal();
+        });
+    </script>
+
 @endsection
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const quantityInput = document.getElementById('quantity');
-        const totalElement = document.getElementById('total');
-        const price = parseFloat("{{$product->price}}");
-
-        function updateTotal() {
-            const quantity = parseInt(quantityInput.value, 10) || 0;
-            const total = (price * quantity).toFixed(2);
-            totalElement.textContent = `${total}€`;
-        }
-
-        quantityInput.addEventListener('input', updateTotal);
-
-        updateTotal();
-    });
-
-</script>
