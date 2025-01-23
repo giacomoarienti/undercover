@@ -1,5 +1,5 @@
 @extends('layouts.app')
-<?php
+@php
     function generateRatingStars(float $rating): array
     {
         $stars = [];
@@ -17,17 +17,20 @@
         }
         return $stars;
     }
-?>
+@endphp
+
 
 
 @section('content')
     <div class="row border-bottom">
-        <div class="col-md-6 p-3" style="max-height: 70vh">
+        <div class="col-md-6 p-3">
             <div class="card h-100 p-0 bg-white p-0">
                 <div class="card-body h-100 p-0 m-0">
                     <div id="imagesCarousel" class="carousel slide col-12 h-100 m-0" data-bs-theme="dark">
                         <div class="carousel-indicators">
-                            <?php $imagesNumber = $product->getMedia('images')->count(); ?>
+                            @php
+                                $imagesNumber = $product->getMedia('images')->count();
+                            @endphp
                             @for($i=0; $i<$imagesNumber; $i++)
                                 <button type="button" data-bs-target="#imagesCarousel" data-bs-slide-to="{{$i}}"
                                         class="{{$i==0?'active':''}}"></button>
@@ -63,7 +66,7 @@
                 <h2 class="text-muted h6">{{$product->phone->brand->name . ' ' . $product->phone->name}}</h2>
                 <div class="d-flex flex-row justify-content-start align-items-center">
                     @foreach (generateRatingStars($product->reviewsAverage()) as $star)
-                        <img class="review-star" style="width: 20px;" src="{{ Storage::url('public/' . $star . '.svg') }}" alt="">
+                        <img class="review-star-normal" src="{{ Storage::url('public/' . $star . '.svg') }}" alt="">
                     @endforeach
                 </div>
             </div>
@@ -186,7 +189,7 @@
                                     </h1>
                                     <div class="d-flex flex-row justify-content-start align-items-center">
                                         @foreach (generateRatingStars($review->stars) as $star)
-                                            <img class="review-star" style="width: 20px;" src="{{ Storage::url('public/' . $star . '.svg') }}" alt="">
+                                            <img class="review-star-normal" src="{{ Storage::url('public/' . $star . '.svg') }}" alt="">
                                         @endforeach
                                     </div>
                                 </div>
@@ -214,13 +217,13 @@
 
             for (let i = 0; i < 5; i++) {
                 if (remainingRating >= 1) {
-                    starsHTML += '<img class="review-star" style="width: 30px;" src="/storage/star-full.svg" alt="">';
+                    starsHTML += '<img class="review-star-big" src="/storage/star-full.svg" alt="">';
                     remainingRating -= 1;
                 } else if (remainingRating >= 0.5) {
-                    starsHTML += '<img class="review-star" style="width: 30px;" src="/storage/star-half.svg" alt="">';
+                    starsHTML += '<img class="review-star-big" src="/storage/star-half.svg" alt="">';
                     remainingRating -= 0.5;
                 } else {
-                    starsHTML += '<img class="review-star" style="width: 30px;" src="/storage/star-empty.svg" alt="">';
+                    starsHTML += '<img class="review-star-big" src="/storage/star-empty.svg" alt="">';
                 }
             }
 

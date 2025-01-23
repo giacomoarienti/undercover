@@ -15,7 +15,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 /**
- *
+ * 
  *
  * @property int $id
  * @property string $name
@@ -55,6 +55,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property string $slug
  * @property-read mixed $media_url
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereSlug($value)
+ * @property-read mixed $url
  * @mixin \Eloquent
  */
 class Product extends Model implements HasMedia

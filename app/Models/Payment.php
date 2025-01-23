@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 
 /**
- *
+ * 
  *
  * @property int $id
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -28,6 +28,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment whereUpdatedAt($value)
  * @property int $payment_method_id
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment wherePaymentMethodId($value)
+ * @property-read \App\Models\PaymentStatus $paymentStatus
  * @mixin \Eloquent
  */
 class Payment extends Model

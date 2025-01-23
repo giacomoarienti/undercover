@@ -74,7 +74,11 @@ Route::middleware(ClientMiddleware::class)->group(function () {
     Route::patch('/settings/payment-methods', [PaymentMethodController::class, 'edit'])->name('payment-methods');
 });
 
-Route::resource('orders', OrderController::class)->only(['index', 'show', 'store', 'create']);
-Route::resource('products', ProductController::class);
-Route::resource('reviews', ReviewController::class)->only(['store', 'update', 'destroy']);
-Route::resource('phones', PhoneController::class)->only(['index', 'store']);
+Route::resource('orders', OrderController::class)->only(['index', 'show'])->middleware('auth');
+
+Route::resource('orders', OrderController::class)->only(['store', 'create'])->middleware('client');
+
+Route::resource('products', ProductController::class)->only(['index', 'show']);
+Route::resource('products', ProductController::class)->only(['store', 'create', 'edit', 'update', 'destroy'])->middleware('seller');
+
+Route::resource('reviews', ReviewController::class)->only(['store', 'update', 'destroy'])->middleware('client');

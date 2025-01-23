@@ -1,0 +1,20 @@
+#imagesCarousel {
+    max-height: 60vh;
+}
+
+#hatLogo {
+    max-height: 100px;
+    width: 100px
+}
+
+.review-star-normal {
+    width: 20px;
+}
+
+.review-star-big {
+    width: 30px;
+}
+
+.product-image {
+    max-height: 20vh;
+}

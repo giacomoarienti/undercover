@@ -5,7 +5,6 @@
 @endpush
 
 @section('content')
-
     <h1>Checkout</h1>
     <div class="card">
         <div class="card-body border-bottom">

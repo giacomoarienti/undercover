@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
- *
+ * 
  *
  * @property int $id
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Shipping whereShippingStatusId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Shipping whereTrackingNumber($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Shipping whereUpdatedAt($value)
+ * @property-read \App\Models\ShippingStatus $shippingStatus
  * @mixin \Eloquent
  */
 class Shipping extends Model

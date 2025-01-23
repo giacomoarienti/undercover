@@ -6,9 +6,9 @@
 <div class="sticky-top border-bottom text-center">
     <nav class="container navbar navbar-expand-lg navbar-light bg-light">
         <div class="row h-100 w-100 justify-content-between align-items-center">
-            <div class="d-none col-md-3 d-md-inline-flex justify-content-start ps-3" style="max-height: 80px;">
+            <div class="d-none col-md-3 d-md-inline-flex justify-content-start ps-3">
                 <a class="navbar-brand d-none d-md-inline-flex" href="/" title="Home">
-                    <img src="{{ Storage::url('public/hat.svg') }}" alt="" style="max-height: 100px; width: 100px">
+                    <img id="hatLogo" src="{{ Storage::url('public/hat.svg') }}" alt="">
                 </a>
             </div>
             <div class="col-8 col-md-6 h-100">

@@ -10,9 +10,7 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Log;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
-use function Laravel\Prompts\error;
 
 class ProductController extends Controller
 {
@@ -188,7 +186,7 @@ class ProductController extends Controller
         Gate::authorize('view', $product);
 
         $user = Auth::user();
-        $reviews = $product->reviews()/*->whereNot('user_id', $user->id)*/->paginate(5);
+        $reviews = $product->reviews()->whereNot('user_id', $user->id)->paginate(5);
         $userReview = $user ? $product->reviews()->where('user_id', $user->id)->first() : null;
 
         return view('products.show', compact('product', 'reviews', 'userReview', 'user'));
