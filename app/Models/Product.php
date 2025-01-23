@@ -103,7 +103,9 @@ class Product extends Model implements HasMedia
         });
 
         static::deleting(function ($product) {
-            $product->specificProducts()->delete();
+            $product->specificProducts()->each(
+                fn ($specificProduct) => $specificProduct->delete()
+            );
         });
     }
 

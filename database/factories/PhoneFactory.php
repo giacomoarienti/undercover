@@ -40,6 +40,7 @@ class PhoneFactory extends Factory
 
         // Construct the phone name
         $name = "{$phone} {$number} {$description}";
+
         $slug = Str::slug($name);
 
         // Ensure the name is unique in the database

@@ -1,6 +1,6 @@
 export function showAlert(message, type) {
     const alertDiv = document.createElement('div');
-    alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed bottom-0 start-0 end-0 m-3`;
+    alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed bottom-0 start-0 end-0 m-3 z-3`;
     alertDiv.role = 'alert';
     alertDiv.innerHTML = `
             ${message}

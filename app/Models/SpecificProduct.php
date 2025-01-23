@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use function Illuminate\Events\queueable;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property int $quantity
@@ -56,8 +56,25 @@ class SpecificProduct extends Model
            $specificProduct->slug = $specificProduct->product->slug . '-' . $specificProduct->color->slug;
         });
 
+        static::restoring(function (SpecificProduct $specificProduct) {
+            error_log("SpecificProduct " . $specificProduct->slug . " restored");
+        });
+
+        static::deleting(function (SpecificProduct $specificProduct) {
+           error_log("SpecificProduct " . $specificProduct->slug . " deleted");
+        });
+
         static::deleted(queueable(function (SpecificProduct $specificProduct) {
-            //TODO: notifica utenti e venditori
+            error_log("SpecificProduct " . $specificProduct->slug . " deleted");
+            $specificProduct->product->user->sendNotification("Your product " . $specificProduct->product->name . " has depleted.",
+                "You just sold the last item with color " . $specificProduct->color->name . ".");
+            $usersWithSpecificProduct = User::whereHas('cart', function ($query) use ($specificProduct) {
+                $query->where('specific_product_id', $specificProduct->id);
+            })->each(function ($user) use ($specificProduct) {
+                $user->sendNotification("A product in your cart has depleted.",
+                    "The product " . $specificProduct->product->name . " with color " . $specificProduct->color->name . " has depleted and was removed from your cart.");
+                $user->removeFromCart($specificProduct);
+            });
         }));
     }
 

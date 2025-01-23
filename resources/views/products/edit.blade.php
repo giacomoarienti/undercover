@@ -205,6 +205,7 @@
         deleteCommand.type = 'hidden';
         deleteCommand.name = 'delete_images[]';
         deleteCommand.value = id;
+
         document.getElementById(`form`).appendChild(deleteCommand);
     }
 </script>

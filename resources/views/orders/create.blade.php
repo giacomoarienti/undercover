@@ -1,5 +1,11 @@
 @extends('layouts.app')
+
+@push('scripts')
+    @vite('resources/js/views/order.create.js')
+@endpush
+
 @section('content')
+
     <h1>Checkout</h1>
     <div class="card">
         <div class="card-body border-bottom">
@@ -153,28 +159,30 @@
             </fieldset>
         </div>
         <div class="card-body border-bottom">
-            <label for="couponCode" class="h5">Coupon</label>
+            <label for="coupon_code" class="h5">Coupon</label>
             <div class="input-group">
                 <input
                     type="text"
                     class="form-control"
-                    id="couponCode"
+                    id="coupon_code"
                     placeholder="Enter your coupon code">
                 <button
                     type="button"
-                    class="btn btn-primary">
+                    class="btn btn-primary"
+                    id="apply_coupon"
+                    onclick="applyCoupon()">
                     Apply
                 </button>
             </div>
-            <small id="couponHelp" class="form-text text-muted ms-1">
+            <small id="coupon_help" class="form-text text-muted ms-1">
                 Enter a valid coupon code to get a discount.
             </small>
         </div>
 
-        <form action="{{route('orders.store')}}" method="POST">
+        <form id="form" action="{{route('orders.store')}}" method="POST">
         @csrf
             <input type="hidden" name="payment_method_id" value="{{$paymentMethod?->id ?? ''}}"/>
-            <input type="hidden" name="coupon_id" value=""/>
+            <input id="coupon_id" type="hidden" name="coupon_id" value=""/>
             <div class="card-body form-group d-flex flex-row">
                 <button type="button" class="btn btn-danger w-100 me-2" onclick="location.href='{{ url()->previous() }}'">Abort</button>
                 <button type="submit" class="btn btn-primary w-100 ms-2">Place order</button>

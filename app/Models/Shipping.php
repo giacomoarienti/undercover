@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -32,12 +32,13 @@ class Shipping extends Model
 {
     protected $fillable = [
         "tracking_number",
-        "shipping_company"
+        "shipping_company",
+        "shipping_status_id"
     ];
 
-    public function status() : HasOne
+    public function shippingStatus() : BelongsTo
     {
-        return $this->hasOne(ShippingStatus::class);
+        return $this->belongsTo(ShippingStatus::class);
     }
 
     public function order() : HasOne

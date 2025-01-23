@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -55,12 +55,13 @@ class Payment extends Model
         });
     }
 
-    public function status() : HasOne
+    public function paymentStatus() : BelongsTo
     {
-        return $this->hasOne(PaymentStatus::class);
+        return $this->belongsTo(PaymentStatus::class);
     }
 
-    public function order() : HasOne {
+    public function order() : HasOne
+    {
         return $this->hasOne(Order::class);
     }
 

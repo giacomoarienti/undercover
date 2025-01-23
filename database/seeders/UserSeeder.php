@@ -17,8 +17,22 @@ class UserSeeder extends Seeder
         ]);
 
         User::factory()->create([
+            'name' => 'Test Client B',
+            'email' => 'testclientb@example.com',
+            'is_seller' => false,
+            'password' => 'password'
+        ]);
+
+        User::factory()->create([
             'name' => 'Test Vendor',
             'email' => 'testvendor@example.com',
+            'is_seller' => true,
+            'password' => 'password'
+        ]);
+
+        User::factory()->create([
+            'name' => 'Test Vendor B',
+            'email' => 'testvendorb@example.com',
             'is_seller' => true,
             'password' => 'password'
         ]);
