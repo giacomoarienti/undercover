@@ -53,7 +53,7 @@ class ProductController extends Controller
             ? collect($filters['colors'])->map(fn ($color_slug) => Color::firstWhere('slug', $color_slug)->id)
             : [];
 
-        $products = $user?->is_vendor ? Product::where('user_id', $user->id) : Product::query();
+        $products = $user?->is_seller ? Product::where('user_id', $user->id) : Product::query();
 
         if (!empty($filters['search'])) {
             $products = $products->where('name', 'like', '%' . $filters['search'] . '%');

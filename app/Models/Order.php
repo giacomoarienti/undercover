@@ -8,8 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Enums\OrderStatus;
+use Illuminate\Support\Facades\Log;
+
 /**
- * 
+ *
  *
  * @property int $id
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -51,30 +53,42 @@ class Order extends Model
         'shipping_id',
     ];
 
-    public function status() : Attribute {
+    protected $appends = [
+        'total_before_discount',
+        'discount',
+        'total',
+    ];
+
+    protected $with = [
+        'coupon',
+        'specificProducts',
+    ];
+
+    public function status(): Attribute
+    {
         return Attribute::make(
-            get: function() {
-                if($this->payment() == null){
+            get: function () {
+                if ($this->payment() == null) {
                     return OrderStatus::AWAITING_PAYMENT;
-                }elseif($this->shipping() == null){
+                } elseif ($this->shipping == null) {
                     return OrderStatus::PENDING;
-                }elseif($this->shipping->status->name == "delivered"){
+                } elseif ($this->shipping->status->name == "delivered") {
                     return OrderStatus::DELIVERED;
-                }else{
+                } else {
                     return OrderStatus::SHIPPED;
                 }
             }
         );
     }
 
-    public static function place(User $user, Payment $payment, ?Coupon $coupon) : Order
+    public static function place(User $user, Payment $payment, ?Coupon $coupon): Order
     {
         $order = Order::create([
             'user_id' => $user->id,
             'coupon_id' => $coupon?->id,
             'payment_id' => $payment->id,
         ]);
-        foreach($user->cart as $item) {
+        foreach ($user->cart as $item) {
             SpecificProduct::find($item->id)->buy($item->pivot->quantity);
             OrderSpecificProduct::create([
                 'order_id' => $order->id,
@@ -86,69 +100,80 @@ class Order extends Model
         return $order;
     }
 
-    public function completed() : Attribute {
+    public function completed(): Attribute
+    {
         return Attribute::make(
             get: fn() => $this->status() == OrderStatus::DELIVERED
         );
     }
 
-    public function total() : Attribute {
+    public function total(): Attribute
+    {
         return Attribute::make(
             get: fn() => $this->total_before_discount - $this->discount
         );
     }
 
-    public function vendorTotalBeforeDiscount(User $vendor) {
-        return $this->specificProducts->sum(fn($specificProduct) =>
-            $specificProduct->user_id == $vendor->id ?
-                $specificProduct->pivot->quantity * $specificProduct->price : 0);
+    public function vendorTotalBeforeDiscount(User $vendor)
+    {
+        return $this->specificProducts->sum(fn($specificProduct) => $specificProduct->product->user_id == $vendor->id ?
+            $specificProduct->pivot->quantity * $specificProduct->product->price : 0);
     }
 
-    public function vendorDiscount(User $vendor) {
+    public function vendorDiscount(User $vendor)
+    {
         return $this->coupon->user_id == $vendor->id ?
             $this->vendorTotalBeforeDiscount($vendor) * $this->coupon->discount : 0;
     }
 
-    public function vendorTotal(User $vendor) {
+    public function vendorTotal(User $vendor)
+    {
         return $this->vendorTotalBeforeDiscount($vendor) - $this->vendorDiscount($vendor);
     }
 
-    public function discount() : Attribute {
+    public function discount(): Attribute
+    {
         return Attribute::make(
             get: fn() => $this->coupon == null ? 0 : $this->specificProducts->sum(
-                fn($specificProduct) =>
-                    $specificProduct->user_id == $this->coupon->user_id ?
-                        $specificProduct->pivot->quantity * $specificProduct->price * $this->coupon->discount : 0
+                fn($specificProduct) => $specificProduct->product->user_id == $this->coupon->user_id ?
+                    $specificProduct->pivot->quantity * $specificProduct->product->price * $this->coupon->discount : 0
             )
         );
     }
 
-    public function totalBeforeDiscount() : Attribute {
+    public function totalBeforeDiscount(): Attribute
+    {
         return Attribute::make(
-            get: fn() => $this->specificProducts->sum(fn($specificProduct) => $specificProduct->pivot->quantity * $specificProduct->price)
+            get: fn() => $this->specificProducts->sum(fn($specificProduct) =>
+                $specificProduct->pivot->quantity * $specificProduct->product->price)
         );
     }
 
-    public function coupon() : BelongsTo {
+    public function coupon(): BelongsTo
+    {
         return $this->belongsTo(Coupon::class);
     }
 
     /**
      * User is the buyer
      */
-    public function user() : BelongsTo {
+    public function user(): BelongsTo
+    {
         return $this->belongsTo(User::class);
     }
 
-    public function payment() : BelongsTo {
+    public function payment(): BelongsTo
+    {
         return $this->belongsTo(Payment::class);
     }
 
-    public function shipping() : BelongsTo {
+    public function shipping(): BelongsTo
+    {
         return $this->belongsTo(Shipping::class);
     }
 
-    public function specificProducts() : BelongsToMany {
+    public function specificProducts(): BelongsToMany
+    {
         return $this->belongsToMany(SpecificProduct::class, "order_specific_products")->withPivot("quantity");
     }
 

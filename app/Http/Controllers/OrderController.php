@@ -10,6 +10,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
 
 class OrderController extends Controller
 {
@@ -20,17 +21,21 @@ class OrderController extends Controller
     {
         Gate::authorize('viewAny', Order::class);
 
+        /* @var User $user */
         $user = Auth::user();
 
-        $orders = $user->is_vendor ?
-            $user->orders():
+        $orders = $user->is_seller ?
             Order::whereHas('specificProducts.product', function ($query) use ($user) {
-                $query->where('user_id', $user->id);
-            });
+                $query->where('user_id', $user->id)->withTrashed();
+            }):
+            $user->orders();
 
-        return view('orders.index')
-                ->with('user', $user)
-                ->with('orders', $orders->paginate(10));
+//        Log::info(json_encode($orders->first()));
+
+        return view('orders.index', [
+            "user" => $user,
+            "orders" => $orders->paginate(10)
+        ]);
     }
 
     /**
@@ -55,9 +60,10 @@ class OrderController extends Controller
             'coupon_id' => 'nullable|integer|exists:coupons,id',
         ]);
 
+        /** @var User $user */
         $user = Auth::user();
 
-        if(!$user->checkCartAvailability()){
+        if (!$user->checkCartAvailability()) {
             return redirect()->route("cart.index")->with('error', 'Some product in your cart is not available anymore.');
         }
 
@@ -80,6 +86,6 @@ class OrderController extends Controller
     {
         Gate::authorize('view', $order);
         return view('orders.show')
-                ->with('order', $order);
+            ->with('order', $order);
     }
 }
