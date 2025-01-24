@@ -89,6 +89,35 @@ use Illuminate\Support\Facades\Mail;
  */
 class User extends Authenticatable
 {
+    private function manageProductCart(SpecificProduct $product, int $quantity, bool $isAdding): bool
+    {
+        $item = $this->cart()->where('specific_product_id', $product->id)->first();
+
+        if ($item) {
+            // Product is already in the cart
+            $newQuantity = $isAdding ? $item->pivot->quantity + $quantity : $quantity;
+
+            // Check if the requested quantity is available
+            if ($product->quantity < $newQuantity) {
+                return false;
+            }
+
+            $this->cart()->updateExistingPivot($product->id, [
+                'quantity' => $newQuantity,
+            ]);
+        } else {
+            // Check if the requested quantity is available
+            if ($product->quantity < $quantity) {
+                return false;
+            }
+
+            // Product is not in the cart
+            $this->cart()->attach($product->id, ['quantity' => $quantity]);
+        }
+
+        return true;
+    }
+
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
@@ -234,6 +263,19 @@ class User extends Authenticatable
     }
 
     /**
+     * Update the quantity of a SpecificProduct in the client's cart.
+     * Returns true if the SpecificProduct's quantity is enough.
+     *
+     * @param SpecificProduct $product
+     * @param int $quantity
+     * @return bool
+     */
+    public function updateProductCartQuantity(SpecificProduct $product, int $quantity = 1): bool
+    {
+        return $this->manageProductCart($product, $quantity, false);
+    }
+
+    /**
      * Add a SpecificProduct to the client's cart.
      * Returns true if the SpecificProduct's quantity is enough.
      *
@@ -241,24 +283,9 @@ class User extends Authenticatable
      * @param int $quantity
      * @return bool
      */
-    public function addToCart(SpecificProduct $product, int $quantity = 1): bool
+    public function addProductCart(SpecificProduct $product, int $quantity = 1): bool
     {
-        if($product->quantity < $quantity) {
-            return false;
-        }
-
-        // Check if the product is already in the cart
-        if ($this->cart()->where('specific_product_id', $product->id)->exists()) {
-            // if the product is in the cart, update the quantity
-            $this->cart()->updateExistingPivot($product->id, [
-                'quantity' => $quantity,
-            ]);
-        } else {
-            // If the product is not in the cart, attach it with the specified quantity
-            $this->cart()->attach($product->id, ['quantity' => $quantity]);
-        }
-
-        return true;
+        return $this->manageProductCart($product, $quantity, true);
     }
 
     /**

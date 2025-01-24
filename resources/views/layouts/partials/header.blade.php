@@ -32,11 +32,9 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="/cart">
                                     <i class="fa-regular fa-cart-shopping fa-xl ms-3">
-                                        @if ($user->cart()->count() > 0)
-                                            <span class="badge">
-                                                {{ $user->cart()->count() }}
-                                            </span>
-                                        @endif
+                                        <span id="cart-notification" class="badge @if($user->cart()->count() == 0) d-none @endif">
+                                            {{ $user->cart()->count() }}
+                                        </span>
                                     </i>
                                 </a>
                             </li>
@@ -46,8 +44,8 @@
                                 <i class="fa-regular fa-bell fa-xl ms-3">
                                     @if ($user->unreadNotifications()->count() > 0)
                                         <span class="badge">
-                                {{ $user->unreadNotifications()->count() }}
-                            </span>
+                                            {{ $user->unreadNotifications()->count() }}
+                                        </span>
                                     @endif
                                 </i>
                             </a>
