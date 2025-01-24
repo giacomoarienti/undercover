@@ -14,7 +14,7 @@
             <div class="col-8 col-md-6 h-100">
                 <div class="d-flex flex-column justify-content-center align-items-center h-100">
                     <a class="navbar-brand d-flex align-items-center m-1 mt-0 ms-3 ms-md-0" href="/">
-                        <img src="{{ Storage::url('public/text.svg') }}" alt="" class="w-100 h-100">
+                        <img id="nameLogo" src="{{ Storage::url('public/text.svg') }}" alt="" class="w-100 h-100">
                     </a>
                     <form class="d-none d-md-flex justify-content-center align-items-center col-8" action="{{ route('products.index') }}" method="GET" role="search">
                         <div class="input-group rounded-pill">
