@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Enums\OrderStatus;
 use Illuminate\Support\Facades\Log;
+use function Illuminate\Events\queueable;
 
 /**
  *
@@ -46,6 +47,12 @@ use Illuminate\Support\Facades\Log;
  */
 class Order extends Model
 {
+    protected static function booted() : void {
+        static::creating(queueable(function(Order $order) {
+
+        }));
+    }
+
     protected $fillable = [
         'user_id',
         'coupon_id',
@@ -68,11 +75,11 @@ class Order extends Model
     {
         return Attribute::make(
             get: function () {
-                if ($this->payment() == null) {
+                if ($this->payment->paymentStatus->id != PaymentStatus::where('name', 'Completed')->first()->id) {
                     return OrderStatus::AWAITING_PAYMENT;
                 } elseif ($this->shipping == null) {
                     return OrderStatus::PENDING;
-                } elseif ($this->shipping->status->name == "delivered") {
+                } elseif ($this->shipping->shippingStatus->id == ShippingStatus::where('name', 'Completed')->first()->id) {
                     return OrderStatus::DELIVERED;
                 } else {
                     return OrderStatus::SHIPPED;

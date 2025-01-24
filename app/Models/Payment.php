@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Support\Str;
+use function Illuminate\Events\queueable;
 
 /**
  *
@@ -33,6 +35,19 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
  */
 class Payment extends Model
 {
+
+    protected static function booted() : void
+    {
+        static::creating(function ($payment) {
+            $payment->transaction_id = Payment::generateTransactionId();
+            $payment->payment_status_id = PaymentStatus::where(['name' => 'Pending'])->first()->id;
+        });
+
+        static::updated(queueable(function ($payment) {
+            $payment->order->user->sendNotification("Payment updated", "The payment for your order with date " . $payment->order->created_at->format('d/m/Y H:i') . " has been updated. It is now " . Str::lower($payment->paymentStatus->name) . ".");
+        }));
+    }
+
     private static function getRandomHex($num_bytes=4) : string {
         return bin2hex(openssl_random_pseudo_bytes($num_bytes));
     }
@@ -51,14 +66,6 @@ class Payment extends Model
     protected $with = [
         "paymentMethod"
     ];
-
-    public static function booted(): void
-    {
-        static::creating(function ($payment) {
-            $payment->transaction_id = Payment::generateTransactionId();
-            $payment->payment_status_id = PaymentStatus::where(['name' => 'Pending'])->first()->id;
-        });
-    }
 
     public function paymentStatus() : BelongsTo
     {

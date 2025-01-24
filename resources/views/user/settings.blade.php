@@ -215,7 +215,9 @@
         @if($user->is_seller)
             @include('user.partials.reception_methods')
         @else
-            @include('user.partials.payment_methods')
+            <span id="payment_methods">
+                @include('user.partials.payment_methods')
+            </span>
         @endif
 
         <div class="card">

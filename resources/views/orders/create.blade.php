@@ -26,9 +26,9 @@
                         @endif
                     </div>
                 </div>
-                <a href="{{ route('settings') }}" type="button" class="btn btn-primary w-100 text-bg-primary text-decoration-none" >Change the default payment method</a>
+                <a href="{{ route('settings') }}#payment_methods" type="button" class="btn btn-primary w-100 text-bg-primary text-decoration-none" >Change the default payment method</a>
             @else
-                <a href="{{ route('settings') }}" type="button" class="btn btn-primary w-100 text-bg-primary text-decoration-none">Add a default payment method</a>
+                <a href="{{ route('settings') }}#payment_methods" type="button" class="btn btn-primary w-100 text-bg-primary text-decoration-none">Add a default payment method</a>
             @endif
         </div>
         <div class="card-body border-bottom">
