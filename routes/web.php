@@ -6,7 +6,6 @@ use App\Http\Controllers\CouponController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentMethodController;
-use App\Http\Controllers\PhoneController;
 use App\Http\Controllers\ReceptionMethodController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\UserController;
@@ -32,31 +31,13 @@ Route::name('auth.')->group(function () {
 });
 
 /**
- * Routes only accessible by authenticated users.
- */
-Route::middleware(AuthMiddleware::class)->group(function () {
-
-    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications');
-    Route::patch('/notifications', [NotificationController::class, 'edit'])->name('notifications');
-    Route::delete('/notifications', [NotificationController::class, 'destroy'])->name('notifications');
-
-    Route::get('/settings', [UserController::class, 'settings'])->name('settings');
-    Route::patch('/settings', [UserController::class, 'edit'])->name('settings');
-
-    Route::get('/coupons/{code}', [CouponController::class, 'show'])->name('coupons');
-
-    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
-    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
-});
-
-/**
  * Routes only accessible by sellers.
  */
 Route::middleware(SellerMiddleware::class)->group(function () {
-    Route::get('/coupons', [CouponController::class, 'index'])->name('coupons');
-    Route::patch('/coupons', [CouponController::class, 'edit'])->name('coupons');
-    Route::post('/coupons', [CouponController::class, 'store'])->name('coupons');
-    Route::delete('/coupons', [CouponController::class, 'destroy'])->name('coupons');
+    Route::get('/coupons', [CouponController::class, 'index'])->name('coupons.index');
+    Route::patch('/coupons', [CouponController::class, 'edit'])->name('coupons.update');
+    Route::post('/coupons', [CouponController::class, 'store'])->name('coupons.create');
+    Route::delete('/coupons', [CouponController::class, 'destroy'])->name('coupons.destroy');
 
     Route::post('/settings/reception-methods', [ReceptionMethodController::class, 'store'])->name('reception-methods');
     Route::delete('/settings/reception-methods', [ReceptionMethodController::class, 'delete'])->name('reception-methods');
@@ -81,14 +62,31 @@ Route::middleware(ClientMiddleware::class)->group(function () {
     Route::delete('/settings/payment-methods', [PaymentMethodController::class, 'delete'])->name('payment-methods');
     Route::patch('/settings/payment-methods', [PaymentMethodController::class, 'edit'])->name('payment-methods');
 
-    Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
     Route::get('/orders/create', [OrderController::class, 'create'])->name('orders.create');
+    Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
 
     Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
     Route::patch('/reviews/{review}', [ReviewController::class, 'update'])->name('reviews.update');
     Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
 });
 
+/**
+ * Routes only accessible by authenticated users.
+ */
+Route::middleware(AuthMiddleware::class)->group(function () {
+
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications');
+    Route::patch('/notifications', [NotificationController::class, 'edit'])->name('notifications');
+    Route::delete('/notifications', [NotificationController::class, 'destroy'])->name('notifications');
+
+    Route::get('/settings', [UserController::class, 'settings'])->name('settings');
+    Route::patch('/settings', [UserController::class, 'edit'])->name('settings');
+
+    Route::get('/coupons/{code}', [CouponController::class, 'show'])->name('coupons');
+
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+});
 
 Route::view('/', 'index')->name('index');
 

@@ -30,7 +30,7 @@
                     </a>
 
                     <a class="col-sm bg-primary text-bg-primary p-5 text-center text-decoration-none h3"
-                       href="{{ route('coupons') }}">
+                       href="{{ route('coupons.index') }}">
                         Coupons
                     </a>
 

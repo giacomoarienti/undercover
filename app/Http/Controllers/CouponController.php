@@ -36,7 +36,7 @@ class CouponController extends Controller
         /** @var User $user */
         $user = Auth::user();
         if ($user->coupons()->where('code', $request->get('code'))->exists()) {
-            return to_route('coupons')->withErrors(['code' => 'Coupon already exists']);
+            return to_route('coupons.index')->withErrors(['code' => 'Coupon already exists']);
         }
 
         Coupon::create([
@@ -47,7 +47,7 @@ class CouponController extends Controller
             'user_id' => $user->id,
         ]);
 
-        return to_route('coupons')->with('message', 'Coupon created');
+        return to_route('coupons.index')->with('message', 'Coupon created');
     }
 
     public function edit(Request $request)
@@ -62,7 +62,7 @@ class CouponController extends Controller
 
         $coupon = $request->user()->coupons()->find($request->get('id'));
         if (!$coupon) {
-            return to_route('coupons')->withErrors(['id' => 'Coupon not found']);
+            return to_route('coupons.index')->withErrors(['id' => 'Coupon not found']);
         }
 
         $coupon->update([
@@ -72,7 +72,7 @@ class CouponController extends Controller
             'expires_at' => $request->get('expires_at'),
         ]);
 
-        return to_route('coupons')->with('message', 'Coupon updated');
+        return to_route('coupons.index')->with('message', 'Coupon updated');
     }
 
     public function show(string $code)
@@ -96,11 +96,11 @@ class CouponController extends Controller
 
         $coupon = $user->coupons()->find($request->get('id'));
         if (!$coupon) {
-            return to_route('coupons')->withErrors(['id' => 'Coupon not found']);
+            return to_route('coupons.index')->withErrors(['id' => 'Coupon not found']);
         }
 
         $coupon->delete();
 
-        return to_route('coupons')->with('message', 'Coupon deleted');
+        return to_route('coupons.index')->with('message', 'Coupon deleted');
     }
 }
