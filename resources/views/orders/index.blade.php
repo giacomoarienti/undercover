@@ -19,17 +19,17 @@
             <div class="table-responsive">
                 <table class="table table-hover" aria-label="Orders List">
                     <thead>
-                    <tr>
-                        <th scope="col">Date</th>
-                        <th scope="col">Order ID</th>
-                        <th scope="col">Total</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Actions</th>
-                    </tr>
+                        <tr>
+                            <th scope="col">Date</th>
+                            <th scope="col">Order ID</th>
+                            <th scope="col">Total</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Actions</th>
+                        </tr>
                     </thead>
                     <tbody>
                     @foreach ($orders as $order)
-                        <tr data-order-id="{{ $order->id }}" class="order-row" role="button" tabindex="0">
+                        <tr>
                             <td>{{ $order->created_at->format('Y-m-d') }}</td>
                             <td>{{ $order->id }}</td>
                             <td>{{ formatTotal($order) }}</td>

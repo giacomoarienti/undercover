@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -48,6 +48,10 @@ class Payment extends Model
         "payment_method_id"
     ];
 
+    protected $with = [
+        "paymentMethod"
+    ];
+
     public static function booted(): void
     {
         static::creating(function ($payment) {
@@ -71,5 +75,10 @@ class Payment extends Model
         return Attribute::make(
             get: fn() => $this->order->total
         );
+    }
+
+    public function paymentMethod() : BelongsTo
+    {
+        return $this->belongsTo(PaymentMethod::class);
     }
 }

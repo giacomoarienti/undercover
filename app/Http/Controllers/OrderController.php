@@ -84,8 +84,14 @@ class OrderController extends Controller
      */
     public function show(Order $order)
     {
+        /** @var User $user */
+        $user = Auth::user();
+
         Gate::authorize('view', $order);
-        return view('orders.show')
-            ->with('order', $order);
+
+        return view('orders.show', [
+            "user" => $user,
+            "order" => $order
+        ]);
     }
 }

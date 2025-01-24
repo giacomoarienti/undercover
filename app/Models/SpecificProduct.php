@@ -102,6 +102,8 @@ class SpecificProduct extends Model
         $this->quantity--;
         if($this->quantity == 0) {
             $this->delete();
+
+            // inform the seller that the
         } else {
             $this->save();
         }

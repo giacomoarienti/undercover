@@ -131,6 +131,13 @@ class Order extends Model
         return $this->vendorTotalBeforeDiscount($vendor) - $this->vendorDiscount($vendor);
     }
 
+    public function sellerSpecificProducts(User $seller)
+    {
+        return $this->specificProducts->where(function ($specificProduct) use ($seller) {
+            return $specificProduct->product->user_id == $seller->id;
+        })->all();
+    }
+
     public function discount(): Attribute
     {
         return Attribute::make(

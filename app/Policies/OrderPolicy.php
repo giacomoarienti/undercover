@@ -25,10 +25,12 @@ class OrderPolicy
      */
     public function view(User $user, Order $order): bool
     {
-        return $order->user_id === $user->id //l'ordine è dell'utente
-            or (
-                //uno dei prodotti nell'ordine appartiene all'utente
-                $order->specificProducts->hasAny(fn ($specificProduct) => $specificProduct->product->user_id === $user->id)
+        return $order->user_id === $user->id || //l'ordine è dell'utente
+            // almeno uno dei prodotti nell'ordine appartiene all'utente
+            in_array(
+                true,
+                $order->specificProducts->map(fn($specificProduct) =>
+                    $specificProduct->product->user_id === $user->id)->toArray()
             );
     }
 
