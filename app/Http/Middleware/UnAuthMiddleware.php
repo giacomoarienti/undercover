@@ -18,10 +18,7 @@ class UnAuthMiddleware
     {
         Log::info('UnAuth middleware');
         if (auth()->check()) {
-            if(auth()->user()->is_seller) {
-                return redirect()->route('seller.index');
-            }
-            return redirect()->route('client.index');
+            return redirect()->route('index');
         }
         return $next($request);
     }
