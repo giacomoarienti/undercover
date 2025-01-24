@@ -10,6 +10,7 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class ProductController extends Controller
@@ -127,7 +128,7 @@ class ProductController extends Controller
         }
 
         foreach ($validated['images'] ?? [] as $image) {
-            error_log("Immagine");
+            Log::info("Immagine");
             $product->addMedia($image)->toMediaCollection('images');
         }
 

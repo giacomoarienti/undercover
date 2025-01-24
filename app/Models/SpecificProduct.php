@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Log;
 use function Illuminate\Events\queueable;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property int $quantity
@@ -57,18 +58,21 @@ class SpecificProduct extends Model
         });
 
         static::restoring(function (SpecificProduct $specificProduct) {
-            error_log("SpecificProduct " . $specificProduct->slug . " restored");
+            Log::info("SpecificProduct " . $specificProduct->slug . " restored");
         });
 
         static::deleting(function (SpecificProduct $specificProduct) {
-           error_log("SpecificProduct " . $specificProduct->slug . " deleted");
+           Log::info("SpecificProduct " . $specificProduct->slug . " deleted");
         });
 
         static::deleted(queueable(function (SpecificProduct $specificProduct) {
-            error_log("SpecificProduct " . $specificProduct->slug . " deleted");
-            $specificProduct->product->user->sendNotification("Your product " . $specificProduct->product->name . " has depleted.",
-                "You just sold the last item with color " . $specificProduct->color->name . ".");
-            $usersWithSpecificProduct = User::whereHas('cart', function ($query) use ($specificProduct) {
+            $specificProduct->load('product.user');
+
+            // send a notification to the seller
+            $specificProduct->product->user->sendNotification("Your product " . $specificProduct->product->name . " has depleted.",  "You just sold the last item with color " . $specificProduct->color->name . ".");
+
+            // remove from every cart and send a notification to the user
+            User::whereHas('cart', function ($query) use ($specificProduct) {
                 $query->where('specific_product_id', $specificProduct->id);
             })->each(function ($user) use ($specificProduct) {
                 $user->sendNotification("A product in your cart has depleted.",
