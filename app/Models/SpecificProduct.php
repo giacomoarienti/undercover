@@ -62,15 +62,10 @@ class SpecificProduct extends Model
         });
 
         static::deleting(function (SpecificProduct $specificProduct) {
-           Log::info("SpecificProduct " . $specificProduct->slug . " deleted");
+            Log::info("SpecificProduct " . $specificProduct->slug . " deleted");
         });
 
         static::deleted(queueable(function (SpecificProduct $specificProduct) {
-            $specificProduct->load('product.user');
-
-            // send a notification to the seller
-            $specificProduct->product->user->sendNotification("Your product " . $specificProduct->product->name . " has depleted.",  "You just sold the last item with color " . $specificProduct->color->name . ".");
-
             // remove from every cart and send a notification to the user
             User::whereHas('cart', function ($query) use ($specificProduct) {
                 $query->where('specific_product_id', $specificProduct->id);
@@ -102,6 +97,8 @@ class SpecificProduct extends Model
         $this->quantity--;
         if($this->quantity == 0) {
             $this->delete();
+            // send a notification to the seller
+            queueable(fn() => $this->product->user->sendNotification("Your product " . $this->product->name . " has depleted.",  "You just sold the last item of color " . $this->color->name . "."));
         } else {
             $this->save();
         }
