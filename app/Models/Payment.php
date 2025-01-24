@@ -63,6 +63,10 @@ class Payment extends Model
         "payment_method_id"
     ];
 
+    protected $with = [
+        "paymentMethod"
+    ];
+
     public function paymentStatus() : BelongsTo
     {
         return $this->belongsTo(PaymentStatus::class);
@@ -78,5 +82,10 @@ class Payment extends Model
         return Attribute::make(
             get: fn() => $this->order->total
         );
+    }
+
+    public function paymentMethod() : BelongsTo
+    {
+        return $this->belongsTo(PaymentMethod::class);
     }
 }

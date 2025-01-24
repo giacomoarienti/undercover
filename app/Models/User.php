@@ -116,6 +116,10 @@ class User extends Authenticatable
         'reception_method_id'
     ];
 
+    protected $appends = [
+        'full_address'
+    ];
+
     /**
      * The attributes that should be hidden for serialization.
      *
