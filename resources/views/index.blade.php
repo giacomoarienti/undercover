@@ -60,7 +60,7 @@
 
                     <div class="col-12 col-md-6">
                         <a class="d-flex justify-content-center p-5 bg-primary text-white text-decoration-none h3 text-center rounded"
-                           href="{{ route('coupons') }}">
+                           href="{{ route('coupons.index') }}">
                             Coupons
                         </a>
                     </div>

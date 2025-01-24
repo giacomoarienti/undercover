@@ -15,7 +15,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Mail;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property string $name
@@ -315,6 +315,6 @@ class User extends Authenticatable
         ]);
 
         // send email
-        Mail::to($this->email)->send(new BasicMail($title, $body));
+        Mail::to($this->email)->queue(new BasicMail($title, $body));
     }
 }

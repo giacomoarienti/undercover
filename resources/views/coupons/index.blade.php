@@ -43,7 +43,7 @@
                                 <span class="visually-hidden">Edit coupon {{ $coupon->code }}</span>
                             </button>
 
-                            <form action="{{ route('coupons') }}" method="POST" class="d-inline" title="Delete coupon {{ $coupon->code }}">
+                            <form action="{{ route('coupons.destroy') }}" method="POST" class="d-inline" title="Delete coupon {{ $coupon->code }}">
                                 @csrf
                                 @method('DELETE')
                                 <input type="hidden" name="id" value="{{ $coupon->id }}">
@@ -70,7 +70,7 @@
          aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form action="{{ route('coupons') }}" method="POST">
+                <form action="{{ route('coupons.create') }}" method="POST">
                     @csrf
                     <div class="modal-header">
                         <h5 class="modal-title" id="createCouponModalLabel">Create New Coupon</h5>
@@ -109,7 +109,7 @@
          aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form action="{{ route('coupons') }}" method="POST">
+                <form action="{{ route('coupons.update') }}" method="POST">
                     @csrf
                     @method('PATCH')
                     <input type="hidden" name="id" id="edit_coupon_id">
