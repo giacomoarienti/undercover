@@ -82,7 +82,7 @@ Route::middleware(AuthMiddleware::class)->group(function () {
     Route::get('/settings', [UserController::class, 'settings'])->name('settings');
     Route::patch('/settings', [UserController::class, 'edit'])->name('settings');
 
-    Route::get('/coupons/{code}', [CouponController::class, 'show'])->name('coupons');
+    Route::get('/coupons/{code}', [CouponController::class, 'show'])->name('coupons.show');
 
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
