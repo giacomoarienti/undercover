@@ -26,9 +26,9 @@
                         @endif
                     </div>
                 </div>
-                <a href="{{ route('settings') }}#payment_methods" type="button" class="btn btn-primary w-100 text-bg-primary text-decoration-none" >Change the default payment method</a>
+                <a href="{{ route('settings') }}#payment_methods" class="btn btn-primary w-100 text-bg-primary text-decoration-none" >Change the default payment method</a>
             @else
-                <a href="{{ route('settings') }}#payment_methods" type="button" class="btn btn-primary w-100 text-bg-primary text-decoration-none">Add a default payment method</a>
+                <a href="{{ route('settings') }}#payment_methods" class="btn btn-primary w-100 text-bg-primary text-decoration-none">Add a default payment method</a>
             @endif
         </div>
         <div class="card-body border-bottom">
@@ -42,7 +42,7 @@
                             id="streetName"
                             class="form-control"
                             value="{{$user->street_name}}"
-                            readonly>
+                            readonly />
                     </div>
                     <div class="col-md-4 mb-3">
                         <label for="streetNumber" class="form-label">Number</label>
@@ -51,7 +51,7 @@
                             id="streetNumber"
                             class="form-control"
                             value="{{$user->street_number}}"
-                            readonly>
+                            readonly />
                     </div>
                 </div>
                 <div class="row">
@@ -62,7 +62,7 @@
                             id="city"
                             class="form-control"
                             value="{{$user->city}}"
-                            readonly>
+                            readonly />
                     </div>
                     <div class="col-md-3 mb-3">
                         <label for="zipCode" class="form-label">Postal Code</label>
@@ -71,7 +71,7 @@
                             id="zipCode"
                             class="form-control"
                             value="{{$user->zip_code}}"
-                            readonly>
+                            readonly />
                     </div>
                     <div class="col-md-3 mb-3">
                         <label for="state" class="form-label">Region</label>
@@ -80,7 +80,7 @@
                             id="state"
                             class="form-control"
                             value="{{$user->state}}"
-                            readonly>
+                            readonly />
                     </div>
                 </div>
                 <div>
@@ -90,7 +90,7 @@
                         id="country"
                         class="form-control"
                         value="Italy"
-                        readonly>
+                        readonly />
                 </div>
             </fieldset>
         </div>
@@ -105,7 +105,7 @@
                             id="address"
                             class="form-control"
                             value="Via dell'Università"
-                            readonly>
+                            readonly />
                     </div>
                     <div class="col-md-4 mb-3">
                         <label for="number" class="form-label">Number</label>
@@ -114,46 +114,46 @@
                             id="number"
                             class="form-control"
                             value="50"
-                            readonly>
+                            readonly />
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <label for="city" class="form-label">City</label>
+                        <label for="shipping-city" class="form-label">City</label>
                         <input
                             type="text"
-                            id="city"
+                            id="shipping-city"
                             class="form-control"
                             value="Cesena"
-                            readonly>
+                            readonly />
                     </div>
                     <div class="col-md-3 mb-3">
-                        <label for="postalCode" class="form-label">Postal Code</label>
+                        <label for="shipping-postalCode" class="form-label">Postal Code</label>
                         <input
                             type="text"
-                            id="postalCode"
+                            id="shipping-postalCode"
                             class="form-control"
                             value="47522"
-                            readonly>
+                            readonly />
                     </div>
                     <div class="col-md-3 mb-3">
-                        <label for="region" class="form-label">Region</label>
+                        <label for="shipping-region" class="form-label">Region</label>
                         <input
                             type="text"
-                            id="region"
+                            id="shipping-region"
                             class="form-control"
                             value="FC"
-                            readonly>
+                            readonly />
                     </div>
                 </div>
                 <div>
-                    <label for="country" class="form-label">Country</label>
+                    <label for="shipping-country" class="form-label">Country</label>
                     <input
                         type="text"
-                        id="country"
+                        id="shipping-country"
                         class="form-control"
                         value="Italy"
-                        readonly>
+                        readonly />
                 </div>
             </fieldset>
         </div>
@@ -164,7 +164,7 @@
                     type="text"
                     class="form-control"
                     id="coupon_code"
-                    placeholder="Enter your coupon code">
+                    placeholder="Enter your coupon code" />
                 <button
                     type="button"
                     class="btn btn-primary"
@@ -180,8 +180,8 @@
 
         <form id="form" action="{{route('orders.store')}}" method="POST">
         <input type="hidden" name="_token" value="{{ csrf_token() }}" />
-            <input type="hidden" name="payment_method_id" value="{{$paymentMethod?->id ?? ''}}"/>
-            <input id="coupon_id" type="hidden" name="coupon_id" value=""/>
+            <input type="hidden" name="payment_method_id" value="{{$paymentMethod?->id ?? ''}}" />
+            <input id="coupon_id" type="hidden" name="coupon_id" value="" />
             <div class="card-body form-group d-flex flex-row">
                 <button type="button" class="btn btn-danger w-100 me-2" onclick="location.href='{{ url()->previous() }}'">Abort</button>
                 <button type="submit" class="btn btn-primary w-100 ms-2">Place order</button>
