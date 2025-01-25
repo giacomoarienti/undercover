@@ -7,12 +7,12 @@
         <!-- Button trigger modal -->
         <form class="w-100" action="{{ route('products.index') }}" method="GET" role="search">
             <div class="input-group rounded-pill">
-                <span class="input-group-text"><i class="fa-solid fa-magnifying-glass"></i></span>
+                <span class="input-group-text"><span aria-hidden="true" class="fa-solid fa-magnifying-glass"></span></span>
                 <input type="text" name="search" class="form-control" placeholder="Find your new identity"
                        value="{{$filters ? $filters['search'] ?? '' : ''}}">
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                         data-bs-target="#modal-filtersAccordion">
-                    Filters <i class="fa-solid fa-filter ms-2"></i>
+                    Filters <span aria-hidden="true" class="fa-solid fa-filter ms-2"></span>
                 </button>
             </div>
         </form>
@@ -257,9 +257,9 @@
                                 <div
                                     class="d-flex flex-row align-self-center flex-wrap justify-content-center bg-secondary-subtle border rounded-pill ms-2 me-2">
                                     @foreach ($product->specificProducts as $specificProduct)
-                                        <i class="fa-solid fa-circle fa-2xs m-1"
+                                        <span aria-hidden="true" class="fa-solid fa-circle fa-2xs m-1"
                                            style="color: {{$specificProduct->color->rgb}};">
-                                        </i>
+                                        </span>
                                     @endforeach
                                 </div>
                             </div>

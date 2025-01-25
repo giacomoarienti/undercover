@@ -16,6 +16,9 @@ use App\Http\Middleware\UnAuthMiddleware;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
+/**
+ * Authentication routes.
+ */
 Route::name('auth.')->group(function () {
     Route::middleware(UnAuthMiddleware::class)->group(function () {
         Route::view('/signin', 'auth.signin')->name('signin');

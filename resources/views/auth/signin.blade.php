@@ -1,17 +1,21 @@
 @extends('layouts.app')
 
 @section('content')
-    <h1>Sign In</h1>
 
     <div class="card">
+        <div class="card-header text-center">
+            <h1>Sign In</h1>
+        </div>
+
         <div class="card-body">
             <form method="POST" action="{{ route('auth.signin') }}">
-                @csrf
+                <input type="hidden" name="_token" value="{{ csrf_token() }}"/>
+
                 <div class="form-group has-validation">
                     <label for="email">Email</label>
                     <input type="email" class="form-control @error('email') is-invalid @enderror" name="email"
                            id="email"
-                           placeholder="Email" value="{{ old('email') }}" required>
+                           placeholder="Email" value="{{ old('email') }}" required/>
                     @error('email')
                     <div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
@@ -19,7 +23,7 @@
                 <div class="form-group mt-3">
                     <label for="password">Password</label>
                     <input type="password" class="form-control @error('password') is-invalid @enderror" name="password"
-                           id="password" placeholder="Password" required>
+                           id="password" placeholder="Password" required/>
                     @error('password')
                     <div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
@@ -32,7 +36,8 @@
                 </div>
 
                 <div class="text-center mt-3">
-                    <p class="mb-0">Don't have an account? <a href="{{ route('auth.signup') }}" class="text-decoration-none">Sign Up</a></p>
+                    <p class="mb-0">Don't have an account? <a href="{{ route('auth.signup') }}"
+                                                              class="text-decoration-none">Sign Up</a></p>
                 </div>
             </form>
         </div>

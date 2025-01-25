@@ -3,7 +3,7 @@
 @section('content')
     <h1>{{$product ? 'Edit product' : 'New product'}}</h1>
     <form id="form" action="{{ $product ? route('products.update', $product->slug) : route('products.store') }}" method="POST" enctype="multipart/form-data">
-        @csrf
+        <input type="hidden" name="_token" value="{{ csrf_token() }}" />
         @if ($product)
             @method("PATCH")
         @endif
@@ -69,7 +69,7 @@
                 <div class="card-header d-flex flex-row justify-content-between align-items-center @error('images') bg-danger-subtle @enderror">
                     Product images
                     @error('images')
-                    <i class="fa-regular fa-circle-exclamation text-danger text-end"></i>
+                    <span aria-hidden="true" class="fa-regular fa-circle-exclamation text-danger text-end"></span>
                     @enderror
                 </div>
                 <div class="card-body">
@@ -79,13 +79,13 @@
                                 <img src="{{$image->getUrl()}}" alt="" class="img-thumbnail m-2 h-100">
                                 <button class="btn btn-danger m-2 mt-0" type="button" onclick="addDeleteImage({{$image->id}})">
                                     Delete
-                                    <i class="fa-solid fa-circle-minus"></i>
+                                    <span aria-hidden="true" class="fa-solid fa-circle-minus"></span>
                                 </button>
                             </div>
                         @endforeach
                         <button id="image-add" type="button" class="btn btn-success m-2" onclick="addImage()">
                             Add
-                            <i class="fa-solid fa-circle-plus"></i>
+                            <span aria-hidden="true" class="fa-solid fa-circle-plus"></span>
                         </button>
                     </div>
                 </div>
@@ -96,14 +96,14 @@
                 <div class="card-header d-flex flex-row justify-content-between align-items-center @error('colors') bg-danger-subtle @enderror">
                     Available colors
                     @error('images')
-                    <i class="fa-regular fa-circle-exclamation text-danger text-end"></i>
+                    <span aria-hidden="true" class="fa-regular fa-circle-exclamation text-danger text-end"></span>
                     @enderror
                 </div>
                 <div class="card-body">
                     @foreach(\App\Models\Color::all() as $color)
                         <div class="input-group mb-2">
                             <label for="color_{{ $color->id }}" class="input-group-text col-sm-3 text-wrap">
-                                <i class="fa-solid fa-circle fa-lg m-2 ms-0" style="color: {{ $color->rgb }};"></i>
+                                <span aria-hidden="true" class="fa-solid fa-circle fa-lg m-2 ms-0" style="color: {{ $color->rgb }};"></span>
                                 {{ $color->name }}
                             </label>
                             <div class="input-group-text">
@@ -193,7 +193,7 @@
                 button.onclick = function () {
                     newImage.remove();
                 };
-                button.innerHTML = 'Delete\n<i class="fa-solid fa-circle-minus"></i>';
+                button.innerHTML = 'Delete\n<span aria-hidden="true" class="fa-solid fa-circle-minus"></i>';
                 newImage.appendChild(button);
             }else{
                 newImage.remove();
