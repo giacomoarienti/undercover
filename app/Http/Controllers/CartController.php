@@ -15,7 +15,8 @@ class CartController extends Controller
         $user = Auth::user();
         $cart = $user->cart;
 
-        if($request->expectsJson()) {
+        // fix browser history problem
+        if($request->has("json")) {
             return response()->json(["cart" => $cart]);
         }
 

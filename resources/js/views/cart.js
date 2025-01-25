@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', loadCart);
 
 async function loadCart() {
     try {
-        const response = await fetch('/cart', {
+        const response = await fetch('/cart?json=true', {
             headers: {
                 'Accept': 'application/json',
             }
