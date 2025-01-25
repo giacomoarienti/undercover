@@ -1,4 +1,7 @@
+window.addImage = addImage;
+
 document.addEventListener('DOMContentLoaded', function () {
+
     const checkboxes = document.querySelectorAll('.color-checkbox');
 
     checkboxes.forEach(function (checkbox) {

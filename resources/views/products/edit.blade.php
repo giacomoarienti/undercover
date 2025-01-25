@@ -1,5 +1,9 @@
 @extends('layouts.app')
 
+@push('scripts')
+    @vite('resources/js/views/products.edit.js')
+@endpush
+
 @section('content')
     <h1 class="text-primary">{{$product ? 'Edit product' : 'New product'}}</h1>
     <form class="m-0" id="form" action="{{ $product ? route('products.update', $product->slug) : route('products.store') }}" method="POST" enctype="multipart/form-data">
@@ -149,9 +153,5 @@
             <button type="submit" class="btn btn-danger w-100 me-2">Delete product</button>
         </form>
     @endif
-
-    @push('scripts')
-        @vite('js/views/products.edit.js')
-    @endpush
 
 @endsection

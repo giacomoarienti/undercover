@@ -96,9 +96,10 @@ class SpecificProduct extends Model
     {
         $this->quantity--;
         if($this->quantity == 0) {
-            $this->delete();
+
             // send a notification to the seller
-            queueable(fn() => $this->product->user->sendNotification("Your product " . $this->product->name . " has depleted.",  "You just sold the last item of color " . $this->color->name . "."));
+            $this->product->user->sendNotification("Your product " . $this->product->name . " has depleted.",  "You just sold the last item of color " . $this->color->name);
+            $this->delete();
         } else {
             $this->save();
         }
