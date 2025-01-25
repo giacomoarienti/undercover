@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Coupon;
 use App\Models\User;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
@@ -80,6 +79,10 @@ class CouponController extends Controller
         $coupon = Coupon::where('code', $code)->first();
         if(!$coupon) {
             return response()->json(['message' => 'Coupon not found'], 404);
+        }
+
+        if (!$coupon->is_active) {
+            return response()->json(['message' => 'Coupon not active'], 404);
         }
 
         return response()->json(['coupon' => $coupon]);

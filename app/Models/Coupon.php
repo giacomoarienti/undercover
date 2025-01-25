@@ -31,6 +31,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Coupon whereStartsAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Coupon whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Coupon whereUserId($value)
+ * @property-read mixed $is_active_attribute
  * @mixin \Eloquent
  */
 class Coupon extends Model
@@ -52,7 +53,7 @@ class Coupon extends Model
     /**
      * Get if the Coupon is active
      */
-    protected function getIsActiveAttribute(): Attribute
+    protected function isActiveAttribute(): Attribute
     {
         // if expires_at is < now and starts_at is > now
         return Attribute::make(
