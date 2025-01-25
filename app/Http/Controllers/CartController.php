@@ -25,7 +25,7 @@ class CartController extends Controller
         );
     }
 
-    public function add(Request $request)
+    public function update(Request $request)
     {
         $request->validate([
             'specific_product_id' => 'required|integer',
@@ -54,7 +54,7 @@ class CartController extends Controller
             return to_route('cart')->with('message', 'Product removed from cart.');
         }
 
-        if(!$user->addToCart($product, $quantity)) {
+        if(!$user->updateProductCartQuantity($product, $quantity)) {
             if($request->expectsJson()) {
                 return response()->json(["message" => "The specified quantity is not available."], 400);
             }
@@ -63,6 +63,48 @@ class CartController extends Controller
 
         if($request->expectsJson()) {
             return response()->json(["message" => "Product added to cart."]);
+        }
+
+        return to_route('cart')->with('message', 'Product added to cart.');
+    }
+
+
+    public function add(Request $request)
+    {
+        $request->validate([
+            'specific_product_id' => 'required|integer',
+            'quantity' => 'required|integer',
+        ]);
+
+        // check product_id valid
+        $product = SpecificProduct::find($request->get('specific_product_id'));
+        $quantity = $request->get('quantity');
+        if (!$product) {
+            if($request->expectsJson()) {
+                return response()->json(["message" => "Product not found."], 400);
+            }
+            return to_route('cart')->with('error', 'Product not found.');
+        }
+
+        /** @var User $user */
+        $user = Auth::user();
+
+        if($quantity <= 0) {
+            if($request->expectsJson()) {
+                return response()->json(["message" => "Invalid quantity."], 400);
+            }
+            return to_route('cart')->with('message', 'Invalid quantity.');
+        }
+
+        if(!$user->addProductCart($product, $quantity)) {
+            if($request->expectsJson()) {
+                return response()->json(["message" => "The specified quantity is not available."], 400);
+            }
+            return to_route('cart')->with('error', 'The specified quantity is not available.');
+        }
+
+        if($request->expectsJson()) {
+            return response()->json(["message" => "Product added to cart.", "items" => $user->cart->count()]);
         }
 
         return to_route('cart')->with('message', 'Product added to cart.');

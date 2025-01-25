@@ -55,7 +55,8 @@ Route::middleware(SellerMiddleware::class)->group(function () {
  */
 Route::middleware(ClientMiddleware::class)->group(function () {
     Route::get('/cart', [CartController::class, 'index'])->name('cart');
-    Route::post('/cart', [CartController::class, 'add'])->name('cart');
+    Route::post('/cart', [CartController::class, 'update'])->name('cart');
+    Route::post('/cart/add', [CartController::class, 'add'])->name('cart');
     Route::delete('/cart', [CartController::class, 'remove'])->name('cart');
 
     Route::post('/settings/payment-methods', [PaymentMethodController::class, 'store'])->name('payment-methods');
