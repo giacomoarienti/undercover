@@ -2,7 +2,7 @@
     <div class="card-header d-flex justify-content-between align-items-center">
         <h2 class="h4 mb-0">Reception Methods</h2>
         <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#receptionMethodModal">
-            <i class="fa fa-plus" aria-hidden="true"></i>
+            <span class="fa fa-plus" aria-hidden="true"></span>
             Add Reception Method
         </button>
     </div>
@@ -29,7 +29,7 @@
                             <div class="d-flex align-items-center gap-2">
                                 @if(!$method->default)
                                     <form method="POST" action="{{ route('reception-methods') }}" class="d-inline">
-                                        @csrf
+                                        <input type="hidden" name="_token" value="{{ csrf_token() }}" />
                                         @method('PATCH')
                                         <input type="hidden" name="id" value="{{ $method->id }}">
                                         <input type="hidden" name="default" value="1">
@@ -39,7 +39,7 @@
                                     </form>
                                 @endif
                                 <form method="POST" action="{{ route('reception-methods') }}" class="d-inline">
-                                    @csrf
+                                    <input type="hidden" name="_token" value="{{ csrf_token() }}" />
                                     @method('DELETE')
                                     <input type="hidden" name="id" value="{{ $method->id }}">
                                     <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('Are you sure you want to remove this reception method?')">
@@ -59,7 +59,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <form id="receptionMethodForm" method="POST" action="{{ route('reception-methods') }}">
-                @csrf
+                <input type="hidden" name="_token" value="{{ csrf_token() }}" />
                 <input type="hidden" name="type" value="iban">
 
                 <div class="modal-header">

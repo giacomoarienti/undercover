@@ -11,7 +11,7 @@
 
             <div class="card-body">
                 <form method="POST" action="{{ route('settings') }}">
-                    @csrf
+                    <input type="hidden" name="_token" value="{{ csrf_token() }}" />
                     @method('PATCH')
 
                     <!-- Personal Information -->
@@ -166,7 +166,7 @@
 
             <div class="card-body">
                 <form method="POST" action="{{ route('settings') }}">
-                    @csrf
+                    <input type="hidden" name="_token" value="{{ csrf_token() }}" />
                     @method('PATCH')
 
                     <!-- Personal Information -->

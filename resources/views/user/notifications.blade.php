@@ -32,7 +32,7 @@
                     <div class="d-inline mt-2 d-flex gap-2 justify-content-end align-items-center">
                         @if(!$notification->read)
                             <form action="{{ route('notifications') }}" method="POST">
-                                @csrf
+                                <input type="hidden" name="_token" value="{{ csrf_token() }}" />
                                 <input type="hidden" name="id" value="{{ $notification->id }}">
                                 <input type="hidden" name="read" value="1">
                                 @method('PATCH')
@@ -40,20 +40,20 @@
                                     type="submit"
                                     class="btn btn-link p-0 text-primary text-decoration-none"
                                     aria-label="Mark notification '{{ $notification->title }}' as read">
-                                    <i title="Mark as view" class="fa fa-eye"></i>
+                                    <span title="Mark as view" class="fa fa-eye"></span>
                                 </button>
                             </form>
                         @endif
 
                         <form action="{{ route('notifications') }}" method="POST">
-                            @csrf
+                            <input type="hidden" name="_token" value="{{ csrf_token() }}" />
                             <input type="hidden" name="id" value="{{ $notification->id }}">
                             @method('DELETE')
                             <button
                                 type="submit"
                                 class="btn btn-link p-0 text-primary text-decoration-none"
                                 aria-label="Mark notification '{{ $notification->title }}' as read">
-                                <i title="Delete" class="fa fa-trash"></i>
+                                <span title="Delete" class="fa fa-trash"></span>
                             </button>
                         </form>
                     </div>

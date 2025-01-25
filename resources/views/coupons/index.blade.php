@@ -39,17 +39,17 @@
                                     data-coupon-discount="{{ $coupon->discount * 100 }}"
                                     data-coupon-starts="{{ $coupon->starts_at->format('Y-m-d') }}"
                                     data-coupon-expires="{{ $coupon->expires_at->format('Y-m-d') }}">
-                                <i class="fa fa-pencil" aria-hidden="true"></i>
+                                <span class="fa fa-pencil" aria-hidden="true"></span>
                                 <span class="visually-hidden">Edit coupon {{ $coupon->code }}</span>
                             </button>
 
                             <form action="{{ route('coupons.destroy') }}" method="POST" class="d-inline" title="Delete coupon {{ $coupon->code }}">
-                                @csrf
+                                <input type="hidden" name="_token" value="{{ csrf_token() }}" />
                                 @method('DELETE')
                                 <input type="hidden" name="id" value="{{ $coupon->id }}">
                                 <button type="submit" class="btn btn-sm btn-outline-danger"
                                         onclick="return confirm('Are you sure you want to delete this coupon?')">
-                                    <i class="fa fa-trash" aria-hidden="true"></i>
+                                    <span class="fa fa-trash" aria-hidden="true"></span>
                                     <span class="visually-hidden">Delete coupon {{ $coupon->code }}</span>
                                 </button>
                             </form>
@@ -71,7 +71,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <form action="{{ route('coupons.create') }}" method="POST">
-                    @csrf
+                    <input type="hidden" name="_token" value="{{ csrf_token() }}" />
                     <div class="modal-header">
                         <h5 class="modal-title" id="createCouponModalLabel">Create New Coupon</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -110,7 +110,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <form action="{{ route('coupons.update') }}" method="POST">
-                    @csrf
+                    <input type="hidden" name="_token" value="{{ csrf_token() }}" />
                     @method('PATCH')
                     <input type="hidden" name="id" id="edit_coupon_id">
                     <div class="modal-header">

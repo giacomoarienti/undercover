@@ -179,7 +179,7 @@
         </div>
 
         <form id="form" action="{{route('orders.store')}}" method="POST">
-        @csrf
+        <input type="hidden" name="_token" value="{{ csrf_token() }}" />
             <input type="hidden" name="payment_method_id" value="{{$paymentMethod?->id ?? ''}}"/>
             <input id="coupon_id" type="hidden" name="coupon_id" value=""/>
             <div class="card-body form-group d-flex flex-row">

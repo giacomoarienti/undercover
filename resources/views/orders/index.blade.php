@@ -37,7 +37,7 @@
                             <td>
                                 <a href="{{ route('orders.show', $order) }}" class="btn btn-sm btn-primary view-order"
                                    title="View order {{ $order->id }} details">
-                                    <i class="fa fa-eye"><span class="sr-only">Order {{ $order->id }} details</span></i>
+                                    <span aria-hidden="true" class="fa fa-eye"><span class="sr-only">Order {{ $order->id }} details</span></span>
                                 </a>
                             </td>
                         </tr>

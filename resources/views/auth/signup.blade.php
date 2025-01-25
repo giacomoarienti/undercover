@@ -2,27 +2,31 @@
 
 @section('content')
     <div class="container">
-        <h1 class="mb-4">Sign Up</h1>
-
         <div class="card">
+            <div class="card-header text-center">
+                <h1>Sign Up</h1>
+            </div>
             <div class="card-body">
                 <form method="POST" action="{{ route('auth.signup') }}">
-                    @csrf
+                    <input type="hidden" name="_token" value="{{ csrf_token() }}"/>
 
                     <!-- Account Type Selection -->
-                    <div class="mb-4">
-                        <label class="form-label">Account Type</label>
-                        <div class="d-flex gap-3">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="is_seller" id="client_type" value="0"
-                                       checked>
-                                <label class="form-check-label" for="client_type">Client</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="is_seller" id="seller_type"
-                                       value="1">
-                                <label class="form-check-label" for="seller_type">Seller</label>
-                            </div>
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <fieldset class="d-flex gap-3 align-items-center">
+                                <legend class="h5">Account Type</legend>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="is_seller" id="client_type"
+                                           value="0"
+                                           checked />
+                                    <label class="form-check-label" for="client_type">Client</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="is_seller" id="seller_type"
+                                           value="1" />
+                                    <label class="form-check-label" for="seller_type">Seller</label>
+                                </div>
+                            </fieldset>
                         </div>
                     </div>
 
@@ -39,7 +43,7 @@
                                        name="name"
                                        value="{{ old('name') }}"
                                        required
-                                       maxlength="255">
+                                       maxlength="255" />
                                 @error('name')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -53,7 +57,7 @@
                                        name="surname"
                                        value="{{ old('surname') }}"
                                        required
-                                       maxlength="255">
+                                       maxlength="255" />
                                 @error('surname')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -67,7 +71,7 @@
                                    id="email"
                                    name="email"
                                    value="{{ old('email') }}"
-                                   required>
+                                   required />
                             @error('email')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -80,7 +84,7 @@
                                    id="birthday"
                                    name="birthday"
                                    value="{{ old('birthday') }}"
-                                   required>
+                                   required />
                             @error('birthday')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -98,7 +102,7 @@
                                    id="company_name"
                                    name="company_name"
                                    value="{{ old('company_name') }}"
-                                   maxlength="255">
+                                   maxlength="255" />
                             @error('company_name')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -111,7 +115,7 @@
                                    id="vat"
                                    name="vat"
                                    value="{{ old('vat') }}"
-                                   maxlength="255">
+                                   maxlength="255" />
                             @error('vat')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -131,7 +135,7 @@
                                        name="street_name"
                                        value="{{ old('street_name') }}"
                                        required
-                                       maxlength="255">
+                                       maxlength="255" />
                                 @error('street_name')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -145,7 +149,7 @@
                                        name="street_number"
                                        value="{{ old('street_number') }}"
                                        required
-                                       maxlength="255">
+                                       maxlength="255" />
                                 @error('street_number')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -161,7 +165,7 @@
                                        name="city"
                                        value="{{ old('city') }}"
                                        required
-                                       maxlength="255">
+                                       maxlength="255" />
                                 @error('city')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -175,7 +179,7 @@
                                        name="state"
                                        value="{{ old('state') }}"
                                        required
-                                       maxlength="255">
+                                       maxlength="255" />
                                 @error('state')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -191,7 +195,7 @@
                                        name="zip_code"
                                        value="{{ old('zip_code') }}"
                                        required
-                                       maxlength="255">
+                                       maxlength="255" />
                                 @error('zip_code')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -205,7 +209,7 @@
                                        name="country"
                                        value="{{ old('country') }}"
                                        required
-                                       maxlength="255">
+                                       maxlength="255" />
                                 @error('country')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -224,7 +228,7 @@
                                    id="password"
                                    name="password"
                                    required
-                                   minlength="6">
+                                   minlength="6" />
                             @error('password')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -237,7 +241,7 @@
                                    id="password_confirmation"
                                    name="password_confirmation"
                                    required
-                                   minlength="6">
+                                   minlength="6" />
                         </div>
                     </fieldset>
 

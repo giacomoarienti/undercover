@@ -2,7 +2,7 @@
     <div class="card-header d-flex justify-content-between align-items-center">
         <h2 class="h4 mb-0">Payment Methods</h2>
         <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#paymentMethodModal">
-            <i class="fa fa-plus" aria-hidden="true"></i>
+            <span class="fa fa-plus" aria-hidden="true"></span>
             Add Payment Method
         </button>
     </div>
@@ -33,7 +33,7 @@
                             <div class="d-flex align-items-center gap-2">
                                 @if(!$method->default)
                                     <form method="POST" action="{{ route('payment-methods') }}" class="d-inline">
-                                        @csrf
+                                        <input type="hidden" name="_token" value="{{ csrf_token() }}" />
                                         @method('PATCH')
                                         <input type="hidden" name="id" value="{{ $method->id }}">
                                         <input type="hidden" name="default" value="1">
@@ -44,7 +44,7 @@
                                 @endif
 
                                 <form method="POST" action="{{ route('payment-methods') }}" class="d-inline">
-                                    @csrf
+                                    <input type="hidden" name="_token" value="{{ csrf_token() }}" />
                                     @method('DELETE')
                                     <input type="hidden" name="id" value="{{ $method->id }}">
                                     <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('Are you sure you want to remove this payment method?')">
@@ -65,7 +65,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <form id="paymentMethodForm" method="POST" action="{{ route('payment-methods') }}">
-                @csrf
+                <input type="hidden" name="_token" value="{{ csrf_token() }}" />
 
                 <div class="modal-header">
                     <h5 class="modal-title" id="paymentMethodModalLabel">Add Payment Method</h5>

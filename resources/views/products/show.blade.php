@@ -87,7 +87,7 @@
                     @endforeach
                 </div>
                 <div class="border-bottom p-2">
-                    <a href="{{ route('products.edit', $product->slug) }}" class="btn btn-primary w-100"><i class="fa-solid fa-pencil me-2"></i>Edit</a>
+                    <a href="{{ route('products.edit', $product->slug) }}" class="btn btn-primary w-100"><span aria-hidden="true" class="fa-solid fa-pencil me-2"></span>Edit</a>
                 </div>
             @else
                 <div class="border-bottom p-2">
@@ -135,15 +135,15 @@
                         {{ $userReview ? 'Your review' : 'Leave a review' }}
                         @if ($userReview)
                             <form action="{{route('reviews.destroy', $userReview->id)}}" method="POST">
-                                @csrf
+                                <input type="hidden" name="_token" value="{{ csrf_token() }}" />
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-danger"><i class="fa-solid fa-trash me-2"></i>Delete</button>
+                                <button type="submit" class="btn btn-danger"><span aria-hidden="true" class="fa-solid fa-trash me-2"></span>Delete</button>
                             </form>
                         @endif
                     </div>
                     <div class="card-body">
                         <form action="{{ $userReview ? route('reviews.update', $userReview->id) : route('reviews.store') }}" method="POST">
-                            @csrf
+                            <input type="hidden" name="_token" value="{{ csrf_token() }}" />
                             @if ($userReview)
                                 @method('PUT')
                             @endif
@@ -168,7 +168,7 @@
                                 <label for="body" class="form-label">Body</label>
                                 <textarea class="form-control @error('body') is-invalid @enderror" id="body" name="body" rows="3">{{ old('body', $userReview->body ?? '') }}</textarea>
                             </div>
-                            <button type="submit" class="btn btn-primary">@if($userReview)<i class="fa-solid fa-pencil me-2"></i>@endif{{ $userReview ? 'Edit' : 'Submit' }}</button>
+                            <button type="submit" class="btn btn-primary">@if($userReview)<span aria-hidden="true" class="fa-solid fa-pencil me-2"></span>@endif{{ $userReview ? 'Edit' : 'Submit' }}</button>
                             </form>
                     </div>
                 </div>

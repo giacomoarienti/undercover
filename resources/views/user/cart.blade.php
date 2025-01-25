@@ -44,7 +44,7 @@
             <div class="col-6 text-end">
                 <a href="{{ route('orders.create') }}" class="btn btn-primary">
                     Checkout
-                    <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                    <span class="bi bi-arrow-right" aria-hidden="true"></span>
                 </a>
             </div>
         </div>
@@ -90,7 +90,7 @@
             <!-- remove btn -->
             <div class="col-12 col-md-1 mb-3">
                 <button class="btn btn-outline-danger remove-item" title="Remove from cart" type="button">
-                    <i class="fa fa-trash" aria-hidden="true">Trash bin</i>
+                    <span aria-hidden="true" class="fa fa-trash">Trash bin</span>
                 </button>
                 <span class="visually-hidden">Remove item from cart</span>
             </div>
