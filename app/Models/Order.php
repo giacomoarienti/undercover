@@ -140,7 +140,7 @@ class Order extends Model
 
     public function vendorDiscount(User $vendor)
     {
-        return $this->coupon->user_id == $vendor->id ?
+        return ($this->coupon and ($this->coupon->user_id == $vendor->id)) ?
             $this->vendorTotalBeforeDiscount($vendor) * $this->coupon->discount : 0;
     }
 
