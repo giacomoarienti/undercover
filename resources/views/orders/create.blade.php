@@ -5,7 +5,7 @@
 @endpush
 
 @section('content')
-    <h1>Checkout</h1>
+    <h1 class="text-primary">Checkout</h1>
     <div class="card">
         <div class="card-body border-bottom">
             <h1 class="h5">Payment method</h1>

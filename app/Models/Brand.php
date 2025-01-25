@@ -51,7 +51,6 @@ class Brand extends Model
         if(!$phone) {
             $phone = Phone::create([
                 "name" => $name,
-                "slug" => Str::slug($name),
                 "brand_id" => $this->id
             ]);
         }

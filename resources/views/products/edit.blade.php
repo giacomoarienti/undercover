@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <h1>{{$product ? 'Edit product' : 'New product'}}</h1>
+    <h1 class="text-primary">{{$product ? 'Edit product' : 'New product'}}</h1>
     <form class="m-0" id="form" action="{{ $product ? route('products.update', $product->slug) : route('products.store') }}" method="POST" enctype="multipart/form-data">
         <input type="hidden" name="_token" value="{{ csrf_token() }}" />
         @if ($product)
@@ -16,7 +16,8 @@
                            id="name"
                            name="name"
                            value="{{ old('name', $product?->name) }}"
-                           maxlength="100">
+                           maxlength="100"
+                            {{$product ? 'disabled' : ''}}>
                 </div>
                 <div class="input-group p-1">
                     <label for="price" class="input-group-text col-sm-4">Price</label>
@@ -40,7 +41,7 @@
         </div>
         <div class="input-group p-1 mt-2 rounded">
             <label for="brand" class="input-group-text">Brand</label>
-            <input type="text" id="brand" list="brand_list" name="brand" value="{{ old('brand', $product?->phone?->brand?->name) }}" class="form-control @error('brand') is-invalid @enderror"/>
+            <input type="text" id="brand" list="brand_list" name="brand" value="{{ old('brand', $product?->phone?->brand?->name) }}" class="form-control @error('brand') is-invalid @enderror" {{$product ? 'disabled' : ''}}/>
             <datalist id="brand_list">
                 @foreach(\App\Models\Brand::all() as $brand)
                     <option value="{{$brand->name}}"></option>
@@ -52,7 +53,7 @@
                 @endforeach
             </datalist>
             <label for="phone" class="input-group-text">Model</label>
-            <input type="text" id="phone" list="phone_list" name="phone" value="{{ old('phone', $product?->phone?->name) }}" class="form-control @error('phone') is-invalid @enderror"/>
+            <input type="text" id="phone" list="phone_list" name="phone" value="{{ old('phone', $product?->phone?->name) }}" class="form-control @error('phone') is-invalid @enderror" {{$product ? 'disabled' : ''}}/>
         </div>
         <div class="input-group p-1 mt-2">
             <label for="material_id" class="input-group-text">Material</label>

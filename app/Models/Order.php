@@ -198,7 +198,7 @@ class Order extends Model
 
     public function specificProducts(): BelongsToMany
     {
-        return $this->belongsToMany(SpecificProduct::class, "order_specific_products")->withPivot("quantity");
+        return $this->belongsToMany(SpecificProduct::class, "order_specific_products")->withPivot("quantity")->withTrashed();
     }
 
     public function sellers(): Collection

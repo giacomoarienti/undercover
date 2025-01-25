@@ -43,7 +43,7 @@ class Phone extends Model
 
     protected static function booted() : void {
         static::creating(function ($phone) {
-            $phone->slug = Str::slug($phone->brand . ' ' . $phone->name);
+            $phone->slug = Str::slug($phone->brand->name . ' ' . $phone->name);
         });
     }
 

@@ -210,12 +210,9 @@ class ProductController extends Controller
         Gate::authorize('update', $product);
 
         $validated = $request->validate([
-            'name' => 'required|string|max:100',
             'description' => 'required|string|max:511',
             'price' => 'required|numeric|min:0.01',
             'material_id' => 'required|integer|exists:materials,id',
-            'phone' => 'required|string',
-            'brand' => 'required|string',
             'colors' => 'required|array',
             'colors.*.selected' => 'nullable',
             'colors.*.quantity' => 'exclude_if:colors.*.selected,false|required|integer|min:1',
@@ -225,14 +222,11 @@ class ProductController extends Controller
             'delete_images.*' => 'nullable|integer|exists:media,id',
         ],
             [
-                'name.required' => 'The product name is required.',
                 'description.required' => 'A description is required.',
                 'price.required' => 'The price is required.',
                 'price.min' => 'The price must be greater than 0.',
                 'material_id.required' => 'Please select a material.',
                 'material_id.exists' => 'The selected material does not exist.',
-                'phone.required' => 'A phone model is required.',
-                'brand.required' => 'A brand name is required.',
                 'colors.required' => 'At least one color must be selected.',
                 'colors.*.quantity.required' => 'The quantity is required when a color is selected.',
                 'colors.*.quantity.min' => 'The quantity of any selected color must be at least 1.',
@@ -242,6 +236,10 @@ class ProductController extends Controller
                 'delete_images.*.exists' => 'The selected image does not exist.',
             ]
         );
+
+        $validated['name'] = $product->name;
+        $validated['phone'] = $product->phone->name;
+        $validated['brand'] = $product->phone->brand->name;
 
         $images = $product->getMedia('images')->count();
         if($images + count($validated['images'] ?? []) <= count($validated['delete_images'] ?? [])) {
