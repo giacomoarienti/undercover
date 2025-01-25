@@ -80,9 +80,9 @@
                         Colors
                     </h2>
                     @foreach ($product->specificProducts as $specificProduct)
-                        <div class="btn btn-secondary rounded-pill me-1 mb-1"><i
-                                class="fa-solid fa-circle me-1"
-                                style="color: {{$specificProduct->color->rgb}};"></i>{{$specificProduct->color->name}}
+                        <div class="btn btn-secondary rounded-pill me-1 mb-1">
+                            <span class="fa-solid fa-circle me-1" style="color: {{$specificProduct->color->rgb}};"></span>
+                            {{$specificProduct->color->name}}
                         </div>
                     @endforeach
                 </div>
@@ -96,11 +96,11 @@
                     </h2>
                         <?php $n = 0 ?>
                     @foreach ($product->specificProducts as $specificProduct)
-                        <input type="radio" class="btn-check" name="color" id="option{{++$n}}" autocomplete="off"
+                        <input type="radio" class="btn-check" name="color" id="option{{++$n}}"
                                value="{{$specificProduct->id}}">
-                        <label class="btn btn-secondary rounded-pill me-1 mb-1" for="option{{$n}}"><i
-                                class="fa-solid fa-circle me-1"
-                                style="color: {{$specificProduct->color->rgb}};"></i>{{$specificProduct->color->name}}
+                        <label class="btn btn-secondary rounded-pill me-1 mb-1" for="option{{$n}}">
+                            <span class="fa-solid fa-circle me-1" style="color: {{$specificProduct->color->rgb}};"></span>
+                            {{$specificProduct->color->name}}
                         </label>
                     @endforeach
                 </div>
