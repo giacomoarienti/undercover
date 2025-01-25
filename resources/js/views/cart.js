@@ -99,9 +99,15 @@ function createCartItemElement(item) {
     itemPrice.dataset.price = item.product.price;
 
     // quantity
+    const quantityInputId = "quantity-product-" + item.id;
+
+    const quantityLabel = element.querySelector('.item-quantity-label');
+    quantityLabel.htmlFor = quantityInputId;
+
     const quantityInput = element.querySelector('.item-quantity');
     quantityInput.value = item.pivot.quantity;
     quantityInput.max = item.quantity;
+    quantityInput.id = quantityInputId;
 
     return element;
 }

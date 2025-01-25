@@ -55,8 +55,9 @@
             <!-- image and name -->
             <div class="col-12 col-md-6 mb-3">
                 <div class=" d-flex flex-column flex-md-row" aria-label="Product image and name">
-                    <a href="#" class="product-link">
-                        <img src="" alt="" class="img-thumbnail mb-2 mb-md-0 me-md-3 responsive-image" width="80">
+                    <a href="#" class="product-link" title="Go to Product page">
+                        <img src="" alt="Product image" class="img-thumbnail mb-2 mb-md-0 me-md-3 responsive-image"
+                             width="80"/>
                     </a>
                     <h3 class="h6 mb-0"></h3>
                 </div>
@@ -82,7 +83,9 @@
                 <div class="d-md-none fw-bold mb-1">Quantity</div>
                 <div class="input-group">
                     <button class="btn btn-outline-secondary decrease-qty" type="button">-</button>
-                    <input type="number" class="form-control text-center item-quantity" style="max-width: 80px" value="1" min="1">
+                    <label for="quantity-product-id" class="sr-only item-quantity-label">Edit Quantity</label>
+                    <input id="quantity-product-id" type="number" class="form-control text-center item-quantity"
+                           style="max-width: 80px" value="1" min="1"/>
                     <button class="btn btn-outline-secondary increase-qty" type="button">+</button>
                 </div>
             </div>
@@ -96,45 +99,6 @@
             </div>
         </div>
     </template>
-
-    <style>
-        .color-swatch {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            border: 1px solid #dee2e6;
-            display: inline-block;
-        }
-
-        .responsive-image {
-            width: auto;
-            max-width: 80px;
-            height: auto;
-        }
-
-        @media (max-width: 768px) {
-            .cart-item {
-                margin-bottom: 1rem;
-                padding: 1.5rem;
-                border: 1px solid #dee2e6;
-                border-radius: 0.375rem;
-            }
-
-            .remove-item {
-                margin-top: 0.5rem;
-            }
-
-            .input-group {
-                width: auto;
-            }
-
-            .responsive-image {
-                width: 50%;
-                max-width: 100%;
-                height: auto;
-            }
-        }
-    </style>
 
     @push('scripts')
         @vite('resources/js/views/cart.js')
