@@ -33,8 +33,8 @@
                         @if(!$notification->read)
                             <form action="{{ route('notifications') }}" method="POST">
                                 <input type="hidden" name="_token" value="{{ csrf_token() }}" />
-                                <input type="hidden" name="id" value="{{ $notification->id }}">
-                                <input type="hidden" name="read" value="1">
+                                <input type="hidden" name="id" value="{{ $notification->id }}" />
+                                <input type="hidden" name="read" value="1" />
                                 @method('PATCH')
                                 <button
                                     type="submit"
@@ -47,7 +47,7 @@
 
                         <form action="{{ route('notifications') }}" method="POST">
                             <input type="hidden" name="_token" value="{{ csrf_token() }}" />
-                            <input type="hidden" name="id" value="{{ $notification->id }}">
+                            <input type="hidden" name="id" value="{{ $notification->id }}" />
                             @method('DELETE')
                             <button
                                 type="submit"
