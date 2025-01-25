@@ -7,7 +7,7 @@
 
 @section('content')
     <div class="container">
-        <div class="card mb-3">
+        <div class="card mb-5">
             <div class="row g-0">
                 <div class="d-none col p-3 pe-0 d-md-flex justify-content-center align-items-center">
                     <img src="{{ Storage::url('public/logo.svg') }}" alt="logo" class="img-fluid" style="max-height: 35vh;">

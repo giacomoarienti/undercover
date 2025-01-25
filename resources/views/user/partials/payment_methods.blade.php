@@ -3,7 +3,7 @@
         <h2 class="h4 mb-0">Payment Methods</h2>
         <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#paymentMethodModal">
             <span class="fa fa-plus" aria-hidden="true"></span>
-            Add Payment Method
+            Add
         </button>
     </div>
 
@@ -68,24 +68,25 @@
                 <input type="hidden" name="_token" value="{{ csrf_token() }}" />
 
                 <div class="modal-header">
-                    <h5 class="modal-title" id="paymentMethodModalLabel">Add Payment Method</h5>
+                    <h2 class="h5 modal-title" id="paymentMethodModalLabel">Add Payment Method</h2>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
                 <div class="modal-body">
                     <div class="mb-3">
                         <label class="form-label">Payment Type</label>
-                        <div class="btn-group w-100" role="group" aria-label="Payment type selection">
-                            <input type="radio" class="btn-check" name="type" id="type_credit_card" value="card" checked>
+                        <fieldset class="btn-group w-100" role="group">
+                            <legend class="sr-only">Payment type selection</legend>
+                            <input type="radio" class="btn-check" name="type" id="type_credit_card" value="card" checked />
                             <label class="btn btn-outline-primary" for="type_credit_card">
                                 Credit Card
                             </label>
 
-                            <input type="radio" class="btn-check" name="type" id="type_paypal" value="paypal">
+                            <input type="radio" class="btn-check" name="type" id="type_paypal" value="paypal" />
                             <label class="btn btn-outline-primary" for="type_paypal">
                                 PayPal
                             </label>
-                        </div>
+                        </fieldset>
                     </div>
 
                     <div id="creditCardFields">
@@ -97,7 +98,7 @@
                                    name="card_number"
                                    pattern="[0-9]{16}"
                                    maxlength="16"
-                                   required>
+                                   required />
                             @error('card_number')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -113,7 +114,7 @@
                                        placeholder="MM/YYYYY"
                                        pattern="(0[1-9]|1[0-2])\/\d{4}"
                                        maxlength="7"
-                                       required>
+                                       required />
                                 @error('card_expiration_date')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -127,7 +128,7 @@
                                        name="card_cvv"
                                        pattern="[0-9]{3,4}"
                                        maxlength="4"
-                                       required>
+                                       required />
                                 @error('card_cvv')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -141,7 +142,7 @@
                             <input type="email"
                                    class="form-control @error('paypal_email') is-invalid @enderror"
                                    id="paypal_email"
-                                   name="paypal_email">
+                                   name="paypal_email" />
                             @error('paypal_email')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror

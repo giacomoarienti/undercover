@@ -1,11 +1,11 @@
 <footer class="row row-cols-2 row-cols-md-5 pt-5 mt-5 border-top">
     <div class="col mb-3">
         <a href="/" class="d-flex align-items-center mb-3 link-body-emphasis text-decoration-none ">
-            <span class="h4">Undercover</span>
+            <span class="h4 text-primary">Undercover</span>
         </a>
         <p>Via dell&apos;Universit&agrave; 50</p>
         <p>47522 Cesena FC, IT</p>
-        <p class="text-body-secondary">Undercover © {{ (new \Carbon\Carbon())->year }}</p>
+        <p class="text-body-primary">Undercover © {{ (new \Carbon\Carbon())->year }}</p>
     </div>
 
     <div class="d-none d-md-block col mb-3">
@@ -38,9 +38,9 @@
     <div class="col mb-3">
         <span class="h5">Info</span>
         <ul class="nav flex-column">
-            <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Chi siamo</a></li>
+            <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">About us</a></li>
             <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Privacy policy</a></li>
-            <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Condizioni di vendita</a></li>
+            <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Terms of sale</a></li>
             <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Cookie policy</a></li>
         </ul>
     </div>

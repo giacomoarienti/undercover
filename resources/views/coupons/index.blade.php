@@ -73,26 +73,26 @@
                 <form action="{{ route('coupons.create') }}" method="POST">
                     <input type="hidden" name="_token" value="{{ csrf_token() }}" />
                     <div class="modal-header">
-                        <h5 class="modal-title" id="createCouponModalLabel">Create New Coupon</h5>
+                        <h2 class="modal-title h5" id="createCouponModalLabel">Create New Coupon</h2>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <div class="mb-3">
                             <label for="code" class="form-label">Coupon Code</label>
-                            <input type="text" class="form-control" id="code" name="code" required>
+                            <input type="text" class="form-control" id="code" name="code" required />
                         </div>
                         <div class="mb-3">
                             <label for="discount" class="form-label">Discount (%)</label>
                             <input type="number" class="form-control" id="discount" name="discount"
-                                   min="0" max="100" step="0.01" required>
+                                   min="0" max="100" step="0.01" required />
                         </div>
                         <div class="mb-3">
                             <label for="starts_at" class="form-label">Start Date</label>
-                            <input type="date" class="form-control" id="starts_at" name="starts_at" required>
+                            <input type="date" class="form-control" id="starts_at" name="starts_at" required />
                         </div>
                         <div class="mb-3">
                             <label for="expires_at" class="form-label">Expiry Date</label>
-                            <input type="date" class="form-control" id="expires_at" name="expires_at" required>
+                            <input type="date" class="form-control" id="expires_at" name="expires_at" required />
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -112,28 +112,28 @@
                 <form action="{{ route('coupons.update') }}" method="POST">
                     <input type="hidden" name="_token" value="{{ csrf_token() }}" />
                     @method('PATCH')
-                    <input type="hidden" name="id" id="edit_coupon_id">
+                    <input type="hidden" name="id" id="edit_coupon_id" />
                     <div class="modal-header">
-                        <h5 class="modal-title" id="editCouponModalLabel">Edit Coupon</h5>
+                        <h2 class="modal-title h5" id="editCouponModalLabel">Edit Coupon</h2>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <div class="mb-3">
                             <label for="edit_code" class="form-label">Coupon Code</label>
-                            <input type="text" class="form-control" id="edit_code" name="code" required>
+                            <input type="text" class="form-control" id="edit_code" name="code" required />
                         </div>
                         <div class="mb-3">
                             <label for="edit_discount" class="form-label">Discount (%)</label>
                             <input type="number" class="form-control" id="edit_discount" name="discount"
-                                   min="0" max="100" step="0.01" required>
+                                   min="0" max="100" step="0.01" required />
                         </div>
                         <div class="mb-3">
                             <label for="edit_starts_at" class="form-label">Start Date</label>
-                            <input type="date" class="form-control" id="edit_starts_at" name="starts_at" required>
+                            <input type="date" class="form-control" id="edit_starts_at" name="starts_at" required />
                         </div>
                         <div class="mb-3">
                             <label for="edit_expires_at" class="form-label">Expiry Date</label>
-                            <input type="date" class="form-control" id="edit_expires_at" name="expires_at" required>
+                            <input type="date" class="form-control" id="edit_expires_at" name="expires_at" required />
                         </div>
                     </div>
                     <div class="modal-footer">
