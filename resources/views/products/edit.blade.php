@@ -2,7 +2,7 @@
 
 @section('content')
     <h1>{{$product ? 'Edit product' : 'New product'}}</h1>
-    <form id="form" action="{{ $product ? route('products.update', $product->slug) : route('products.store') }}" method="POST" enctype="multipart/form-data">
+    <form class="m-0" id="form" action="{{ $product ? route('products.update', $product->slug) : route('products.store') }}" method="POST" enctype="multipart/form-data">
         <input type="hidden" name="_token" value="{{ csrf_token() }}" />
         @if ($product)
             @method("PATCH")
@@ -134,14 +134,20 @@
             </div>
         </div>
         <div class="form-group d-flex flex-row p-1 mt-2">
-            @if ($product)
-                <button type="button" class="btn btn-danger w-100 me-2" onclick="{{route('products.destroy', $product->slug)}}">Delete product</button>
-            @else
-                <button type="button" class="btn btn-danger w-100 me-2" onclick="location.href='{{ url()->previous() }}'">Abort</button>
+            @if (!$product)
+                <button type="button" class="btn btn-danger w-100 me-4" onclick="location.href='{{ url()->previous() }}'">Abort</button>
             @endif
-            <button type="submit" class="btn btn-primary w-100 ms-2">Save</button>
+            <button type="submit" class="btn btn-primary w-100">Save</button>
         </div>
     </form>
+
+    @if ($product)
+        <form class="p-1" action="{{route('products.destroy', $product->slug)}}" method="POST">
+            @method('DELETE')
+            <input type="hidden" name="_token" value="{{ csrf_token() }}" />
+            <button type="submit" class="btn btn-danger w-100 me-2">Delete product</button>
+        </form>
+    @endif
 @endsection
 
 <script>
