@@ -27,7 +27,7 @@
                                        name="name"
                                        value="{{ old('name', $user->name) }}"
                                        required
-                                       maxlength="255">
+                                       maxlength="255" />
                                 @error('name')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -41,7 +41,7 @@
                                        name="surname"
                                        value="{{ old('surname', $user->surname) }}"
                                        required
-                                       maxlength="255">
+                                       maxlength="255" />
                                 @error('surname')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -54,7 +54,7 @@
                                    class="form-control @error('birthday') is-invalid @enderror"
                                    id="birthday"
                                    name="birthday"
-                                   value="{{ old('birthday', $user->birthday?->format('m/d/Y')) }}">
+                                   value="{{ old('birthday', $user->birthday?->format('Y-m-d')) }}" />
                             @error('birthday')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -73,7 +73,7 @@
                                        id="street_name"
                                        name="street_name"
                                        value="{{ old('street_name', $user->street_name) }}"
-                                       maxlength="255">
+                                       maxlength="255" />
                                 @error('street_name')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -86,7 +86,7 @@
                                        id="street_number"
                                        name="street_number"
                                        value="{{ old('street_number', $user->street_number) }}"
-                                       maxlength="255">
+                                       maxlength="255" />
                                 @error('street_number')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -101,7 +101,7 @@
                                        id="city"
                                        name="city"
                                        value="{{ old('city', $user->city) }}"
-                                       maxlength="255">
+                                       maxlength="255" />
                                 @error('city')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -114,7 +114,7 @@
                                        id="state"
                                        name="state"
                                        value="{{ old('state', $user->state) }}"
-                                       maxlength="255">
+                                       maxlength="255" />
                                 @error('state')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -129,7 +129,7 @@
                                        id="zip_code"
                                        name="zip_code"
                                        value="{{ old('zip_code', $user->zip_code) }}"
-                                       maxlength="255">
+                                       maxlength="255" />
                                 @error('zip_code')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -142,7 +142,7 @@
                                        id="country"
                                        name="country"
                                        value="{{ old('country', $user->country) }}"
-                                       maxlength="255">
+                                       maxlength="255" />
                                 @error('country')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -182,7 +182,7 @@
                                 name="password"
                                 required
                                 minlength="8"
-                                maxlength="255">
+                                maxlength="255" />
                             @error('password')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -197,7 +197,7 @@
                                 name="password_confirmation"
                                 required
                                 minlength="8"
-                                maxlength="255">
+                                maxlength="255" />
                             @error('password')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -215,9 +215,9 @@
         @if($user->is_seller)
             @include('user.partials.reception_methods')
         @else
-            <span id="payment_methods">
+            <div id="payment_methods">
                 @include('user.partials.payment_methods')
-            </span>
+            </div>
         @endif
 
         <div class="card">
@@ -226,7 +226,7 @@
             </div>
             <div class="card-body">
                 <p class="text-muted mb-4">Exit from the current session.</p>
-                <a href="{{ route('auth.signout') }}" type="submit" class="btn btn-danger">Sign Out</a>
+                <a href="{{ route('auth.signout') }}" class="btn btn-danger">Sign Out</a>
             </div>
         </div>
     </div>

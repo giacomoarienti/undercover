@@ -3,7 +3,7 @@
         <h2 class="h4 mb-0">Reception Methods</h2>
         <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#receptionMethodModal">
             <span class="fa fa-plus" aria-hidden="true"></span>
-            Add Reception Method
+            Add
         </button>
     </div>
 
@@ -31,8 +31,8 @@
                                     <form method="POST" action="{{ route('reception-methods') }}" class="d-inline">
                                         <input type="hidden" name="_token" value="{{ csrf_token() }}" />
                                         @method('PATCH')
-                                        <input type="hidden" name="id" value="{{ $method->id }}">
-                                        <input type="hidden" name="default" value="1">
+                                        <input type="hidden" name="id" value="{{ $method->id }}" />
+                                        <input type="hidden" name="default" value="1" />
                                         <button type="submit" class="btn btn-outline-primary btn-sm">
                                             Set Default
                                         </button>
@@ -41,7 +41,7 @@
                                 <form method="POST" action="{{ route('reception-methods') }}" class="d-inline">
                                     <input type="hidden" name="_token" value="{{ csrf_token() }}" />
                                     @method('DELETE')
-                                    <input type="hidden" name="id" value="{{ $method->id }}">
+                                    <input type="hidden" name="id" value="{{ $method->id }}" />
                                     <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('Are you sure you want to remove this reception method?')">
                                         Delete
                                     </button>
@@ -60,10 +60,10 @@
         <div class="modal-content">
             <form id="receptionMethodForm" method="POST" action="{{ route('reception-methods') }}">
                 <input type="hidden" name="_token" value="{{ csrf_token() }}" />
-                <input type="hidden" name="type" value="iban">
+                <input type="hidden" name="type" value="iban" />
 
                 <div class="modal-header">
-                    <h5 class="modal-title" id="receptionMethodModalLabel">Add Reception Method</h5>
+                    <h2 class="h5 modal-title" id="receptionMethodModalLabel">Add Reception Method</h2>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
@@ -71,7 +71,7 @@
                     <div class="mb-3">
                         <label for="iban_number" class="form-label">IBAN Number</label>
                         <input type="text" class="form-control @error('iban_number') is-invalid @enderror"
-                               id="iban_number" name="iban_number" maxlength="34" required>
+                               id="iban_number" name="iban_number" maxlength="34" required />
                         @error('iban_number')
                         <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -80,7 +80,7 @@
                     <div class="mb-3">
                         <label for="iban_swift" class="form-label">SWIFT Code</label>
                         <input type="text" class="form-control @error('iban_swift') is-invalid @enderror"
-                               id="iban_swift" name="iban_swift" required>
+                               id="iban_swift" name="iban_swift" required />
                         @error('iban_swift')
                         <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -89,7 +89,7 @@
                     <div class="mb-3">
                         <label for="iban_holder_name" class="form-label">Account Holder Name</label>
                         <input type="text" class="form-control @error('iban_holder_name') is-invalid @enderror"
-                               id="iban_holder_name" name="iban_holder_name" required>
+                               id="iban_holder_name" name="iban_holder_name" required />
                         @error('iban_holder_name')
                         <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
