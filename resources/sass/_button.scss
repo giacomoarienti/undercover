@@ -1,0 +1,6 @@
+@import "variables";
+
+.btn-check:checked + .btn {
+    background: $primary !important;
+    color: white
+}
