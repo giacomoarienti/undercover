@@ -135,7 +135,7 @@
         </div>
         <div class="form-group d-flex flex-row p-1 mt-2">
             @if ($product)
-                <button type="button" class="btn btn-danger w-100 me-2" onclick="{{route('products.delete', $product->slug)}}">Delete product</button>
+                <button type="button" class="btn btn-danger w-100 me-2" onclick="{{route('products.destroy', $product->slug)}}">Delete product</button>
             @else
                 <button type="button" class="btn btn-danger w-100 me-2" onclick="location.href='{{ url()->previous() }}'">Abort</button>
             @endif
