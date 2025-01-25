@@ -8,7 +8,7 @@
             </div>
             <div class="card-body">
                 <section class="border-bottom pb-3 mb-3">
-                    <h3 class="text-muted mb-2">Shipping Address</h3>
+                    <h2 class="h3 text-muted mb-2">Shipping Address</h2>
                     <p class="mb-0">{{ $order->user->full_address }}</p>
                 </section>
 
@@ -17,10 +17,10 @@
                         @php
                             $paymentMethod = $order->payment->paymentMethod;
                         @endphp
-                        <div class="col-md-6">
-                            <h3 class="text-muted mb-2">Payment Details</h3>
+                        <div class="col-md-6 mb-3 mb-sm-0">
+                            <h2 class="h2 text-muted mb-2">Payment Details</h2>
                             <p class="mb-1">
-                                <strong>Method:</strong> {{ ucfirst($paymentMethod->type) }}
+                                Method: {{ ucfirst($paymentMethod->type) }}
                                 @switch($paymentMethod->type)
                                     @case('paypal')
                                         ({{ $paymentMethod->paypal_email }})
@@ -31,29 +31,29 @@
                                 @endswitch
                             </p>
                             <p class="mb-1">
-                                <strong>Transaction id:</strong>
+                                Transaction id:
                                 {{ $order->payment->transaction_id }}
                             </p>
                             <p class="mb-1">
-                                <strong>Status:</strong>
+                                Status:
                                 {{ $order->payment->paymentStatus->name }}
                             </p>
                         </div>
                     @endif
 
                     <div class="col-md-6">
-                        <h3 class="text-muted mb-2">Shipping Information</h3>
+                        <h2 class="h3 text-muted mb-2">Shipping Information</h2>
                         @if($order->shipping)
-                            <p class="mb-1"><strong>Method:</strong> {{ $order->shipping->shipping_company }}</p>
-                            <p class="mb-0"><strong>Status:</strong> {{ $order->shipping->status }}</p>
+                            <p class="mb-1">Method: {{ $order->shipping->shipping_company }}</p>
+                            <p class="mb-0">Status: {{ $order->shipping->status }}</p>
                         @else
-                            <p class="mb-0"><strong>Status:</strong> Processing</p>
+                            <p class="mb-0">Status: Processing</p>
                         @endif
                     </div>
                 </section>
 
                 <section class="mb-3">
-                    <h3 class="text-muted mb-3">Order Summary</h3>
+                    <h2 class="h3 text-muted mb-3">Order Summary</h2>
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead class="thead-light">
