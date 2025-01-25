@@ -39,6 +39,6 @@ class OrderPolicy
      */
     public function create(User $user): bool
     {
-        return !$user->is_seller;
+        return !$user->is_seller and $user->cart->count() > 0;
     }
 }

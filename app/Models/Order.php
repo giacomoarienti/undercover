@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Exceptions\UnavailableProductException;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -47,9 +48,19 @@ use function Illuminate\Events\queueable;
  */
 class Order extends Model
 {
-    protected static function booted() : void {
-        static::creating(queueable(function(Order $order) {
-
+    protected static function booted(): void
+    {
+        static::created(queueable(function (Order $order) {
+            $order->sellers()->each(
+                function($seller) use ($order) {
+                    $seller->sendNotification(
+                        "New order", "A new order has been placed for your product(s): " .
+                        $order->specificProducts
+                            ->filter(fn($specificProduct) => $specificProduct->product->user->id == $seller->id)
+                            ->map(fn($specificProduct) => $specificProduct->product->name)
+                            ->implode(", "));
+                }
+            );
         }));
     }
 
@@ -158,8 +169,7 @@ class Order extends Model
     public function totalBeforeDiscount(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->specificProducts->sum(fn($specificProduct) =>
-                $specificProduct->pivot->quantity * $specificProduct->product->price)
+            get: fn() => $this->specificProducts->sum(fn($specificProduct) => $specificProduct->pivot->quantity * $specificProduct->product->price)
         );
     }
 
@@ -191,4 +201,8 @@ class Order extends Model
         return $this->belongsToMany(SpecificProduct::class, "order_specific_products")->withPivot("quantity");
     }
 
+    public function sellers(): Collection
+    {
+        return $this->specificProducts->map(fn($specificProduct) => $specificProduct->product->user)->unique('id');
+    }
 }
