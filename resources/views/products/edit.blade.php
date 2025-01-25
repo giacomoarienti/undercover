@@ -16,7 +16,7 @@
                            id="name"
                            name="name"
                            value="{{ old('name', $product?->name) }}"
-                           maxlength="100">
+                           maxlength="100" />
                 </div>
                 <div class="input-group p-1">
                     <label for="price" class="input-group-text col-sm-4">Price</label>
@@ -26,15 +26,15 @@
                            class="form-control @error('price') is-invalid @enderror"
                            id="price"
                            name="price"
-                           value="{{ old('price', $product?->price) }}">
-                    <label for="price" class="input-group-text">€</label>
+                           value="{{ old('price', $product?->price) }}" />
+                    <span class="input-group-text">€</span>
                 </div>
             </div>
 
             <div class="col-md-8">
                 <div class="input-group h-100 p-1">
-                    <span class="input-group-text">Description</span>
-                    <textarea class="form-control @error('description') is-invalid @enderror" name="description">{{ old('description', $product?->description) }}</textarea>
+                    <label for="product-description" class="input-group-text">Description</label>
+                    <textarea id="product-description" class="form-control @error('description') is-invalid @enderror" name="description">{{ old('description', $product?->description) }}</textarea>
                 </div>
             </div>
         </div>
@@ -57,8 +57,8 @@
         <div class="input-group p-1 mt-2">
             <label for="material_id" class="input-group-text">Material</label>
             <select class="form-select @error('material_id') is-invalid @enderror" id="material_id" name="material_id">
-                {{$oldMaterialId = old('material_id', $product?->material?->id)}}
-                <option {{ $oldMaterialId ? "" : "selected" }} value=""></option>
+                @php $oldMaterialId = old('material_id', $product?->material?->id); @endphp
+                <option {{ $oldMaterialId ? "" : "selected" }} value="" disabled>Select a material</option>
                 @foreach(\App\Models\Material::all() as $material)
                     <option value="{{$material->id}}" {{ $oldMaterialId == $material->id ? "selected" : "" }}>{{$material->name}}</option>
                 @endforeach
@@ -113,7 +113,7 @@
                                     name="colors[{{ $color->id }}][selected]"
                                     type="checkbox"
                                     value="1"
-                                    {{ old('colors.' . $color->id . '.selected', $product?->hasColor($color)) ? 'checked' : ''}}>
+                                    {{ old('colors.' . $color->id . '.selected', $product?->hasColor($color)) ? 'checked' : ''}} />
                             </div>
                             <label for="quantity_{{ $color->id }}" class="input-group-text">
                                 x
@@ -127,7 +127,7 @@
                                 name="colors[{{ $color->id }}][quantity]"
                                 placeholder="Number of pieces available"
                                 value="{{ old('colors.' . $color->id . '.quantity', $product?->hasColor($color) ? $product->specificProducts->where('color_id', $color->id)->first()->quantity : '') }}"
-                                {{ old('colors.' . $color->id . '.quantity', $product?->hasColor($color) ? '' : 'disabled') }}>
+                                {{ old('colors.' . $color->id . '.quantity', $product?->hasColor($color) ? '' : 'disabled') }} />
                             </div>
                     @endforeach
                 </div>
@@ -148,74 +148,9 @@
             <button type="submit" class="btn btn-danger w-100 me-2">Delete product</button>
         </form>
     @endif
+
+    @push('scripts')
+        @vite('js/views/products.edit.js')
+    @endpush
+
 @endsection
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const checkboxes = document.querySelectorAll('.color-checkbox');
-
-        checkboxes.forEach(function (checkbox) {
-            checkbox.addEventListener('change', function () {
-                const quantityInput = document.getElementById(`quantity_${checkbox.id.split('_')[1]}`);
-                if (checkbox.checked) {
-                    quantityInput.removeAttribute('disabled');
-                } else {
-                    quantityInput.setAttribute('disabled', 'true');
-                    quantityInput.value = '';
-                }
-            });
-        });
-    });
-    function nextImage() {
-        return document.getElementById('image-preview-container').children.length - 1;
-    }
-    function addImage() {
-        let number = nextImage();
-        let newImage = document.createElement('div');
-        newImage.classList.add('d-flex', 'flex-column', 'justify-content-between','align-items-center', 'm-2', 'col-2', 'flex-shrink-0');
-
-        let input = document.createElement('input');
-        input.id = `image_${number}`;
-        input.type = 'file';
-        input.accept = 'image/*';
-        input.name = 'images[]';
-        input.hidden = true;
-
-        newImage.appendChild(input);
-        input.addEventListener('cancel', function () {
-           newImage.remove();
-        });
-        input.onchange = function () {
-            if (this.files && this.files[0]) {
-                let img_preview = document.createElement('img');
-                img_preview.src = URL.createObjectURL(this.files[0]);
-                img_preview.alt = '';
-                img_preview.classList.add('img-thumbnail', 'm-2', 'h-100');
-                newImage.appendChild(img_preview);
-
-                let button = document.createElement('button');
-                button.classList.add('btn', 'btn-danger', 'm-2', 'mt-0');
-                button.type = 'button';
-                button.onclick = function () {
-                    newImage.remove();
-                };
-                button.innerHTML = 'Delete\n<span aria-hidden="true" class="fa-solid fa-circle-minus"></i>';
-                newImage.appendChild(button);
-            }else{
-                newImage.remove();
-            }
-        }
-        input.click();
-        document.getElementById('image-add').before(newImage);
-    }
-    function addDeleteImage(id) {
-        document.getElementById(`existing-image-${id}`).remove();
-
-        let deleteCommand = document.createElement('input');
-        deleteCommand.type = 'hidden';
-        deleteCommand.name = 'delete_images[]';
-        deleteCommand.value = id;
-
-        document.getElementById(`form`).appendChild(deleteCommand);
-    }
-</script>
