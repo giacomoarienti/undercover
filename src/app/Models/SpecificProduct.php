@@ -62,10 +62,7 @@ class SpecificProduct extends Model
         });
 
         static::deleting(function (SpecificProduct $specificProduct) {
-            Log::info("SpecificProduct " . $specificProduct->slug . " deleted");
-        });
-
-        static::deleted(queueable(function (SpecificProduct $specificProduct) {
+            Log::info("Deleting SpecificProduct " . $specificProduct->slug);
             // remove from every cart and send a notification to the user
             User::whereHas('cart', function ($query) use ($specificProduct) {
                 $query->where('specific_product_id', $specificProduct->id);
@@ -74,7 +71,7 @@ class SpecificProduct extends Model
                     "The product " . $specificProduct->product->name . " with color " . $specificProduct->color->name . " has depleted and was removed from your cart.");
                 $user->removeFromCart($specificProduct);
             });
-        }));
+        });
     }
 
     public function product(): BelongsTo
