@@ -76,12 +76,11 @@
                     <div class="mb-3">
                         <label class="form-label">Payment Type</label>
                         <fieldset class="btn-group w-100" role="group">
-                            <legend class="sr-only">Payment type selection</legend>
                             <input type="radio" class="btn-check" name="type" id="type_credit_card" value="card" checked />
                             <label class="btn btn-outline-primary" for="type_credit_card">
                                 Credit Card
                             </label>
-
+                            <legend class="sr-only">Payment type selection</legend>
                             <input type="radio" class="btn-check" name="type" id="type_paypal" value="paypal" />
                             <label class="btn btn-outline-primary" for="type_paypal">
                                 PayPal
